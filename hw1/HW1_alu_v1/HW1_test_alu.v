@@ -18,7 +18,7 @@ wire 	test_all_pat;
 //   assign test_all_ins = 0 to test one instruction at the same time
 //   assign test_instruction from 000 ~ 111 mapping to your instruction 000 ~ 111
 assign 	test_all_ins = 1'b1;
-assign	test_instruction = 3'b000;
+assign	test_instruction = 3'b111;
 //////////////////////////////////////////////////////////////////////
 
 alu alu_0( 
