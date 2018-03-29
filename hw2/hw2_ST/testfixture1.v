@@ -58,9 +58,9 @@ initial $sdf_annotate(`SDFFILE, DUT);
 initial begin
 //$dumpfile("FAS.vcd");
 //$dumpvars;
-$fsdbDumpfile("FAS.fsdb");
-$fsdbDumpvars(0,testfixture1,"+mda"); //This command is for dumping 2D array
-$fsdbDumpvars;   
+// $fsdbDumpfile("FAS.fsdb");
+// $fsdbDumpvars(0,testfixture1,"+mda"); //This command is for dumping 2D array
+// $fsdbDumpvars;   
 end
 
 initial begin
