@@ -51,6 +51,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
   `include "./dat/FIR_coefficient.dat"
 
   reg [5:0] fir_cnt_r, fir_cnt_w;
+  reg [15:0] data_r, data_w;
 
   reg signed [15:0] x_00_r, x_01_r, x_02_r, x_03_r, x_04_r, x_05_r, x_06_r, x_07_r,
                     x_08_r, x_09_r, x_10_r, x_11_r, x_12_r, x_13_r, x_14_r, x_15_r,
@@ -70,8 +71,8 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
                     sum_16_w, sum_17_w, sum_18_w, sum_19_w, sum_20_w, sum_21_w, sum_22_w, sum_23_w,
                     sum_24_w, sum_25_w, sum_26_w, sum_27_w, sum_28_w, sum_29_w, sum_30_w, sum_31_w;
 
-  assign fir_valid = (fir_cnt_w == 32);
-  assign fir_d = {sum_31_w[66], sum_31_w[22:16], sum_31_w[15:8]};
+  assign fir_valid = (fir_cnt_w == 32 ? 1 : 0);
+  assign fir_d = {sum_31_w[66], sum_31_w[29:23], sum_31_w[22:15]};
 
   always@ (*) begin
     x_00_w   = x_00_r; 
@@ -139,10 +140,12 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
     sum_30_w = sum_30_r;
     sum_31_w = sum_31_r;
     fir_cnt_w = fir_cnt_r;
+    data_w    = data_r;
 
     if (data_valid) begin
-      fir_cnt_w = (fir_cnt_r >= 32 ? 32 : fir_cnt_r + 1);
-      x_31_w = data;
+      data_w = data;
+      fir_cnt_w = (fir_cnt_r > 32 ? 33 : fir_cnt_r + 1);
+      x_31_w = data_r;
       x_30_w = x_31_r;
       x_29_w = x_30_r;
       x_28_w = x_29_r;
@@ -209,6 +212,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
       sum_31_w = x_00_r * FIR_C31 + sum_30_r;
 
     end else begin 
+      data_w = 0;
       fir_cnt_w = 0;
     end
   end
@@ -280,6 +284,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
       sum_30_r  <= 66'b0;
       sum_31_r  <= 66'b0;
       fir_cnt_r <= 6'b0;
+      data_r    <= 15'b0;
     end else begin
       x_00_r    <= x_00_w;   
       x_01_r    <= x_01_w;   
@@ -346,6 +351,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
       sum_30_r  <= sum_30_w;
       sum_31_r  <= sum_31_w;
       fir_cnt_r <= fir_cnt_w;
+      data_r    <= data_w;
     end
   end
 
