@@ -1,12 +1,13 @@
 ncverilog: 10.20-s114: (c) Copyright 1995-2012 Cadence Design Systems, Inc.
-TOOL:	ncverilog	10.20-s114: Started on Mar 30, 2018 at 22:28:06 CST
+TOOL:	ncverilog	10.20-s114: Started on Mar 31, 2018 at 00:54:00 CST
 ncverilog
 	-f test.f
 		testfixture1.v
 		FAS.v
+	+access+r
 Recompiling... reason: file './FAS.v' is newer than expected.
-	expected: Fri Mar 30 22:25:52 2018
-	actual:   Fri Mar 30 22:28:05 2018
+	expected: Sat Mar 31 00:51:17 2018
+	actual:   Sat Mar 31 00:53:59 2018
 file: FAS.v
 	module worklib.FIR_FILTER:v
 		errors: 0, warnings: 0
@@ -21,8 +22,8 @@ initial $sdf_annotate(`SDFFILE, DUT);
 ncelab: *W,CUSSTI (./testfixture1.v,69|20): This SDF System Task will be Ignored..
 	Building instance overlay tables: .................... Done
 	Generating native compiled code:
-		worklib.FIR_FILTER:v <0x63a328c1>
-			streams:   6, words: 56270
+		worklib.FIR_FILTER:v <0x66a6461d>
+			streams:   6, words: 60068
 	Loading native compiled code:     .................... Done
 	Building instance specific data structures.
 	Design hierarchy summary:
@@ -44,108 +45,108 @@ aa =   7, bb =   7, aa + bb =  14
 aa =   7, bb =   7, aa * bb =   49
 aa = 0111, bb = 0111, aa + bb = 01110
 aa = 0111, bb = 0111, aa * bb = 00110001
-ERROR at FIR cycle   0: The real response output 0000 != expectd 008f 
+ERROR at FIR cycle   0: The real response output 0066 != expectd 008f 
 -----------------------------------------------------
-ERROR at FIR cycle   1: The real response output 0000 != expectd 00d8 
+ERROR at FIR cycle   1: The real response output 00bc != expectd 00d8 
 -----------------------------------------------------
-ERROR at FIR cycle   2: The real response output 00cd != expectd 00fb 
+ERROR at FIR cycle   2: The real response output 00f2 != expectd 00fb 
 -----------------------------------------------------
-ERROR at FIR cycle   3: The real response output 0179 != expectd 00f4 
+ERROR at FIR cycle   3: The real response output 00fd != expectd 00f4 
 -----------------------------------------------------
-ERROR at FIR cycle   4: The real response output 01e5 != expectd 00c2 
+ERROR at FIR cycle   4: The real response output 00dd != expectd 00c2 
 -----------------------------------------------------
-ERROR at FIR cycle   5: The real response output 01fb != expectd 006f 
+ERROR at FIR cycle   5: The real response output 0097 != expectd 006f 
 -----------------------------------------------------
-ERROR at FIR cycle   6: The real response output 01bb != expectd 0009 
+ERROR at FIR cycle   6: The real response output 0037 != expectd 0009 
 -----------------------------------------------------
-ERROR at FIR cycle   7: The real response output 012f != expectd ffa2 
+ERROR at FIR cycle   7: The real response output ffcf != expectd ffa2 
 -----------------------------------------------------
-ERROR at FIR cycle   8: The real response output 006f != expectd ff4b 
+ERROR at FIR cycle   8: The real response output ff6d != expectd ff4b 
 -----------------------------------------------------
-ERROR at FIR cycle   9: The real response output ff9e != expectd ff12 
+ERROR at FIR cycle   9: The real response output ff25 != expectd ff12 
 -----------------------------------------------------
-ERROR at FIR cycle  10: The real response output feda != expectd ff03 
+ERROR at FIR cycle  11: The real response output ff0c != expectd ff1f 
 -----------------------------------------------------
-ERROR at FIR cycle  11: The real response output fe4a != expectd ff1f 
+ERROR at FIR cycle  12: The real response output ff3f != expectd ff62 
 -----------------------------------------------------
-ERROR at FIR cycle  12: The real response output fe04 != expectd ff62 
+ERROR at FIR cycle  13: The real response output ff93 != expectd ffc0 
 -----------------------------------------------------
-ERROR at FIR cycle  13: The real response output fe18 != expectd ffc0 
+ERROR at FIR cycle  14: The real response output fffa != expectd 0028 
 -----------------------------------------------------
-ERROR at FIR cycle  14: The real response output fe7e != expectd 0028 
+ERROR at FIR cycle  15: The real response output 0060 != expectd 008a 
 -----------------------------------------------------
-ERROR at FIR cycle  15: The real response output ff26 != expectd 008a 
+ERROR at FIR cycle  16: The real response output 00b8 != expectd 00d5 
 -----------------------------------------------------
-ERROR at FIR cycle  16: The real response output fff4 != expectd 00d5 
+ERROR at FIR cycle  17: The real response output 00f0 != expectd 00fa 
 -----------------------------------------------------
-ERROR at FIR cycle  17: The real response output 00c1 != expectd 00fa 
+ERROR at FIR cycle  18: The real response output 00fe != expectd 00f5 
 -----------------------------------------------------
-ERROR at FIR cycle  18: The real response output 0171 != expectd 00f5 
+ERROR at FIR cycle  19: The real response output 00e0 != expectd 00c6 
 -----------------------------------------------------
-ERROR at FIR cycle  19: The real response output 01e1 != expectd 00c6 
+ERROR at FIR cycle  20: The real response output 009c != expectd 0075 
 -----------------------------------------------------
-ERROR at FIR cycle  20: The real response output 01fd != expectd 0075 
+ERROR at FIR cycle  21: The real response output 003d != expectd 000f 
 -----------------------------------------------------
-ERROR at FIR cycle  21: The real response output 01c1 != expectd 000f 
+ERROR at FIR cycle  22: The real response output ffd5 != expectd ffa8 
 -----------------------------------------------------
-ERROR at FIR cycle  22: The real response output 0139 != expectd ffa8 
+ERROR at FIR cycle  23: The real response output ff72 != expectd ff4f 
 -----------------------------------------------------
-ERROR at FIR cycle  23: The real response output 007b != expectd ff4f 
+ERROR at FIR cycle  24: The real response output ff28 != expectd ff15 
 -----------------------------------------------------
-ERROR at FIR cycle  24: The real response output ffaa != expectd ff15 
+ERROR at FIR cycle  26: The real response output ff0a != expectd ff1c 
 -----------------------------------------------------
-ERROR at FIR cycle  25: The real response output fee4 != expectd ff03 
+ERROR at FIR cycle  27: The real response output ff3b != expectd ff5d 
 -----------------------------------------------------
-ERROR at FIR cycle  26: The real response output fe50 != expectd ff1c 
+ERROR at FIR cycle  28: The real response output ff8d != expectd ffba 
 -----------------------------------------------------
-ERROR at FIR cycle  27: The real response output fe06 != expectd ff5d 
+ERROR at FIR cycle  29: The real response output fff4 != expectd 0022 
 -----------------------------------------------------
-ERROR at FIR cycle  28: The real response output fe14 != expectd ffba 
+ERROR at FIR cycle  30: The real response output 005b != expectd 0085 
 -----------------------------------------------------
-ERROR at FIR cycle  29: The real response output fe76 != expectd 0022 
+ERROR at FIR cycle  31: The real response output 00b4 != expectd 00d1 
 -----------------------------------------------------
-ERROR at FIR cycle  30: The real response output ff1a != expectd 0085 
+ERROR at FIR cycle  32: The real response output 00ed != expectd 00f9 
 -----------------------------------------------------
-ERROR at FIR cycle  31: The real response output ffe8 != expectd 00d1 
+ERROR at FIR cycle  33: The real response output 00fe != expectd 00f7 
 -----------------------------------------------------
-ERROR at FIR cycle  32: The real response output 00b7 != expectd 00f9 
+ERROR at FIR cycle  34: The real response output 00e3 != expectd 00ca 
 -----------------------------------------------------
-ERROR at FIR cycle  33: The real response output 0169 != expectd 00f7 
+ERROR at FIR cycle  35: The real response output 00a1 != expectd 007a 
 -----------------------------------------------------
-ERROR at FIR cycle  34: The real response output 01db != expectd 00ca 
+ERROR at FIR cycle  36: The real response output 0043 != expectd 0015 
 -----------------------------------------------------
-ERROR at FIR cycle  35: The real response output 01fd != expectd 007a 
+ERROR at FIR cycle  37: The real response output ffdb != expectd ffae 
 -----------------------------------------------------
-ERROR at FIR cycle  36: The real response output 01c7 != expectd 0015 
+ERROR at FIR cycle  38: The real response output ff78 != expectd ff54 
 -----------------------------------------------------
-ERROR at FIR cycle  37: The real response output 0143 != expectd ffae 
+ERROR at FIR cycle  39: The real response output ff2c != expectd ff17 
 -----------------------------------------------------
-ERROR at FIR cycle  38: The real response output 0087 != expectd ff54 
+ERROR at FIR cycle  40: The real response output ff04 != expectd ff02 
 -----------------------------------------------------
-ERROR at FIR cycle  39: The real response output ffb6 != expectd ff17 
+ERROR at FIR cycle  41: The real response output ff08 != expectd ff19 
 -----------------------------------------------------
-ERROR at FIR cycle  40: The real response output fef0 != expectd ff02 
+ERROR at FIR cycle  42: The real response output ff37 != expectd ff58 
 -----------------------------------------------------
-ERROR at FIR cycle  41: The real response output fe58 != expectd ff19 
+ERROR at FIR cycle  43: The real response output ff88 != expectd ffb4 
 -----------------------------------------------------
-ERROR at FIR cycle  42: The real response output fe08 != expectd ff58 
+ERROR at FIR cycle  44: The real response output ffee != expectd 001c 
 -----------------------------------------------------
-ERROR at FIR cycle  43: The real response output fe10 != expectd ffb4 
+ERROR at FIR cycle  45: The real response output 0055 != expectd 0080 
 -----------------------------------------------------
-ERROR at FIR cycle  44: The real response output fe6e != expectd 001c 
+ERROR at FIR cycle  46: The real response output 00af != expectd 00ce 
 -----------------------------------------------------
-ERROR at FIR cycle  45: The real response output ff10 != expectd 0080 
+ERROR at FIR cycle  47: The real response output 00eb != expectd 00f8 
 -----------------------------------------------------
-ERROR at FIR cycle  46: The real response output ffdc != expectd 00ce 
+ERROR at FIR cycle  48: The real response output 00fe != expectd 00f8 
 -----------------------------------------------------
-ERROR at FIR cycle  47: The real response output 00ab != expectd 00f8 
+ERROR at FIR cycle  49: The real response output 00e6 != expectd 00ce 
 -----------------------------------------------------
 -----------------------------------------------------
 
 Error!!! There are more than          48 errors for FIR output !
 -------------------------FAIL------------------------
 
-Simulation complete via $finish(1) at time 222750 PS + 2
+Simulation complete via $finish(1) at time 230850 PS + 2
 ./testfixture1.v:252 		$finish;
 ncsim> exit
-TOOL:	ncverilog	10.20-s114: Exiting on Mar 30, 2018 at 22:28:07 CST  (total: 00:00:01)
+TOOL:	ncverilog	10.20-s114: Exiting on Mar 31, 2018 at 00:54:01 CST  (total: 00:00:01)

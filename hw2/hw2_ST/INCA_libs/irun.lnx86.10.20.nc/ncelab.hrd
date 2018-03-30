@@ -2,6 +2,5 @@
 // File created by:  ncverilog
 // Do not modify this file
 //
--f
-test.f
-+access+r
+-ACCESS
++r

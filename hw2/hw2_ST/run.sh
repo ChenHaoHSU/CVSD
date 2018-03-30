@@ -1,1 +1,1 @@
-ncverilog -f test.f 
+ncverilog -f test.f +access+r 
