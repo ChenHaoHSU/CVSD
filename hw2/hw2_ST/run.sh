@@ -1,1 +1,1 @@
-source ~CVSD/A
+ncverilog -f test.f 
