@@ -72,7 +72,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
                     sum_24_w, sum_25_w, sum_26_w, sum_27_w, sum_28_w, sum_29_w, sum_30_w, sum_31_w;
 
   assign fir_valid = (fir_cnt_w > 34);
-  assign fir_d = {sum_31_w[66], sum_31_w[33:27], sum_31_w[26:19]};
+  assign fir_d = {sum_31_w[66], sum_31_w[30:24], sum_31_w[23:16]};
 
   always@ (*) begin
     x_00_w   = x_00_r; 
