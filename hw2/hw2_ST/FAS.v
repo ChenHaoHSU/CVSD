@@ -151,8 +151,6 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
     sum_31_w = sum_31_r
 
     if (data_valid) begin
-      sum_0_w = 
-      
 
     end else begin 
 
