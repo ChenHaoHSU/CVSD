@@ -52,8 +52,6 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
 
   reg [5:0] fir_cnt_r, fir_cnt_w;
 
-  assign fir_valid = (fir_cnt_w == 32);
-
   reg signed [15:0] x_0_r, x_1_r, x_2_r, x_3_r, x_4_r, x_5_r, x_6_r, x_7_r,
                     x_8_r, x_9_r, x_10_r, x_11_r, x_12_r, x_13_r, x_14_r, x_15_r,
                     x_16_r, x_17_r, x_18_r, x_19_r, x_20_r, x_21_r, x_22_r, x_23_r,
@@ -71,6 +69,9 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
                     sum_8_w, sum_9_w, sum_10_w, sum_11_w, sum_12_w, sum_13_w, sum_14_w, sum_15_w,
                     sum_16_w, sum_17_w, sum_18_w, sum_19_w, sum_20_w, sum_21_w, sum_22_w, sum_23_w,
                     sum_24_w, sum_25_w, sum_26_w, sum_27_w, sum_28_w, sum_29_w, sum_30_w, sum_31_w;
+
+  assign fir_valid = (fir_cnt_w == 32);
+  assign fir_d = {sum_31_w[66], sum_31_w[22:16], sum_31_w[15:8]};
 
   always@ (*) begin
     x_0_w    = x_0_r; 
