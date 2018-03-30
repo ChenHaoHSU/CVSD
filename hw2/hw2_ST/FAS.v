@@ -15,33 +15,23 @@ module FAS (data_valid, data, clk, rst, fir_d, fir_valid, fft_valid, done, freq,
   output done;
   output [3:0] freq;
 
-  reg fir_valid_r, fir_valid_w;
-  reg [15:0] fir_d_r, fir_d_w;
-
   FIR_FILTER fir(
     .clk(clk), 
     .rst(rst),
     .data_valid(data_valid),
     .data(data),
-    .fir_valid(fir_valid_r),
-    .fir_d(fir_d_r)
+    .fir_valid(fir_valid),
+    .fir_d(fir_d)
   );
 
-  assign fir_valid = fir_valid_w;
-  assign fir_d = fir_d_w;
-
   always@ (*) begin
-    fir_valid_w = fir_valid_r;
-    fir_d_w     = fir_d_r;
   end
 
   always@ (posedge clk or posedge rst) begin 
     if (rst) begin
-      fir_valid_r <= 1'b0;
-      fir_d_r     <= 15'b0;
+
     end else begin
-      fir_valid_r <= fir_valid_w;
-      fir_d_r     <= fir_d_w;
+
     end
   end
 
