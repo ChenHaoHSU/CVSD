@@ -10,6 +10,21 @@
 
 module testfixture1;
 
+reg signed [3:0] aa, bb;
+reg signed [4:0] cc;
+reg signed [7:0] zz;
+initial begin
+  aa = 7;
+  bb = 7;
+  cc = aa + bb;
+  zz = aa * bb;
+  $display("aa = %d, bb = %d, aa + bb = %d", aa, bb, cc);
+  $display("aa = %d, bb = %d, aa * bb = %d", aa, bb, zz);
+  $display("aa = %b, bb = %b, aa + bb = %b", aa, bb, cc);
+  $display("aa = %b, bb = %b, aa * bb = %b", aa, bb, zz);
+end
+
+
 reg   clk ;
 reg   reset ;
 reg [15:0] data; // 4 integer + 4 fraction
