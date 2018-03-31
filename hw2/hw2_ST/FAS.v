@@ -179,7 +179,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
       x_00_w = x_01_r;
 
       sum_00_w = x_31_r * FIR_C00 + 0;
-      sum_01_w = x_30_r * FIR_C01 + sum_00_r;
+      sum_01_w = x_30_r * FIR_C01 + data * FIR_C00;
       sum_02_w = x_29_r * FIR_C02 + sum_01_r;
       sum_03_w = x_28_r * FIR_C03 + sum_02_r;
       sum_04_w = x_27_r * FIR_C04 + sum_03_r;
