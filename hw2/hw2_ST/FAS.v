@@ -456,6 +456,7 @@ module FFT (clk, rst, stp_valid,
 
   /* ============================================ */
   always@ (*) begin
+    fft_cnt_w = fft_cnt_r;
     for (i = 0; i < 8; i = i + 1) begin 
       W_REAL_w[i] = W_REAL_r[i];
       W_IMAG_w[i] = W_IMAG_r[i];
