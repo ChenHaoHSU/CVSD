@@ -100,7 +100,6 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
     x_31_w   = x_31_r;  
     sum_w    = sum_r;
     fir_cnt_w = fir_cnt_r;
-    data_w    = data_r;
 
     if (data_valid) begin
       fir_cnt_w = (fir_cnt_r > 32 ? 33 : fir_cnt_r + 1);
@@ -174,7 +173,6 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
     end else begin
       sum_w     = 0;
       fir_cnt_w = 0;
-      data_w    = 0;
     end
   end
 
@@ -214,7 +212,6 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
       x_31_r    <= 15'b0;
       sum_r     <= 0;
       fir_cnt_r <= 6'b0;
-      data_r    <= 15'b0;
     end else begin
       x_00_r    <= x_00_w;   
       x_01_r    <= x_01_w;   
@@ -250,7 +247,6 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
       x_31_r    <= x_31_w;  
       sum_r     <= sum_w;
       fir_cnt_r <= fir_cnt_w;
-      data_r    <= data_w;
     end
   end
 
