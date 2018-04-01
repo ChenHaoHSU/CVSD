@@ -485,6 +485,9 @@ module FFT (clk, rst, stp_valid,
 
       // STAGE 4:
 
+    end else begin 
+      fft_cnt_w = 0;
+
     end 
   end
 
