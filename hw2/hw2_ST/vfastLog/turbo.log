@@ -1,3 +1,0 @@
-Command Line: /usr/spring_soft/verdi/cur/platform/LINUXAMD64/bin/vfast -silent -del . -o /home/raid7_2/userb03/b3505028/CVSD/hw2/hw2_ST/FAS.vcd.fsdb -ft verilog /home/raid7_2/userb03/b3505028/CVSD/hw2/hw2_ST/FAS.vcd
-uname(Linux cad29 2.6.32-696.3.2.el6.x86_64 #1 SMP Tue Jun 20 01:26:55 UTC 2017 x86_64)
-au time 0.054763 0.011998 0.004999 delta 5132288 7233536 total 5198840 7300088
