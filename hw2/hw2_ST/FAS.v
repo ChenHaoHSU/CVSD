@@ -310,7 +310,7 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
   integer i;
 
   /* ============================================ */
-  assign stp_valid = (stp_cnt_w == 16);
+  assign stp_valid = (stp_cnt_w >= 16);
   assign x_00 = x_w[ 0];
   assign x_01 = x_w[ 1];
   assign x_02 = x_w[ 2];
@@ -330,9 +330,11 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
 
   /* ============================================ */
   always@ (*) begin
+
     stp_cnt_w = stp_cnt_r;
     for (i = 0; i < 16; i = i + 1)
       x_w[i] = x_r[i];
+
     if (fir_valid) begin
       if (stp_cnt_r >= 16) begin
         stp_cnt_w = 0;
