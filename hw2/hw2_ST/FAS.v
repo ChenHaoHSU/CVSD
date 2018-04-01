@@ -469,10 +469,18 @@ module FFT (clk, rst, stp_valid,
       stage4_imag_w[i] = stage4_imag_r[i];
     end
 
-    if (fft_valid) begin
+    if (stp_valid) begin
       fft_cnt_w = (fft_cnt_r > 4 ? 0 : fft_cnt_r + 1);
-      
 
+      // STAGE 1:
+
+
+
+      // STAGE 2:
+
+      // STAGE 3:
+
+      // STAGE 4:
 
     end 
   end
