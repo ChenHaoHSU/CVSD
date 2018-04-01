@@ -15,13 +15,30 @@ module FAS (data_valid, data, clk, rst, fir_d, fir_valid, fft_valid, done, freq,
   output done;
   output [3:0] freq;
 
-  FIR_FILTER fir(
+  wire stp_valid;
+  // stp outputs; fft inputs
+  wire signed [15:0] x_00, x_01, x_02, x_03, x_04, x_05, x_06, x_07,
+                     x_08, x_09, x_10, x_11, x_12, x_13, x_14, x_15;  
+  
+  FIR_FILTER fas_fir(
     .clk(clk), 
     .rst(rst),
     .data_valid(data_valid),
     .data(data),
     .fir_valid(fir_valid),
     .fir_d(fir_d)
+  );
+
+  STP fas_stp(
+    .clk(clk), 
+    .rst(rst),
+    .fir_valid(fir_valid),
+    .fir_d(fir_d),
+    .stp_valid(stp_valid),
+    .x_00(x_00), .x_01(x_01), .x_02(x_02), .x_03(x_03), 
+    .x_04(x_04), .x_05(x_05), .x_06(x_06), .x_07(x_07),
+    .x_08(x_08), .x_09(x_09), .x_10(x_10), .x_11(x_11), 
+    .x_12(x_12), .x_13(x_13), .x_14(x_14), .x_15(x_15)
   );
 
   always@ (*) begin
@@ -260,21 +277,66 @@ endmodule
   STP (Serial to Parallel)
 *****************************************************************/
 
-module STP (clk, rst, fir_valid, fir_d);
+module STP (clk, rst, fir_valid, fir_d, stp_valid,
+  x_00, x_01, x_02, x_03, x_04, x_05, x_06, x_07, 
+  x_08, x_09, x_10, x_11, x_12, x_13, x_14, x_15);
   input clk, rst;
   input fir_valid;
   input signed [15:0] fir_d;
+  output stp_valid;
+  output signed [15:0] x_00, x_01, x_02, x_03, x_04, x_05, x_06, x_07, 
+                       x_08, x_09, x_10, x_11, x_12, x_13, x_14, x_15;
+
+  reg [5:0] stp_cnt_r, stp_cnt_w;
+  reg [15:0] x_r[15:0];
+  reg [15:0] x_w[15:0];
+
+  assign stp_valid = (stp_cnt_w == 16);
+  assign x_00 = x_w[ 0];
+  assign x_01 = x_w[ 1];
+  assign x_02 = x_w[ 2];
+  assign x_03 = x_w[ 3];
+  assign x_04 = x_w[ 4];
+  assign x_05 = x_w[ 5];
+  assign x_06 = x_w[ 6];
+  assign x_07 = x_w[ 7];
+  assign x_08 = x_w[ 8];
+  assign x_09 = x_w[ 9];
+  assign x_10 = x_w[10];
+  assign x_11 = x_w[11];
+  assign x_12 = x_w[12];
+  assign x_13 = x_w[13];
+  assign x_14 = x_w[14];
+  assign x_15 = x_w[15];
 
   always@ (*) begin
-
-
+    stp_cnt_w = stp_cnt_r;
+    for (i = 0; i < 16; i = i + 1)
+      x_w[i] = x_r[i];
+    if (fir_valid) begin
+      if (stp_cnt_r >= 16) begin
+        stp_cnt_w = 0;
+        x_w[0] = fir_d;
+      end else begin 
+        stp_cnt_w = stp_cnt_r + 1;
+        x_w[stp_cnt_r] = fir_d;
+      end
+    end else begin 
+      stp_cnt_w = 0;
+      for (i = 0; i < 16; i = i + 1)
+        x_w[i] = 0;
+    end
   end
 
   always@ (posedge clk or posedge rst) begin
     if (rst) begin 
-
+      for (i = 0; i < 16; i = i + 1)
+        x_r[i] <= 15'b0;
+      stp_cnt_r <= 6'b0;
     end else begin 
-
+      for (i = 0; i < 16; i = i + 1)
+        x_r[i] <= x_w[i];
+      stp_cnt_r <= stp_cnt_w;
     end
   end 
 
