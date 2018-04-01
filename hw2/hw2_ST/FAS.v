@@ -45,12 +45,14 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
   input clk, rst;
   input data_valid;
   input signed [15:0] data;
-  input fir_valid;
+  output fir_valid;
   output signed [15:0] fir_d;
 
   `include "./dat/FIR_coefficient.dat"
 
+  /* ============================================ */
   reg [5:0] fir_cnt_r, fir_cnt_w;
+  reg signed [66:0] sum_r, sum_w;
   reg signed [15:0] x_00_r, x_01_r, x_02_r, x_03_r, x_04_r, x_05_r, x_06_r, x_07_r,
                     x_08_r, x_09_r, x_10_r, x_11_r, x_12_r, x_13_r, x_14_r, x_15_r,
                     x_16_r, x_17_r, x_18_r, x_19_r, x_20_r, x_21_r, x_22_r, x_23_r,
@@ -60,11 +62,11 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
                     x_16_w, x_17_w, x_18_w, x_19_w, x_20_w, x_21_w, x_22_w, x_23_w,
                     x_24_w, x_25_w, x_26_w, x_27_w, x_28_w, x_29_w, x_30_w, x_31_w;
 
-  reg signed [66:0] sum_r, sum_w;
-
+  /* ============================================ */
   assign fir_valid = (fir_cnt_w > 33);
   assign fir_d = {sum_w[66], sum_w[30:24], sum_w[23:16]};
 
+  /* ============================================ */
   always@ (*) begin
     x_00_w    = x_00_r; 
     x_01_w    = x_01_r; 
@@ -177,6 +179,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
     end
   end
 
+  /* ============================================ */
   always@ (posedge clk or posedge rst) begin 
     if (rst) begin
       x_00_r    <= 15'b0;
@@ -254,10 +257,28 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
 endmodule
 
 /****************************************************************
-  SERIAL_TO_PARALLEL
+  STP (Serial to Parallel)
 *****************************************************************/
 
+module STP (clk, rst, fir_valid, fir_d);
+  input clk, rst;
+  input fir_valid;
+  input signed [15:0] fir_d;
 
+  always@ (*) begin
+
+
+  end
+
+  always@ (posedge clk or posedge rst) begin
+    if (rst) begin 
+
+    end else begin 
+
+    end
+  end 
+
+endmodule
 
 /****************************************************************
   FFT
