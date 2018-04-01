@@ -104,7 +104,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
     if (data_valid) begin
       fir_cnt_w = (fir_cnt_r > 32 ? 33 : fir_cnt_r + 1);
       x_31_w = data;
-      x_30_w = x_31_r;
+      x_30_w = data;
       x_29_w = x_30_r;
       x_28_w = x_29_r;
       x_27_w = x_28_r;
