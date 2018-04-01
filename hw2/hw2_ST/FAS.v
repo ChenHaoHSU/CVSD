@@ -287,12 +287,15 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
   output signed [15:0] x_00, x_01, x_02, x_03, x_04, x_05, x_06, x_07, 
                        x_08, x_09, x_10, x_11, x_12, x_13, x_14, x_15;
 
+  /* ============================================ */
   reg [5:0] stp_cnt_r, stp_cnt_w;
   reg [15:0] x_r[15:0];
   reg [15:0] x_w[15:0];
 
+  /* ============================================ */
   integer i;
 
+  /* ============================================ */
   assign stp_valid = (stp_cnt_w == 16);
   assign x_00 = x_w[ 0];
   assign x_01 = x_w[ 1];
@@ -311,6 +314,7 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
   assign x_14 = x_w[14];
   assign x_15 = x_w[15];
 
+  /* ============================================ */
   always@ (*) begin
     stp_cnt_w = stp_cnt_r;
     for (i = 0; i < 16; i = i + 1)
@@ -330,6 +334,7 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
     end
   end
 
+  /* ============================================ */
   always@ (posedge clk or posedge rst) begin
     if (rst) begin 
       for (i = 0; i < 16; i = i + 1)
@@ -348,8 +353,197 @@ endmodule
   FFT
 *****************************************************************/
 
+module FFT (clk, rst, stp_valid,
+  x_00, x_01, x_02, x_03, x_04, x_05, x_06, x_07, 
+  x_08, x_09, x_10, x_11, x_12, x_13, x_14, x_15,
+  fft_valid,
+  fft_d00, fft_d01, fft_d02, fft_d03, fft_d04, fft_d05, fft_d06, fft_d07, 
+  fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15, 
+);
+  input clk, rst;
+  input stp_valid;
+  input signed [15:0] x_00, x_01, x_02, x_03, x_04, x_05, x_06, x_07, 
+                      x_08, x_09, x_10, x_11, x_12, x_13, x_14, x_15;
+  output fft_valid;
+  output signed [31:0] fft_d00, fft_d01, fft_d02, fft_d03, fft_d04, fft_d05, fft_d06, fft_d07, 
+                       fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15;
+
+  /* ============================================ */
+  parameter signed [31:0] W_REAL_0 = 32'h00010000;  // The real part of the reference table about COS(x)+i*SIN(x) value , 0: 001
+  parameter signed [31:0] W_REAL_1 = 32'h0000EC83;  // The real part of the reference table about COS(x)+i*SIN(x) value , 1: 9.238739e-001
+  parameter signed [31:0] W_REAL_2 = 32'h0000B504;  // The real part of the reference table about COS(x)+i*SIN(x) value , 2: 7.070923e-001
+  parameter signed [31:0] W_REAL_3 = 32'h000061F7;  // The real part of the reference table about COS(x)+i*SIN(x) value , 3: 3.826752e-001
+  parameter signed [31:0] W_REAL_4 = 32'h00000000;  // The real part of the reference table about COS(x)+i*SIN(x) value , 4: 000
+  parameter signed [31:0] W_REAL_5 = 32'hFFFF9E09;  // The real part of the reference table about COS(x)+i*SIN(x) value , 5: -3.826752e-001
+  parameter signed [31:0] W_REAL_6 = 32'hFFFF4AFC;  // The real part of the reference table about COS(x)+i*SIN(x) value , 6: -7.070923e-001
+  parameter signed [31:0] W_REAL_7 = 32'hFFFF137D;  // The real part of the reference table about COS(x)+i*SIN(x) value , 7: -9.238739e-001
+
+  parameter signed [31:0] W_IMAG_0 = 32'h00000000;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 0: 000
+  parameter signed [31:0] W_IMAG_1 = 32'hFFFF9E09;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 1: -3.826752e-001
+  parameter signed [31:0] W_IMAG_2 = 32'hFFFF4AFC;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 2: -7.070923e-001
+  parameter signed [31:0] W_IMAG_3 = 32'hFFFF137D;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 3: -9.238739e-001
+  parameter signed [31:0] W_IMAG_4 = 32'hFFFF0000;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 4: -01
+  parameter signed [31:0] W_IMAG_5 = 32'hFFFF137D;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 5: -9.238739e-001
+  parameter signed [31:0] W_IMAG_6 = 32'hFFFF4AFC;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 6: -7.070923e-001
+  parameter signed [31:0] W_IMAG_7 = 32'hFFFF9E09;  // The imag part of the reference table about COS(x)+i*SIN(x) value , 7: -3.826752e-001
+
+  /* ============================================ */
+  reg signed [31:0] W_REAL_r[7:0], W_REAL_w[7:0]; 
+  reg signed [31:0] W_IMAG_r[7:0], W_IMAG_w[7:0]; 
+  reg signed [115:0] stage1_real_r[15:0], stage1_real_w[15:0];
+  reg signed [115:0] stage2_real_r[15:0], stage2_real_w[15:0];
+  reg signed [115:0] stage3_real_r[15:0], stage3_real_w[15:0];
+  reg signed [115:0] stage4_real_r[15:0], stage4_real_w[15:0];
+  reg signed [115:0] stage1_imag_r[15:0], stage1_imag_w[15:0];
+  reg signed [115:0] stage2_imag_r[15:0], stage2_imag_w[15:0];
+  reg signed [115:0] stage3_imag_r[15:0], stage3_imag_w[15:0];
+  reg signed [115:0] stage4_imag_r[15:0], stage4_imag_w[15:0];
+
+  /* ============================================ */
+  integer i;
+
+  /* ============================================ */
+  always@ (*) begin
+    for (i = 0; i < 8; i = i + 1) begin 
+      W_REAL_w[i] = W_REAL_r[i];
+      W_IMAG_w[i] = W_IMAG_r[i];
+    end
+    for (i = 0; i < 16; i = i + 1) begin 
+      stage1_real_w[i] = stage1_real_r[i];
+      stage2_real_w[i] = stage2_real_r[i];
+      stage3_real_w[i] = stage3_real_r[i];
+      stage4_real_w[i] = stage4_real_r[i];
+      stage1_imag_w[i] = stage1_imag_r[i];
+      stage2_imag_w[i] = stage2_imag_r[i];
+      stage3_imag_w[i] = stage3_imag_r[i];
+      stage4_imag_w[i] = stage4_imag_r[i];
+    end
+    
+
+
+  end
+
+  /* ============================================ */
+  always@ (posedge clk or posedge rst) begin
+    if (rst) begin 
+      W_REAL_r[0] <= W_REAL_0;
+      W_REAL_r[1] <= W_REAL_1;
+      W_REAL_r[2] <= W_REAL_2;
+      W_REAL_r[3] <= W_REAL_3;
+      W_REAL_r[4] <= W_REAL_4;
+      W_REAL_r[5] <= W_REAL_5;
+      W_REAL_r[6] <= W_REAL_6;
+      W_REAL_r[7] <= W_REAL_7;
+      W_IMAG_r[0] <= W_IMAG_0;
+      W_IMAG_r[1] <= W_IMAG_1;
+      W_IMAG_r[2] <= W_IMAG_2;
+      W_IMAG_r[3] <= W_IMAG_3;
+      W_IMAG_r[4] <= W_IMAG_4;
+      W_IMAG_r[5] <= W_IMAG_5;
+      W_IMAG_r[6] <= W_IMAG_6;
+      W_IMAG_r[7] <= W_IMAG_7;
+      for (i = 0; i < 16; i = i + 1) begin 
+        stage1_real_r[i] <= 0;
+        stage2_real_r[i] <= 0;
+        stage3_real_r[i] <= 0;
+        stage4_real_r[i] <= 0;
+        stage1_imag_r[i] <= 0;
+        stage2_imag_r[i] <= 0;
+        stage3_imag_r[i] <= 0;
+        stage4_imag_r[i] <= 0;
+      end
+    end else begin 
+      for (i = 0; i < 8; i = i + 1) begin 
+        W_REAL_r[i] <= W_REAL_w[i];
+        W_IMAG_r[i] <= W_IMAG_w[i];
+      end
+      for (i = 0; i < 16; i = i + 1) begin 
+        stage1_real_r[i] <= stage1_real_w[i];
+        stage2_real_r[i] <= stage2_real_w[i];
+        stage3_real_r[i] <= stage3_real_w[i];
+        stage4_real_r[i] <= stage4_real_w[i];
+        stage1_imag_r[i] <= stage1_imag_w[i];
+        stage2_imag_r[i] <= stage2_imag_w[i];
+        stage3_imag_r[i] <= stage3_imag_w[i];
+        stage4_imag_r[i] <= stage4_imag_w[i];
+      end
+    end
+  end 
+
+endmodule
 
 /****************************************************************
   ANALYST
 *****************************************************************/
+
+
+
+
+/*
+  reg [115:0] stage1_real_00_r, stage1_real_01_r, stage1_real_02_r, stage1_real_03_r, 
+              stage1_real_04_r, stage1_real_05_r, stage1_real_06_r, stage1_real_07_r, 
+              stage1_real_08_r, stage1_real_09_r, stage1_real_10_r, stage1_real_11_r, 
+              stage1_real_12_r, stage1_real_13_r, stage1_real_14_r, stage1_real_15_r, 
+              stage1_real_00_w, stage1_real_01_w, stage1_real_02_w, stage1_real_03_w, 
+              stage1_real_04_w, stage1_real_05_w, stage1_real_06_w, stage1_real_07_w, 
+              stage1_real_08_w, stage1_real_09_w, stage1_real_10_w, stage1_real_11_w, 
+              stage1_real_12_w, stage1_real_13_w, stage1_real_14_w, stage1_real_15_w;
+  reg [115:0] stage2_real_00_r, stage2_real_01_r, stage2_real_02_r, stage2_real_03_r, 
+              stage2_real_04_r, stage2_real_05_r, stage2_real_06_r, stage2_real_07_r, 
+              stage2_real_08_r, stage2_real_09_r, stage2_real_10_r, stage2_real_11_r, 
+              stage2_real_12_r, stage2_real_13_r, stage2_real_14_r, stage2_real_15_r, 
+              stage2_real_00_w, stage2_real_01_w, stage2_real_02_w, stage2_real_03_w, 
+              stage2_real_04_w, stage2_real_05_w, stage2_real_06_w, stage2_real_07_w, 
+              stage2_real_08_w, stage2_real_09_w, stage2_real_10_w, stage2_real_11_w, 
+              stage2_real_12_w, stage2_real_13_w, stage2_real_14_w, stage2_real_15_w;
+  reg [115:0] stage3_real_00_r, stage3_real_01_r, stage3_real_02_r, stage3_real_03_r, 
+              stage3_real_04_r, stage3_real_05_r, stage3_real_06_r, stage3_real_07_r, 
+              stage3_real_08_r, stage3_real_09_r, stage3_real_10_r, stage3_real_11_r, 
+              stage3_real_12_r, stage3_real_13_r, stage3_real_14_r, stage3_real_15_r, 
+              stage3_real_00_w, stage3_real_01_w, stage3_real_02_w, stage3_real_03_w, 
+              stage3_real_04_w, stage3_real_05_w, stage3_real_06_w, stage3_real_07_w, 
+              stage3_real_08_w, stage3_real_09_w, stage3_real_10_w, stage3_real_11_w, 
+              stage3_real_12_w, stage3_real_13_w, stage3_real_14_w, stage3_real_15_w;
+  reg [115:0] stage4_real_00_r, stage4_real_01_r, stage4_real_02_r, stage4_real_03_r, 
+              stage4_real_04_r, stage4_real_05_r, stage4_real_06_r, stage4_real_07_r, 
+              stage4_real_08_r, stage4_real_09_r, stage4_real_10_r, stage4_real_11_r, 
+              stage4_real_12_r, stage4_real_13_r, stage4_real_14_r, stage4_real_15_r, 
+              stage4_real_00_w, stage4_real_01_w, stage4_real_02_w, stage4_real_03_w, 
+              stage4_real_04_w, stage4_real_05_w, stage4_real_06_w, stage4_real_07_w, 
+              stage4_real_08_w, stage4_real_09_w, stage4_real_10_w, stage4_real_11_w, 
+              stage4_real_12_w, stage4_real_13_w, stage4_real_14_w, stage4_real_15_w;
+
+  reg [115:0] stage1_imag_00_r, stage1_imag_01_r, stage1_imag_02_r, stage1_imag_03_r, 
+              stage1_imag_04_r, stage1_imag_05_r, stage1_imag_06_r, stage1_imag_07_r, 
+              stage1_imag_08_r, stage1_imag_09_r, stage1_imag_10_r, stage1_imag_11_r, 
+              stage1_imag_12_r, stage1_imag_13_r, stage1_imag_14_r, stage1_imag_15_r, 
+              stage1_imag_00_w, stage1_imag_01_w, stage1_imag_02_w, stage1_imag_03_w, 
+              stage1_imag_04_w, stage1_imag_05_w, stage1_imag_06_w, stage1_imag_07_w, 
+              stage1_imag_08_w, stage1_imag_09_w, stage1_imag_10_w, stage1_imag_11_w, 
+              stage1_imag_12_w, stage1_imag_13_w, stage1_imag_14_w, stage1_imag_15_w;
+  reg [115:0] stage2_imag_00_r, stage2_imag_01_r, stage2_imag_02_r, stage2_imag_03_r, 
+              stage2_imag_04_r, stage2_imag_05_r, stage2_imag_06_r, stage2_imag_07_r, 
+              stage2_imag_08_r, stage2_imag_09_r, stage2_imag_10_r, stage2_imag_11_r, 
+              stage2_imag_12_r, stage2_imag_13_r, stage2_imag_14_r, stage2_imag_15_r, 
+              stage2_imag_00_w, stage2_imag_01_w, stage2_imag_02_w, stage2_imag_03_w, 
+              stage2_imag_04_w, stage2_imag_05_w, stage2_imag_06_w, stage2_imag_07_w, 
+              stage2_imag_08_w, stage2_imag_09_w, stage2_imag_10_w, stage2_imag_11_w, 
+              stage2_imag_12_w, stage2_imag_13_w, stage2_imag_14_w, stage2_imag_15_w;
+  reg [115:0] stage3_imag_00_r, stage3_imag_01_r, stage3_imag_02_r, stage3_imag_03_r, 
+              stage3_imag_04_r, stage3_imag_05_r, stage3_imag_06_r, stage3_imag_07_r, 
+              stage3_imag_08_r, stage3_imag_09_r, stage3_imag_10_r, stage3_imag_11_r, 
+              stage3_imag_12_r, stage3_imag_13_r, stage3_imag_14_r, stage3_imag_15_r, 
+              stage3_imag_00_w, stage3_imag_01_w, stage3_imag_02_w, stage3_imag_03_w, 
+              stage3_imag_04_w, stage3_imag_05_w, stage3_imag_06_w, stage3_imag_07_w, 
+              stage3_imag_08_w, stage3_imag_09_w, stage3_imag_10_w, stage3_imag_11_w, 
+              stage3_imag_12_w, stage3_imag_13_w, stage3_imag_14_w, stage3_imag_15_w;
+  reg [115:0] stage4_imag_00_r, stage4_imag_01_r, stage4_imag_02_r, stage4_imag_03_r, 
+              stage4_imag_04_r, stage4_imag_05_r, stage4_imag_06_r, stage4_imag_07_r, 
+              stage4_imag_08_r, stage4_imag_09_r, stage4_imag_10_r, stage4_imag_11_r, 
+              stage4_imag_12_r, stage4_imag_13_r, stage4_imag_14_r, stage4_imag_15_r, 
+              stage4_imag_00_w, stage4_imag_01_w, stage4_imag_02_w, stage4_imag_03_w, 
+              stage4_imag_04_w, stage4_imag_05_w, stage4_imag_06_w, stage4_imag_07_w, 
+              stage4_imag_08_w, stage4_imag_09_w, stage4_imag_10_w, stage4_imag_11_w, 
+              stage4_imag_12_w, stage4_imag_13_w, stage4_imag_14_w, stage4_imag_15_w;
+*/
 
