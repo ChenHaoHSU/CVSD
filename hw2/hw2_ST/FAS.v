@@ -418,7 +418,7 @@ module FFT (clk, rst, stp_valid,
   integer i;
 
   /* ============================================ */
-  assign fft_valid = (stp_cnt_w > 4);
+  assign fft_valid = (fft_cnt_w > 4);
   assign fft_d00 = {stage4_real_w[ 0][115], stage4_real_w[ 0][62:56], stage4_real_w[ 0][55:48], 
                     stage4_imag_w[ 0][115], stage4_imag_w[ 0][62:56], stage4_imag_w[ 0][55:48]};
   assign fft_d01 = {stage4_real_w[ 1][115], stage4_real_w[ 1][62:56], stage4_real_w[ 1][55:48], 
@@ -469,8 +469,8 @@ module FFT (clk, rst, stp_valid,
       stage4_imag_w[i] = stage4_imag_r[i];
     end
 
-    if (stp_valid) begin
-      stp_cnt_w = (stp_cnt_r > 4 ? 0 : stp_cnt_r + 1);
+    if (fft_valid) begin
+      fft_cnt_w = (fft_cnt_r > 4 ? 0 : fft_cnt_r + 1);
       
 
 

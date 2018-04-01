@@ -1,40 +1,46 @@
 ncverilog: 10.20-s114: (c) Copyright 1995-2012 Cadence Design Systems, Inc.
-TOOL:	ncverilog	10.20-s114: Started on Mar 31, 2018 at 00:54:00 CST
+TOOL:	ncverilog	10.20-s114: Started on Apr 02, 2018 at 01:58:11 CST
 ncverilog
 	-f test.f
 		testfixture1.v
 		FAS.v
 	+access+r
 Recompiling... reason: file './FAS.v' is newer than expected.
-	expected: Sat Mar 31 00:51:17 2018
-	actual:   Sat Mar 31 00:53:59 2018
+	expected: Mon Apr  2 01:11:15 2018
+	actual:   Mon Apr  2 01:58:10 2018
 file: FAS.v
-	module worklib.FIR_FILTER:v
+	module worklib.FFT:v
 		errors: 0, warnings: 0
 		Caching library 'worklib' ....... Done
 	Elaborating the design hierarchy:
   always@ (*) begin
         |
-ncelab: *W,STARMT (./FAS.v,27|8): This @* expands to empty list, will never wake up.
+ncelab: *W,STARMT (./FAS.v,57|8): This @* expands to empty list, will never wake up.
 ncelab: *W,CUSFNF: The SDF file "FAS_syn.sdf" not found..
 initial $sdf_annotate(`SDFFILE, DUT);
                     |
 ncelab: *W,CUSSTI (./testfixture1.v,69|20): This SDF System Task will be Ignored..
 	Building instance overlay tables: .................... Done
 	Generating native compiled code:
-		worklib.FIR_FILTER:v <0x66a6461d>
-			streams:   6, words: 60068
+		worklib.FAS:v <0x126bc992>
+			streams:   0, words:     0
+		worklib.FFT:v <0x23908a05>
+			streams:  26, words: 193368
+		worklib.FIR_FILTER:v <0x09bab3bc>
+			streams:   6, words: 32131
+		worklib.STP:v <0x6af72225>
+			streams:  23, words: 13288
 	Loading native compiled code:     .................... Done
 	Building instance specific data structures.
 	Design hierarchy summary:
 		                  Instances  Unique
-		Modules:                  3       3
-		Registers:              177     177
-		Scalar wires:             5       -
-		Vectored wires:          19       -
-		Always blocks:           12      12
+		Modules:                  5       5
+		Registers:              141     141
+		Scalar wires:             7       -
+		Vectored wires:          35       -
+		Always blocks:           16      16
 		Initial blocks:          12      12
-		Cont. assignments:        2       2
+		Cont. assignments:       36      36
 		Pseudo assignments:       2       2
 		Simulation timescale:  10ps
 	Writing initial simulation snapshot: worklib.testfixture1:v
@@ -45,108 +51,27 @@ aa =   7, bb =   7, aa + bb =  14
 aa =   7, bb =   7, aa * bb =   49
 aa = 0111, bb = 0111, aa + bb = 01110
 aa = 0111, bb = 0111, aa * bb = 00110001
-ERROR at FIR cycle   0: The real response output 0066 != expectd 008f 
+FIR dataout on pattern           0 ~         100 !!, PASS !!
 -----------------------------------------------------
-ERROR at FIR cycle   1: The real response output 00bc != expectd 00d8 
+FIR dataout on pattern         100 ~         200 !!, PASS !!
 -----------------------------------------------------
-ERROR at FIR cycle   2: The real response output 00f2 != expectd 00fb 
+FIR dataout on pattern         200 ~         300 !!, PASS !!
 -----------------------------------------------------
-ERROR at FIR cycle   3: The real response output 00fd != expectd 00f4 
+FIR dataout on pattern         300 ~         400 !!, PASS !!
 -----------------------------------------------------
-ERROR at FIR cycle   4: The real response output 00dd != expectd 00c2 
+FIR dataout on pattern         400 ~         500 !!, PASS !!
 -----------------------------------------------------
-ERROR at FIR cycle   5: The real response output 0097 != expectd 006f 
+FIR dataout on pattern         500 ~         600 !!, PASS !!
 -----------------------------------------------------
-ERROR at FIR cycle   6: The real response output 0037 != expectd 0009 
+FIR dataout on pattern         700 ~         800 !!, PASS !!
 -----------------------------------------------------
-ERROR at FIR cycle   7: The real response output ffcf != expectd ffa2 
------------------------------------------------------
-ERROR at FIR cycle   8: The real response output ff6d != expectd ff4b 
------------------------------------------------------
-ERROR at FIR cycle   9: The real response output ff25 != expectd ff12 
------------------------------------------------------
-ERROR at FIR cycle  11: The real response output ff0c != expectd ff1f 
------------------------------------------------------
-ERROR at FIR cycle  12: The real response output ff3f != expectd ff62 
------------------------------------------------------
-ERROR at FIR cycle  13: The real response output ff93 != expectd ffc0 
------------------------------------------------------
-ERROR at FIR cycle  14: The real response output fffa != expectd 0028 
------------------------------------------------------
-ERROR at FIR cycle  15: The real response output 0060 != expectd 008a 
------------------------------------------------------
-ERROR at FIR cycle  16: The real response output 00b8 != expectd 00d5 
------------------------------------------------------
-ERROR at FIR cycle  17: The real response output 00f0 != expectd 00fa 
------------------------------------------------------
-ERROR at FIR cycle  18: The real response output 00fe != expectd 00f5 
------------------------------------------------------
-ERROR at FIR cycle  19: The real response output 00e0 != expectd 00c6 
------------------------------------------------------
-ERROR at FIR cycle  20: The real response output 009c != expectd 0075 
------------------------------------------------------
-ERROR at FIR cycle  21: The real response output 003d != expectd 000f 
------------------------------------------------------
-ERROR at FIR cycle  22: The real response output ffd5 != expectd ffa8 
------------------------------------------------------
-ERROR at FIR cycle  23: The real response output ff72 != expectd ff4f 
------------------------------------------------------
-ERROR at FIR cycle  24: The real response output ff28 != expectd ff15 
------------------------------------------------------
-ERROR at FIR cycle  26: The real response output ff0a != expectd ff1c 
------------------------------------------------------
-ERROR at FIR cycle  27: The real response output ff3b != expectd ff5d 
------------------------------------------------------
-ERROR at FIR cycle  28: The real response output ff8d != expectd ffba 
------------------------------------------------------
-ERROR at FIR cycle  29: The real response output fff4 != expectd 0022 
------------------------------------------------------
-ERROR at FIR cycle  30: The real response output 005b != expectd 0085 
------------------------------------------------------
-ERROR at FIR cycle  31: The real response output 00b4 != expectd 00d1 
------------------------------------------------------
-ERROR at FIR cycle  32: The real response output 00ed != expectd 00f9 
------------------------------------------------------
-ERROR at FIR cycle  33: The real response output 00fe != expectd 00f7 
------------------------------------------------------
-ERROR at FIR cycle  34: The real response output 00e3 != expectd 00ca 
------------------------------------------------------
-ERROR at FIR cycle  35: The real response output 00a1 != expectd 007a 
------------------------------------------------------
-ERROR at FIR cycle  36: The real response output 0043 != expectd 0015 
------------------------------------------------------
-ERROR at FIR cycle  37: The real response output ffdb != expectd ffae 
------------------------------------------------------
-ERROR at FIR cycle  38: The real response output ff78 != expectd ff54 
------------------------------------------------------
-ERROR at FIR cycle  39: The real response output ff2c != expectd ff17 
------------------------------------------------------
-ERROR at FIR cycle  40: The real response output ff04 != expectd ff02 
------------------------------------------------------
-ERROR at FIR cycle  41: The real response output ff08 != expectd ff19 
------------------------------------------------------
-ERROR at FIR cycle  42: The real response output ff37 != expectd ff58 
------------------------------------------------------
-ERROR at FIR cycle  43: The real response output ff88 != expectd ffb4 
------------------------------------------------------
-ERROR at FIR cycle  44: The real response output ffee != expectd 001c 
------------------------------------------------------
-ERROR at FIR cycle  45: The real response output 0055 != expectd 0080 
------------------------------------------------------
-ERROR at FIR cycle  46: The real response output 00af != expectd 00ce 
------------------------------------------------------
-ERROR at FIR cycle  47: The real response output 00eb != expectd 00f8 
------------------------------------------------------
-ERROR at FIR cycle  48: The real response output 00fe != expectd 00f8 
------------------------------------------------------
-ERROR at FIR cycle  49: The real response output 00e6 != expectd 00ce 
+FIR dataout on pattern         800 ~         900 !!, PASS !!
 -----------------------------------------------------
 -----------------------------------------------------
-
-Error!!! There are more than          48 errors for FIR output !
+Error!!! Somethings' wrong with your code ...!!
 -------------------------FAIL------------------------
-
-Simulation complete via $finish(1) at time 230850 PS + 2
-./testfixture1.v:252 		$finish;
+-----------------------------------------------------
+Simulation complete via $finish(1) at time 270 US + 0
+./testfixture1.v:244  $finish;
 ncsim> exit
-TOOL:	ncverilog	10.20-s114: Exiting on Mar 31, 2018 at 00:54:01 CST  (total: 00:00:01)
+TOOL:	ncverilog	10.20-s114: Exiting on Apr 02, 2018 at 01:58:15 CST  (total: 00:00:04)
