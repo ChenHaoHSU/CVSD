@@ -51,7 +51,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
   `include "./dat/FIR_coefficient.dat"
 
   reg [5:0] fir_cnt_r, fir_cnt_w;
-  reg [15:0] data_r, data_w;
+  reg signed [15:0] data_r, data_w;
 
   reg signed [15:0] x_00_r, x_01_r, x_02_r, x_03_r, x_04_r, x_05_r, x_06_r, x_07_r,
                     x_08_r, x_09_r, x_10_r, x_11_r, x_12_r, x_13_r, x_14_r, x_15_r,
@@ -144,8 +144,8 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
 
     if (data_valid) begin
       fir_cnt_w = (fir_cnt_r > 32 ? 33 : fir_cnt_r + 1);
-      //data_w = data;
-      x_31_w = data;
+      data_w = data;
+      x_31_w = data_r;
       x_30_w = x_31_r;
       x_29_w = x_30_r;
       x_28_w = x_29_r;
@@ -179,7 +179,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
       x_00_w = x_01_r;
 
       sum_00_w = x_31_r * FIR_C00 + 0;
-      sum_01_w = x_30_r * FIR_C01 + data * FIR_C00;
+      sum_01_w = x_30_r * FIR_C01 + sum_00_r;
       sum_02_w = x_29_r * FIR_C02 + sum_01_r;
       sum_03_w = x_28_r * FIR_C03 + sum_02_r;
       sum_04_w = x_27_r * FIR_C04 + sum_03_r;
