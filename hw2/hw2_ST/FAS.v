@@ -291,6 +291,8 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
   reg [15:0] x_r[15:0];
   reg [15:0] x_w[15:0];
 
+  integer i;
+
   assign stp_valid = (stp_cnt_w == 16);
   assign x_00 = x_w[ 0];
   assign x_01 = x_w[ 1];
