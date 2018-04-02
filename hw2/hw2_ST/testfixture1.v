@@ -119,7 +119,7 @@ end
 reg fir_verify;
 always@(posedge clk) begin
 	if (fir_valid) begin	
-		fir_verify = ((fir_mem[j] == fir_d+1) || (fir_mem[j] == fir_d) || (fir_mem[j] == fir_d-1));
+		fir_verify = ((fir_mem[j] == fir_d) || (fir_mem[j] == fir_d) || (fir_mem[j] == fir_d));
 		if ( (!fir_verify) || (fir_d === 16'bx) || (fir_d === 16'bz)) begin
 			$display("ERROR at FIR cycle %3d: The real response output %4h != expectd %4h " ,j, fir_d, fir_mem[j]);
 			$display("-----------------------------------------------------");
