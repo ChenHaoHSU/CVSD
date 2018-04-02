@@ -889,11 +889,11 @@ module ANALYST(clk, rst, fft_valid,
         //////////////////////// 
         4'd4: begin
           if (stage4_r[0] > stage4_r[1]) begin
-            stage5_w = stage3_r[0];
-            freq5_w  = freq3_r [0];
+            stage5_w = stage4_r[0];
+            freq5_w  = freq4_r [0];
           end else begin
-            stage5_w = stage3_r[1];
-            freq5_w  = freq3_r [1];
+            stage5_w = stage4_r[1];
+            freq5_w  = freq4_r [1];
           end
         end
 
