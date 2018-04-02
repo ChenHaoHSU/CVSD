@@ -596,11 +596,7 @@ module FFT (clk, rst, stp_valid,
                                  {stage4_imag_r[i][147], stage4_imag_r[i][78:72], stage4_imag_r[i][71:64]} ;
           end
         end
-
-        default: begin
-        end
       endcase
-
     end else begin 
       fft_cnt_w = 0;
       for (i = 0; i < 16; i = i + 1) begin 
