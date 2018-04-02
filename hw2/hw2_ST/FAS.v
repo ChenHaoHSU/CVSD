@@ -452,33 +452,33 @@ module FFT (clk, rst, stp_valid,
   assign fft_valid = (fft_cnt_w > 4);
   assign fft_d00 = {stage4_real_w[ 0][115], stage4_real_w[ 0][62:56], stage4_real_w[ 0][55:48], 
                     stage4_imag_w[ 0][115], stage4_imag_w[ 0][62:56], stage4_imag_w[ 0][55:48]};
-  assign fft_d01 = {stage4_real_w[ 1][115], stage4_real_w[ 1][62:56], stage4_real_w[ 1][55:48], 
+  assign fft_d08 = {stage4_real_w[ 1][115], stage4_real_w[ 1][62:56], stage4_real_w[ 1][55:48], 
                     stage4_imag_w[ 1][115], stage4_imag_w[ 1][62:56], stage4_imag_w[ 1][55:48]};
-  assign fft_d02 = {stage4_real_w[ 2][115], stage4_real_w[ 2][62:56], stage4_real_w[ 2][55:48], 
+  assign fft_d04 = {stage4_real_w[ 2][115], stage4_real_w[ 2][62:56], stage4_real_w[ 2][55:48], 
                     stage4_imag_w[ 2][115], stage4_imag_w[ 2][62:56], stage4_imag_w[ 2][55:48]};
-  assign fft_d03 = {stage4_real_w[ 3][115], stage4_real_w[ 3][62:56], stage4_real_w[ 3][55:48], 
+  assign fft_d12 = {stage4_real_w[ 3][115], stage4_real_w[ 3][62:56], stage4_real_w[ 3][55:48], 
                     stage4_imag_w[ 3][115], stage4_imag_w[ 3][62:56], stage4_imag_w[ 3][55:48]};
-  assign fft_d04 = {stage4_real_w[ 4][115], stage4_real_w[ 4][62:56], stage4_real_w[ 4][55:48], 
+  assign fft_d02 = {stage4_real_w[ 4][115], stage4_real_w[ 4][62:56], stage4_real_w[ 4][55:48], 
                     stage4_imag_w[ 4][115], stage4_imag_w[ 4][62:56], stage4_imag_w[ 4][55:48]};
-  assign fft_d05 = {stage4_real_w[ 5][115], stage4_real_w[ 5][62:56], stage4_real_w[ 5][55:48], 
+  assign fft_d10 = {stage4_real_w[ 5][115], stage4_real_w[ 5][62:56], stage4_real_w[ 5][55:48], 
                     stage4_imag_w[ 5][115], stage4_imag_w[ 5][62:56], stage4_imag_w[ 5][55:48]};
   assign fft_d06 = {stage4_real_w[ 6][115], stage4_real_w[ 6][62:56], stage4_real_w[ 6][55:48], 
                     stage4_imag_w[ 6][115], stage4_imag_w[ 6][62:56], stage4_imag_w[ 6][55:48]};
-  assign fft_d07 = {stage4_real_w[ 7][115], stage4_real_w[ 7][62:56], stage4_real_w[ 7][55:48], 
+  assign fft_d14 = {stage4_real_w[ 7][115], stage4_real_w[ 7][62:56], stage4_real_w[ 7][55:48], 
                     stage4_imag_w[ 7][115], stage4_imag_w[ 7][62:56], stage4_imag_w[ 7][55:48]};
-  assign fft_d08 = {stage4_real_w[ 8][115], stage4_real_w[ 8][62:56], stage4_real_w[ 8][55:48], 
+  assign fft_d01 = {stage4_real_w[ 8][115], stage4_real_w[ 8][62:56], stage4_real_w[ 8][55:48], 
                     stage4_imag_w[ 8][115], stage4_imag_w[ 8][62:56], stage4_imag_w[ 8][55:48]};
   assign fft_d09 = {stage4_real_w[ 9][115], stage4_real_w[ 9][62:56], stage4_real_w[ 9][55:48], 
                     stage4_imag_w[ 9][115], stage4_imag_w[ 9][62:56], stage4_imag_w[ 9][55:48]};
-  assign fft_d10 = {stage4_real_w[10][115], stage4_real_w[10][62:56], stage4_real_w[10][55:48], 
+  assign fft_d05 = {stage4_real_w[10][115], stage4_real_w[10][62:56], stage4_real_w[10][55:48], 
                     stage4_imag_w[10][115], stage4_imag_w[10][62:56], stage4_imag_w[10][55:48]};
-  assign fft_d11 = {stage4_real_w[11][115], stage4_real_w[11][62:56], stage4_real_w[11][55:48], 
+  assign fft_d13 = {stage4_real_w[11][115], stage4_real_w[11][62:56], stage4_real_w[11][55:48], 
                     stage4_imag_w[11][115], stage4_imag_w[11][62:56], stage4_imag_w[11][55:48]};
-  assign fft_d12 = {stage4_real_w[12][115], stage4_real_w[12][62:56], stage4_real_w[12][55:48], 
+  assign fft_d03 = {stage4_real_w[12][115], stage4_real_w[12][62:56], stage4_real_w[12][55:48], 
                     stage4_imag_w[12][115], stage4_imag_w[12][62:56], stage4_imag_w[12][55:48]};
-  assign fft_d13 = {stage4_real_w[13][115], stage4_real_w[13][62:56], stage4_real_w[13][55:48], 
+  assign fft_d11 = {stage4_real_w[13][115], stage4_real_w[13][62:56], stage4_real_w[13][55:48], 
                     stage4_imag_w[13][115], stage4_imag_w[13][62:56], stage4_imag_w[13][55:48]};
-  assign fft_d14 = {stage4_real_w[14][115], stage4_real_w[14][62:56], stage4_real_w[14][55:48], 
+  assign fft_d07 = {stage4_real_w[14][115], stage4_real_w[14][62:56], stage4_real_w[14][55:48], 
                     stage4_imag_w[14][115], stage4_imag_w[14][62:56], stage4_imag_w[14][55:48]};
   assign fft_d15 = {stage4_real_w[15][115], stage4_real_w[15][62:56], stage4_real_w[15][55:48], 
                     stage4_imag_w[15][115], stage4_imag_w[15][62:56], stage4_imag_w[15][55:48]};
