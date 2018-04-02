@@ -368,7 +368,7 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
 
     if (fir_valid || stp_cnt_r > 0) begin
       if (stp_cnt_r >= 16) begin
-        stp_cnt_w = 0;
+        stp_cnt_w = 1;
         x_w[0] = fir_d;
       end else begin 
         stp_cnt_w = stp_cnt_r + 1;
