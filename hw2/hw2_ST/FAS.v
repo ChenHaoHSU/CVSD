@@ -550,10 +550,10 @@ module FFT (clk, rst, stp_valid,
         for (j = i * 8; j < i * 8 + 4; j = j + 1) begin 
           stage2_real_w[j] = stage1_real_r[j] + stage1_real_r[j + 4];
           stage2_imag_w[j] = stage1_imag_r[j] + stage1_imag_r[j + 4];
-          stage2_real_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_REAL_r[j * 2])
-                               + ((stage1_imag_r[j + 4] - stage1_imag_r[j]) * W_IMAG_r[j * 2]);
-          stage2_imag_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_IMAG_r[j * 2])
-                               + ((stage1_imag_r[j + 4] - stage1_imag_r[j]) * W_REAL_r[j * 2]);
+          stage2_real_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_REAL_r[(j - i * 8) * 2])
+                               + ((stage1_imag_r[j + 4] - stage1_imag_r[j]) * W_IMAG_r[(j - i * 8) * 2]);
+          stage2_imag_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_IMAG_r[(j - i * 8) * 2])
+                               + ((stage1_imag_r[j + 4] - stage1_imag_r[j]) * W_REAL_r[(j - i * 8) * 2]);
         end
       end
 
@@ -564,10 +564,10 @@ module FFT (clk, rst, stp_valid,
         for (j = i * 4; j < i * 4 + 2; j = j + 1) begin 
           stage3_real_w[j] = stage2_real_r[j] + stage2_real_r[j + 2];
           stage3_imag_w[j] = stage2_imag_r[j] + stage2_imag_r[j + 2];
-          stage3_real_w[j + 2] = ((stage2_real_r[j] - stage2_real_r[j + 2]) * W_REAL_r[j * 4])
-                               + ((stage2_imag_r[j + 2] - stage2_imag_r[j]) * W_IMAG_r[j * 4]);
-          stage3_imag_w[j + 2] = ((stage2_real_r[j] - stage2_real_r[j + 2]) * W_IMAG_r[j * 4])
-                               + ((stage2_imag_r[j + 2] - stage2_imag_r[j]) * W_REAL_r[j * 4]);
+          stage3_real_w[j + 2] = ((stage2_real_r[j] - stage2_real_r[j + 2]) * W_REAL_r[(j - i * 4) * 4])
+                               + ((stage2_imag_r[j + 2] - stage2_imag_r[j]) * W_IMAG_r[(j - i * 4) * 4]);
+          stage3_imag_w[j + 2] = ((stage2_real_r[j] - stage2_real_r[j + 2]) * W_IMAG_r[(j - i * 4) * 4])
+                               + ((stage2_imag_r[j + 2] - stage2_imag_r[j]) * W_REAL_r[(j - i * 4) * 4]);
         end
       end
 
@@ -578,10 +578,10 @@ module FFT (clk, rst, stp_valid,
         for (j = i * 2; j < i * 2 + 1; j = j + 1) begin 
           stage4_real_w[j] = stage3_real_r[j] + stage3_real_r[j + 1];
           stage4_imag_w[j] = stage3_imag_r[j] + stage3_imag_r[j + 1];
-          stage4_real_w[j + 1] = ((stage3_real_r[j] - stage3_real_r[j + 1]) * W_REAL_r[j * 8])
-                               + ((stage3_imag_r[j + 1] - stage3_imag_r[j]) * W_IMAG_r[j * 8]);
-          stage4_imag_w[j + 1] = ((stage3_real_r[j] - stage3_real_r[j + 1]) * W_IMAG_r[j * 8])
-                               + ((stage3_imag_r[j + 1] - stage3_imag_r[j]) * W_REAL_r[j * 8]);
+          stage4_real_w[j + 1] = ((stage3_real_r[j] - stage3_real_r[j + 1]) * W_REAL_r[0])
+                               + ((stage3_imag_r[j + 1] - stage3_imag_r[j]) * W_IMAG_r[0]);
+          stage4_imag_w[j + 1] = ((stage3_real_r[j] - stage3_real_r[j + 1]) * W_IMAG_r[0])
+                               + ((stage3_imag_r[j + 1] - stage3_imag_r[j]) * W_REAL_r[0]);
         end
       end
 
