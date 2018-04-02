@@ -633,14 +633,8 @@ module FFT (clk, rst, stp_valid,
         //////////////////////// 
         5'd4: begin
           for (i = 0; i < 16; i = i + 1) begin 
-            stage1_real_w[i] = stage1_real_r[i] >= 0 ? stage1_real_r[i] + CONST1 : stage1_real_r[i];
-            stage2_real_w[i] = stage2_real_r[i] >= 0 ? stage2_real_r[i] + CONST1 : stage2_real_r[i];
-            stage3_real_w[i] = stage3_real_r[i] >= 0 ? stage3_real_r[i] + CONST1 : stage3_real_r[i];
-            stage4_real_w[i] = stage4_real_r[i] >= 0 ? stage4_real_r[i] + CONST1 : stage4_real_r[i];
-            stage1_imag_w[i] = stage1_imag_r[i] >= 0 ? stage1_imag_r[i] + CONST1 : stage1_imag_r[i];
-            stage2_imag_w[i] = stage2_imag_r[i] >= 0 ? stage2_imag_r[i] + CONST1 : stage2_imag_r[i];
-            stage3_imag_w[i] = stage3_imag_r[i] >= 0 ? stage3_imag_r[i] + CONST1 : stage3_imag_r[i];
-            stage4_imag_w[i] = stage4_imag_r[i] >= 0 ? stage4_imag_r[i] + CONST1 : stage4_imag_r[i];
+            stage4_real_w[i] = stage4_real_r[i] < 0 ? stage4_real_r[i] + CONST1 : stage4_real_r[i];
+            stage4_imag_w[i] = stage4_imag_r[i] < 0 ? stage4_imag_r[i] + CONST1 : stage4_imag_r[i];
           end
         end
 
