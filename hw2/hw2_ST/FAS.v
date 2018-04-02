@@ -450,7 +450,7 @@ module FFT (clk, rst, stp_valid,
   integer i, j;
 
   /* ============================================ */
-  assign fft_valid = (fft_cnt_w > 6);
+  assign fft_valid = (fft_cnt_w > 4);
   assign fft_d00 = {stage4_real_w[ 0][115], stage4_real_w[ 0][62:56], stage4_real_w[ 0][55:48], 
                     stage4_imag_w[ 0][115], stage4_imag_w[ 0][62:56], stage4_imag_w[ 0][55:48]};
   assign fft_d08 = {stage4_real_w[ 1][115], stage4_real_w[ 1][62:56], stage4_real_w[ 1][55:48], 
