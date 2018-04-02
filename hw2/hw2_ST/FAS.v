@@ -453,7 +453,7 @@ module FFT (clk, rst, stp_valid,
   integer i, j;
 
   /* ============================================ */
-  assign fft_valid = (fft_cnt_w > 5);
+  assign fft_valid = (fft_cnt_w > 4);
   assign fft_d00 = { truncate_real_w[ 0], truncate_imag_w[ 0] };
   assign fft_d08 = { truncate_real_w[ 1], truncate_imag_w[ 1] };
   assign fft_d04 = { truncate_real_w[ 2], truncate_imag_w[ 2] };
@@ -558,7 +558,7 @@ module FFT (clk, rst, stp_valid,
     end
 
     if (stp_valid || fft_cnt_r > 0) begin
-      fft_cnt_w = (fft_cnt_r > 5 ? 0 : fft_cnt_r + 1);
+      fft_cnt_w = (fft_cnt_r > 4 ? 0 : fft_cnt_r + 1);
 
       case (fft_cnt_r)
         //////////////////////// 
