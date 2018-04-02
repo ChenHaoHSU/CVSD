@@ -810,6 +810,8 @@ module ANALYST(clk, rst, fft_valid,
               freq2_w [i] = freq1_r [i * 2 + 1];
             end
           end
+          for (i = 0; i < 16; i = i + 1)
+            $display("freq[%d] = %d", i, freq1_w[i]);
         end
         //////////////////////// 
         // STAGE 3:
