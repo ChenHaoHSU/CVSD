@@ -414,6 +414,7 @@ module FFT (clk, rst, stp_valid,
                        fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15;
 
   /* ============================================ */
+  parameter signed [31:0] CONST1   = 32'h00010000;  // Constant 1
   parameter signed [31:0] W_REAL_0 = 32'h00010000;  // The real part of the reference table about COS(x)+i*SIN(x) value , 0: 001
   parameter signed [31:0] W_REAL_1 = 32'h0000EC83;  // The real part of the reference table about COS(x)+i*SIN(x) value , 1: 9.238739e-001
   parameter signed [31:0] W_REAL_2 = 32'h0000B504;  // The real part of the reference table about COS(x)+i*SIN(x) value , 2: 7.070923e-001
@@ -507,14 +508,14 @@ module FFT (clk, rst, stp_valid,
       //////////////////////// 
       // STAGE 1:
       //////////////////////// 
-      stage1_real_w[0] = x_00 + x_08;
-      stage1_real_w[1] = x_01 + x_09;
-      stage1_real_w[2] = x_02 + x_10;
-      stage1_real_w[3] = x_03 + x_11;
-      stage1_real_w[4] = x_04 + x_12;
-      stage1_real_w[5] = x_05 + x_13;
-      stage1_real_w[6] = x_06 + x_14;
-      stage1_real_w[7] = x_07 + x_15;
+      stage1_real_w[0] = (x_00 + x_08) * CONST1;
+      stage1_real_w[1] = (x_01 + x_09) * CONST1;
+      stage1_real_w[2] = (x_02 + x_10) * CONST1;
+      stage1_real_w[3] = (x_03 + x_11) * CONST1;
+      stage1_real_w[4] = (x_04 + x_12) * CONST1;
+      stage1_real_w[5] = (x_05 + x_13) * CONST1;
+      stage1_real_w[6] = (x_06 + x_14) * CONST1;
+      stage1_real_w[7] = (x_07 + x_15) * CONST1;
 
       stage1_imag_w[0] = 0; 
       stage1_imag_w[1] = 0; 
@@ -548,8 +549,8 @@ module FFT (clk, rst, stp_valid,
       ////////////////////////
       for (i = 0; i < 2; i = i + 1) begin 
         for (j = i * 8; j < i * 8 + 4; j = j + 1) begin 
-          stage2_real_w[j] = stage1_real_r[j] + stage1_real_r[j + 4];
-          stage2_imag_w[j] = stage1_imag_r[j] + stage1_imag_r[j + 4];
+          stage2_real_w[j] = (stage1_real_r[j] + stage1_real_r[j + 4]) * CONST1;
+          stage2_imag_w[j] = (stage1_imag_r[j] + stage1_imag_r[j + 4]) * CONST1;
           stage2_real_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_REAL_r[(j - i * 8) * 2])
                                + ((stage1_imag_r[j + 4] - stage1_imag_r[j]) * W_IMAG_r[(j - i * 8) * 2]);
           stage2_imag_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_IMAG_r[(j - i * 8) * 2])
@@ -562,8 +563,8 @@ module FFT (clk, rst, stp_valid,
       //////////////////////// 
       for (i = 0; i < 4; i = i + 1) begin 
         for (j = i * 4; j < i * 4 + 2; j = j + 1) begin 
-          stage3_real_w[j] = stage2_real_r[j] + stage2_real_r[j + 2];
-          stage3_imag_w[j] = stage2_imag_r[j] + stage2_imag_r[j + 2];
+          stage3_real_w[j] = (stage2_real_r[j] + stage2_real_r[j + 2]) * CONST1;
+          stage3_imag_w[j] = (stage2_imag_r[j] + stage2_imag_r[j + 2]) * CONST1;
           stage3_real_w[j + 2] = ((stage2_real_r[j] - stage2_real_r[j + 2]) * W_REAL_r[(j - i * 4) * 4])
                                + ((stage2_imag_r[j + 2] - stage2_imag_r[j]) * W_IMAG_r[(j - i * 4) * 4]);
           stage3_imag_w[j + 2] = ((stage2_real_r[j] - stage2_real_r[j + 2]) * W_IMAG_r[(j - i * 4) * 4])
@@ -576,8 +577,8 @@ module FFT (clk, rst, stp_valid,
       //////////////////////// 
       for (i = 0; i < 8; i = i + 1) begin 
         for (j = i * 2; j < i * 2 + 1; j = j + 1) begin 
-          stage4_real_w[j] = stage3_real_r[j] + stage3_real_r[j + 1];
-          stage4_imag_w[j] = stage3_imag_r[j] + stage3_imag_r[j + 1];
+          stage4_real_w[j] = (stage3_real_r[j] + stage3_real_r[j + 1]) * CONST1;
+          stage4_imag_w[j] = (stage3_imag_r[j] + stage3_imag_r[j + 1]) * CONST1;
           stage4_real_w[j + 1] = ((stage3_real_r[j] - stage3_real_r[j + 1]) * W_REAL_r[0])
                                + ((stage3_imag_r[j + 1] - stage3_imag_r[j]) * W_IMAG_r[0]);
           stage4_imag_w[j + 1] = ((stage3_real_r[j] - stage3_real_r[j + 1]) * W_IMAG_r[0])
