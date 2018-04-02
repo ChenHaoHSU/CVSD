@@ -791,8 +791,8 @@ module ANALYST(clk, rst, fft_valid,
           // for (i = 0; i < 16; i = i + 1)
           //   freq1_w[i] = i;
 
-          // for (i = 0; i < 16; i = i + 1)
-          //   $display("stage[%d] = %f", i, stage1_w[i]);
+          for (i = 0; i < 16; i = i + 1)
+            $display("stage[%d] = %f", i, stage1_w[i]);
           // for (i = 0; i < 16; i = i + 1)
           //   $display("freq[%d] = %d", i, freq1_w[i]);
 
@@ -812,9 +812,9 @@ module ANALYST(clk, rst, fft_valid,
           end
 
           for (i = 0; i < 8; i = i + 1)
-            $display("stage[%d] = %f", i, stage2_w[i]);
+            $display("stage2[%d] = %f", i, stage2_w[i]);
           for (i = 0; i < 8; i = i + 1)
-            $display("freq[%d] = %d", i, freq2_w[i]);
+            $display("freq2[%d] = %d", i, freq2_w[i]);
         end
         //////////////////////// 
         // STAGE 3:
