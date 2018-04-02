@@ -772,29 +772,22 @@ module ANALYST(clk, rst, fft_valid,
           stage1_w[15] = $signed({fft_d15[31:16]}) * $signed({fft_d15[31:16]}) 
                        + $signed({fft_d15[15: 0]}) * $signed({fft_d15[15: 0]});
           
-          freq1_w[ 0] = 0;
-          freq1_w[ 1] = 1;
-          freq1_w[ 2] = 2;
-          freq1_w[ 3] = 3;
-          freq1_w[ 4] = 4;
-          freq1_w[ 5] = 5;
-          freq1_w[ 6] = 6;
-          freq1_w[ 7] = 7;
-          freq1_w[ 8] = 8;
-          freq1_w[ 9] = 9;
+          freq1_w[ 0] =  0;
+          freq1_w[ 1] =  1;
+          freq1_w[ 2] =  2;
+          freq1_w[ 3] =  3;
+          freq1_w[ 4] =  4;
+          freq1_w[ 5] =  5;
+          freq1_w[ 6] =  6;
+          freq1_w[ 7] =  7;
+          freq1_w[ 8] =  8;
+          freq1_w[ 9] =  9;
           freq1_w[10] = 10;
           freq1_w[11] = 11;
           freq1_w[12] = 12;
           freq1_w[13] = 13;
           freq1_w[14] = 14;
           freq1_w[15] = 15;
-          // for (i = 0; i < 16; i = i + 1)
-          //   freq1_w[i] = i;
-
-          // for (i = 0; i < 16; i = i + 1)
-          //   $display("stage[%d] = %f", i, stage1_w[i]);
-          // for (i = 0; i < 16; i = i + 1)
-          //   $display("freq[%d] = %d", i, freq1_w[i]);
 
         end
         //////////////////////// 
@@ -810,11 +803,6 @@ module ANALYST(clk, rst, fft_valid,
               freq2_w [i] = freq1_r [i * 2 + 1];
             end
           end
-
-          // for (i = 0; i < 8; i = i + 1)
-          //   $display("stage2[%d] = %f", i, stage2_w[i]);
-          // for (i = 0; i < 8; i = i + 1)
-          //   $display("freq2[%d] = %d", i, freq2_w[i]);
         end
         //////////////////////// 
         // STAGE 3:
@@ -856,10 +844,6 @@ module ANALYST(clk, rst, fft_valid,
             freq5_w  = freq4_r [1];
           end
         end
-
-        default: begin 
-        end
-
       endcase
     end else begin
       analyst_cnt_w = 0;
