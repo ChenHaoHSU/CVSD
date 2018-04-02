@@ -588,6 +588,16 @@ module FFT (clk, rst, stp_valid,
 
     end else begin 
       fft_cnt_w = 0;
+      for (i = 0; i < 16; i = i + 1) begin 
+        stage1_real_w[i] = 0;
+        stage2_real_w[i] = 0;
+        stage3_real_w[i] = 0;
+        stage4_real_w[i] = 0;
+        stage1_imag_w[i] = 0;
+        stage2_imag_w[i] = 0;
+        stage3_imag_w[i] = 0;
+        stage4_imag_w[i] = 0;
+      end
     end 
   end
 
