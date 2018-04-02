@@ -657,10 +657,10 @@ module FFT (clk, rst, stp_valid,
           for (i = 0; i < 16; i = i + 1) begin 
             truncate_real_w[i] = stage4_real_r[i] < 0 ? 
                                  {stage4_real_w[i][147], stage4_real_w[i][78:72], stage4_real_w[i][71:64]}:
-                                 {stage4_real_w[i][147], stage4_real_w[i][78:72], stage4_real_w[i][71:64]};
+                                 {stage4_real_w[i][147], stage4_real_w[i][78:72], stage4_real_w[i][71:64]} + 1;
             truncate_imag_w[i] = stage4_imag_r[i] < 0 ? 
                                  {stage4_imag_w[i][147], stage4_imag_w[i][78:72], stage4_imag_w[i][71:64]}:
-                                 {stage4_imag_w[i][147], stage4_imag_w[i][78:72], stage4_imag_w[i][71:64]};
+                                 {stage4_imag_w[i][147], stage4_imag_w[i][78:72], stage4_imag_w[i][71:64]} + 1;
           end
         end
 
