@@ -417,7 +417,7 @@ module FFT (clk, rst, stp_valid,
   reg [4:0] fft_cnt_r, fft_cnt_w;
 
   /* ============================================ */
-  integer i;
+  integer i, j;
 
   /* ============================================ */
   assign fft_valid = (fft_cnt_w > 4);
@@ -475,19 +475,62 @@ module FFT (clk, rst, stp_valid,
     if (stp_valid) begin
       fft_cnt_w = (fft_cnt_r > 4 ? 0 : fft_cnt_r + 1);
 
+      //////////////////////// 
       // STAGE 1:
+      //////////////////////// 
+      for (i = 0; i < 8; i = i + 1) begin 
+        stage1_real_w[i] = stage1_real_r[i] + stage1_real_r[i + 8];
+        stage1_imag_w[i] = stage1_imag_r[i] + stage1_imag_r[i + 8];
+        stage1_real_w[i + 8] = ((stage1_real_r[i] - stage1_real_r[i + 8]) * W_REAL_r[i])
+                             + ((stage1_imag_r[i + 8] - stage1_imag_r[i]) * W_IMAG_r[i]);
+        stage1_imag_w[i + 8] = ((stage1_real_r[i] - stage1_real_r[i + 8]) * W_IMAG_r[i])
+                             + ((stage1_imag_r[i + 8] - stage1_imag_r[i]) * W_REAL_r[i]);
+      end
 
-
-
+      //////////////////////// 
       // STAGE 2:
+      ////////////////////////
+      for (i = 0; i < 2; i = i + 1) begin 
+        for (j = i * 8; j < i * 8 + 4; j = j + 1) begin 
+          stage1_real_w[j] = stage1_real_r[j] + stage1_real_r[j + 4];
+          stage1_imag_w[j] = stage1_imag_r[j] + stage1_imag_r[j + 4];
+          stage1_real_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_REAL_r[j * 2])
+                               + ((stage1_imag_r[j + 4] - stage1_imag_r[j]) * W_IMAG_r[j * 2]);
+          stage1_imag_w[j + 4] = ((stage1_real_r[j] - stage1_real_r[j + 4]) * W_IMAG_r[j * 2])
+                               + ((stage1_imag_r[j + 4] - stage1_imag_r[j]) * W_REAL_r[j * 2]);
+        end
+      end
 
+      //////////////////////// 
       // STAGE 3:
+      //////////////////////// 
+      for (i = 0; i < 4; i = i + 1) begin 
+        for (j = i * 4; j < i * 4 + 2; j = j + 1) begin 
+          stage1_real_w[j] = stage1_real_r[j] + stage1_real_r[j + 2];
+          stage1_imag_w[j] = stage1_imag_r[j] + stage1_imag_r[j + 2];
+          stage1_real_w[j + 2] = ((stage1_real_r[j] - stage1_real_r[j + 2]) * W_REAL_r[j * 4])
+                               + ((stage1_imag_r[j + 2] - stage1_imag_r[j]) * W_IMAG_r[j * 4]);
+          stage1_imag_w[j + 2] = ((stage1_real_r[j] - stage1_real_r[j + 2]) * W_IMAG_r[j * 4])
+                               + ((stage1_imag_r[j + 2] - stage1_imag_r[j]) * W_REAL_r[j * 4]);
+        end
+      end
 
+      //////////////////////// 
       // STAGE 4:
+      //////////////////////// 
+      for (i = 0; i < 8; i = i + 1) begin 
+        for (j = i * 2; j < i * 2 + 1; j = j + 1) begin 
+          stage1_real_w[j] = stage1_real_r[j] + stage1_real_r[j + 1];
+          stage1_imag_w[j] = stage1_imag_r[j] + stage1_imag_r[j + 1];
+          stage1_real_w[j + 1] = ((stage1_real_r[j] - stage1_real_r[j + 1]) * W_REAL_r[j * 8])
+                               + ((stage1_imag_r[j + 1] - stage1_imag_r[j]) * W_IMAG_r[j * 8]);
+          stage1_imag_w[j + 1] = ((stage1_real_r[j] - stage1_real_r[j + 1]) * W_IMAG_r[j * 8])
+                               + ((stage1_imag_r[j + 1] - stage1_imag_r[j]) * W_REAL_r[j * 8]);
+        end
+      end
 
     end else begin 
       fft_cnt_w = 0;
-
     end 
   end
 
@@ -545,75 +588,4 @@ endmodule
 /****************************************************************
   ANALYST
 *****************************************************************/
-
-
-
-
-/*
-  reg [115:0] stage1_real_00_r, stage1_real_01_r, stage1_real_02_r, stage1_real_03_r, 
-              stage1_real_04_r, stage1_real_05_r, stage1_real_06_r, stage1_real_07_r, 
-              stage1_real_08_r, stage1_real_09_r, stage1_real_10_r, stage1_real_11_r, 
-              stage1_real_12_r, stage1_real_13_r, stage1_real_14_r, stage1_real_15_r, 
-              stage1_real_00_w, stage1_real_01_w, stage1_real_02_w, stage1_real_03_w, 
-              stage1_real_04_w, stage1_real_05_w, stage1_real_06_w, stage1_real_07_w, 
-              stage1_real_08_w, stage1_real_09_w, stage1_real_10_w, stage1_real_11_w, 
-              stage1_real_12_w, stage1_real_13_w, stage1_real_14_w, stage1_real_15_w;
-  reg [115:0] stage2_real_00_r, stage2_real_01_r, stage2_real_02_r, stage2_real_03_r, 
-              stage2_real_04_r, stage2_real_05_r, stage2_real_06_r, stage2_real_07_r, 
-              stage2_real_08_r, stage2_real_09_r, stage2_real_10_r, stage2_real_11_r, 
-              stage2_real_12_r, stage2_real_13_r, stage2_real_14_r, stage2_real_15_r, 
-              stage2_real_00_w, stage2_real_01_w, stage2_real_02_w, stage2_real_03_w, 
-              stage2_real_04_w, stage2_real_05_w, stage2_real_06_w, stage2_real_07_w, 
-              stage2_real_08_w, stage2_real_09_w, stage2_real_10_w, stage2_real_11_w, 
-              stage2_real_12_w, stage2_real_13_w, stage2_real_14_w, stage2_real_15_w;
-  reg [115:0] stage3_real_00_r, stage3_real_01_r, stage3_real_02_r, stage3_real_03_r, 
-              stage3_real_04_r, stage3_real_05_r, stage3_real_06_r, stage3_real_07_r, 
-              stage3_real_08_r, stage3_real_09_r, stage3_real_10_r, stage3_real_11_r, 
-              stage3_real_12_r, stage3_real_13_r, stage3_real_14_r, stage3_real_15_r, 
-              stage3_real_00_w, stage3_real_01_w, stage3_real_02_w, stage3_real_03_w, 
-              stage3_real_04_w, stage3_real_05_w, stage3_real_06_w, stage3_real_07_w, 
-              stage3_real_08_w, stage3_real_09_w, stage3_real_10_w, stage3_real_11_w, 
-              stage3_real_12_w, stage3_real_13_w, stage3_real_14_w, stage3_real_15_w;
-  reg [115:0] stage4_real_00_r, stage4_real_01_r, stage4_real_02_r, stage4_real_03_r, 
-              stage4_real_04_r, stage4_real_05_r, stage4_real_06_r, stage4_real_07_r, 
-              stage4_real_08_r, stage4_real_09_r, stage4_real_10_r, stage4_real_11_r, 
-              stage4_real_12_r, stage4_real_13_r, stage4_real_14_r, stage4_real_15_r, 
-              stage4_real_00_w, stage4_real_01_w, stage4_real_02_w, stage4_real_03_w, 
-              stage4_real_04_w, stage4_real_05_w, stage4_real_06_w, stage4_real_07_w, 
-              stage4_real_08_w, stage4_real_09_w, stage4_real_10_w, stage4_real_11_w, 
-              stage4_real_12_w, stage4_real_13_w, stage4_real_14_w, stage4_real_15_w;
-
-  reg [115:0] stage1_imag_00_r, stage1_imag_01_r, stage1_imag_02_r, stage1_imag_03_r, 
-              stage1_imag_04_r, stage1_imag_05_r, stage1_imag_06_r, stage1_imag_07_r, 
-              stage1_imag_08_r, stage1_imag_09_r, stage1_imag_10_r, stage1_imag_11_r, 
-              stage1_imag_12_r, stage1_imag_13_r, stage1_imag_14_r, stage1_imag_15_r, 
-              stage1_imag_00_w, stage1_imag_01_w, stage1_imag_02_w, stage1_imag_03_w, 
-              stage1_imag_04_w, stage1_imag_05_w, stage1_imag_06_w, stage1_imag_07_w, 
-              stage1_imag_08_w, stage1_imag_09_w, stage1_imag_10_w, stage1_imag_11_w, 
-              stage1_imag_12_w, stage1_imag_13_w, stage1_imag_14_w, stage1_imag_15_w;
-  reg [115:0] stage2_imag_00_r, stage2_imag_01_r, stage2_imag_02_r, stage2_imag_03_r, 
-              stage2_imag_04_r, stage2_imag_05_r, stage2_imag_06_r, stage2_imag_07_r, 
-              stage2_imag_08_r, stage2_imag_09_r, stage2_imag_10_r, stage2_imag_11_r, 
-              stage2_imag_12_r, stage2_imag_13_r, stage2_imag_14_r, stage2_imag_15_r, 
-              stage2_imag_00_w, stage2_imag_01_w, stage2_imag_02_w, stage2_imag_03_w, 
-              stage2_imag_04_w, stage2_imag_05_w, stage2_imag_06_w, stage2_imag_07_w, 
-              stage2_imag_08_w, stage2_imag_09_w, stage2_imag_10_w, stage2_imag_11_w, 
-              stage2_imag_12_w, stage2_imag_13_w, stage2_imag_14_w, stage2_imag_15_w;
-  reg [115:0] stage3_imag_00_r, stage3_imag_01_r, stage3_imag_02_r, stage3_imag_03_r, 
-              stage3_imag_04_r, stage3_imag_05_r, stage3_imag_06_r, stage3_imag_07_r, 
-              stage3_imag_08_r, stage3_imag_09_r, stage3_imag_10_r, stage3_imag_11_r, 
-              stage3_imag_12_r, stage3_imag_13_r, stage3_imag_14_r, stage3_imag_15_r, 
-              stage3_imag_00_w, stage3_imag_01_w, stage3_imag_02_w, stage3_imag_03_w, 
-              stage3_imag_04_w, stage3_imag_05_w, stage3_imag_06_w, stage3_imag_07_w, 
-              stage3_imag_08_w, stage3_imag_09_w, stage3_imag_10_w, stage3_imag_11_w, 
-              stage3_imag_12_w, stage3_imag_13_w, stage3_imag_14_w, stage3_imag_15_w;
-  reg [115:0] stage4_imag_00_r, stage4_imag_01_r, stage4_imag_02_r, stage4_imag_03_r, 
-              stage4_imag_04_r, stage4_imag_05_r, stage4_imag_06_r, stage4_imag_07_r, 
-              stage4_imag_08_r, stage4_imag_09_r, stage4_imag_10_r, stage4_imag_11_r, 
-              stage4_imag_12_r, stage4_imag_13_r, stage4_imag_14_r, stage4_imag_15_r, 
-              stage4_imag_00_w, stage4_imag_01_w, stage4_imag_02_w, stage4_imag_03_w, 
-              stage4_imag_04_w, stage4_imag_05_w, stage4_imag_06_w, stage4_imag_07_w, 
-              stage4_imag_08_w, stage4_imag_09_w, stage4_imag_10_w, stage4_imag_11_w, 
-              stage4_imag_12_w, stage4_imag_13_w, stage4_imag_14_w, stage4_imag_15_w;
-*/
 
