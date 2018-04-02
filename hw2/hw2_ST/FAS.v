@@ -68,6 +68,15 @@ module FAS (data_valid, data, clk, rst, fir_d, fir_valid, fft_valid, done, freq,
 
 endmodule
 
+
+initial begin
+$dumpfile("FAS1.vcd");
+$dumpvars;
+// $fsdbDumpfile("FAS.fsdb");
+// $fsdbDumpvars(0,testfixture1,"+mda"); //This command is for dumping 2D array
+// $fsdbDumpvars;   
+end
+
 /****************************************************************
   FIR_filter
 *****************************************************************/
