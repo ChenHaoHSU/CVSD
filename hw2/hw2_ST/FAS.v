@@ -777,6 +777,29 @@ module ANALYST(clk, rst, fft_valid,
 
   /* ============================================ */
   always@ (*) begin
+    
+    for (i = 0; i < 16; i = i + 1)
+      stage1_w[i] = stage1_r[i];
+    for (i = 0; i < 8; i = i + 1)
+      stage2_w[i] = stage2_r[i];
+    for (i = 0; i < 4; i = i + 1)
+      stage3_w[i] = stage3_r[i];
+    for (i = 0; i < 2; i = i + 1)
+      stage4_w[i] = stage4_r[i];
+    stage5_w = stage5_r;
+
+    for (i = 0; i < 16; i = i + 1)
+      freq1_w[i] <= freq1_r[i];
+    for (i = 0; i < 8; i = i + 1)
+      freq2_w[i] <= freq2_r[i];
+    for (i = 0; i < 4; i = i + 1)
+      freq3_w[i] <= freq3_r[i];
+    for (i = 0; i < 2; i = i + 1)
+      freq4_w[i] <= freq4_r[i];
+    freq5_w <= freq5_r[i];
+
+    analyst_cnt_w = analyst_cnt_r;
+
     if (fft_valid || analyst_cnt_r > 0) begin
       analyst_cnt_w = analyst_cnt_r > 6 ? 0 : analyst_cnt_r + 1;
       case (analyst_cnt_r)
@@ -817,7 +840,7 @@ module ANALYST(clk, rst, fft_valid,
           stage1_w[15] = $signed({fft_d15[31:16]}) * $signed({fft_d15[31:16]}) 
                        + $signed({fft_d15[15: 0]}) * $signed({fft_d15[15: 0]});
           for (i = 0; i < 16; i = i + 1)
-            freq1_w = i;
+            freq1_w[i] = i;
         end
         //////////////////////// 
         // STAGE 2:
@@ -919,14 +942,14 @@ module ANALYST(clk, rst, fft_valid,
       stage5_r <= stage5_w;
 
       for (i = 0; i < 16; i = i + 1)
-        freq1_r[i] <= freq1_r[i];
+        freq1_r[i] <= freq1_w[i];
       for (i = 0; i < 8; i = i + 1)
-        freq2_r[i] <= freq2_r[i];
+        freq2_r[i] <= freq2_w[i];
       for (i = 0; i < 4; i = i + 1)
-        freq3_r[i] <= freq3_r[i];
+        freq3_r[i] <= freq3_w[i];
       for (i = 0; i < 2; i = i + 1)
-        freq4_r[i] <= freq4_r[i];
-      freq5_r <= freq5_r[i];
+        freq4_r[i] <= freq4_w[i];
+      freq5_r <= freq5_w[i];
 
       analyst_cnt_r <= analyst_cnt_w;
     end
