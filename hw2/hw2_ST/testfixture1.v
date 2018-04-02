@@ -119,7 +119,7 @@ end
 reg fir_verify;
 always@(posedge clk) begin
 	if (fir_valid) begin	
-		fir_verify = ((fir_mem[j] == fir_d) || (fir_mem[j] == fir_d) || (fir_mem[j] == fir_d));
+		// fir_verify = ((fir_mem[j] == fir_d+1) || (fir_mem[j] == fir_d) || (fir_mem[j] == fir_d-1));
 		if ( (!fir_verify) || (fir_d === 16'bx) || (fir_d === 16'bz)) begin
 			$display("ERROR at FIR cycle %3d: The real response output %4h != expectd %4h " ,j, fir_d, fir_mem[j]);
 			$display("-----------------------------------------------------");
@@ -183,8 +183,12 @@ always@(posedge clk) begin
 			fft_cmp_i1 = fft_cmp_i-1; fft_cmp_i2 = fft_cmp_i; fft_cmp_i3 = fft_cmp_i+1;
 			fft_cmp_i4 = fft_cmp_i-2; fft_cmp_i5 = fft_cmp_i+2; fft_cmp_i6 = fft_cmp_i-3; fft_cmp_i7 = fft_cmp_i+3;			
 
-			fftr_verify = ((fftr_ver == fft_cmp_r2) || (fftr_ver == (fft_cmp_r3)) || (fftr_ver == (fft_cmp_r1)) || (fftr_ver == (fft_cmp_r4)) || (fftr_ver == (fft_cmp_r5)) || (fftr_ver == (fft_cmp_r6)) || (fftr_ver == (fft_cmp_r7)));
-			ffti_verify = ((ffti_ver == fft_cmp_i2) || (ffti_ver == (fft_cmp_i3)) || (ffti_ver == (fft_cmp_i1)) || (ffti_ver == (fft_cmp_i4)) || (ffti_ver == (fft_cmp_i5)) || (ffti_ver == (fft_cmp_i6)) || (ffti_ver == (fft_cmp_i7)));
+			// fftr_verify = ((fftr_ver == fft_cmp_r2) || (fftr_ver == (fft_cmp_r3)) || (fftr_ver == (fft_cmp_r1)) || (fftr_ver == (fft_cmp_r4)) || (fftr_ver == (fft_cmp_r5)) || (fftr_ver == (fft_cmp_r6)) || (fftr_ver == (fft_cmp_r7)));
+			// ffti_verify = ((ffti_ver == fft_cmp_i2) || (ffti_ver == (fft_cmp_i3)) || (ffti_ver == (fft_cmp_i1)) || (ffti_ver == (fft_cmp_i4)) || (ffti_ver == (fft_cmp_i5)) || (ffti_ver == (fft_cmp_i6)) || (ffti_ver == (fft_cmp_i7)));
+			
+			fftr_verify = fftr_ver == fft_cmp_r2;
+			ffti_verify = ffti_ver == fft_cmp_i2;
+			
 			if ( (!fftr_verify) || (!ffti_verify)|| (fft_cmp === 32'bx) || (fft_cmp === 32'bz)) begin
 				$display("ERROR at FFT  ppoint number =%2d: The real response output %8h != expectd %8h " ,k, fft_cmp, {fftr_mem[k], ffti_mem[k]});
 				$display("-----------------------------------------------------");
