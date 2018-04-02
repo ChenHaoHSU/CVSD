@@ -796,7 +796,7 @@ module ANALYST(clk, rst, fft_valid,
       freq3_w[i] <= freq3_r[i];
     for (i = 0; i < 2; i = i + 1)
       freq4_w[i] <= freq4_r[i];
-    freq5_w <= freq5_r[i];
+    freq5_w <= freq5_r;
 
     analyst_cnt_w = analyst_cnt_r;
 
