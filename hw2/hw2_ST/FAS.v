@@ -900,8 +900,3 @@ module ANALYST(clk, rst, fft_valid,
   end 
 
 endmodule
-
-
-
-
-
