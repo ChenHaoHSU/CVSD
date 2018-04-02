@@ -747,7 +747,7 @@ module ANALYST(clk, rst, fft_valid,
   input clk, rst;
   input fft_valid;
   input [31:0] fft_d00, fft_d01, fft_d02, fft_d03, fft_d04, fft_d05, fft_d06, fft_d07, 
-               fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15);
+               fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15;
   output done;
   output [3:0] freq;
 
