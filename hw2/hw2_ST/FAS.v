@@ -376,8 +376,6 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
       end
     end else begin 
       stp_cnt_w = 0;
-      for (i = 0; i < 16; i = i + 1)
-        x_w[i] = 0;
     end
   end
 
