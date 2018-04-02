@@ -244,40 +244,40 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
   /* ============================================ */
   always@ (posedge clk or posedge rst) begin 
     if (rst) begin
-      x_00_r    <= 15'b0;
-      x_01_r    <= 15'b0;
-      x_02_r    <= 15'b0;
-      x_03_r    <= 15'b0;
-      x_04_r    <= 15'b0;
-      x_05_r    <= 15'b0;
-      x_06_r    <= 15'b0;
-      x_07_r    <= 15'b0;
-      x_08_r    <= 15'b0;
-      x_09_r    <= 15'b0;
-      x_10_r    <= 15'b0;
-      x_11_r    <= 15'b0;
-      x_12_r    <= 15'b0;
-      x_13_r    <= 15'b0;
-      x_14_r    <= 15'b0;
-      x_15_r    <= 15'b0;
-      x_16_r    <= 15'b0;
-      x_17_r    <= 15'b0;
-      x_18_r    <= 15'b0;
-      x_19_r    <= 15'b0;
-      x_20_r    <= 15'b0;
-      x_21_r    <= 15'b0;
-      x_22_r    <= 15'b0;
-      x_23_r    <= 15'b0;
-      x_24_r    <= 15'b0;
-      x_25_r    <= 15'b0;
-      x_26_r    <= 15'b0;
-      x_27_r    <= 15'b0;
-      x_28_r    <= 15'b0;
-      x_29_r    <= 15'b0;
-      x_30_r    <= 15'b0;
-      x_31_r    <= 15'b0;
-      sum_r     <= 67'b0;
-      fir_cnt_r <= 6'b0;
+      x_00_r    <= 0;
+      x_01_r    <= 0;
+      x_02_r    <= 0;
+      x_03_r    <= 0;
+      x_04_r    <= 0;
+      x_05_r    <= 0;
+      x_06_r    <= 0;
+      x_07_r    <= 0;
+      x_08_r    <= 0;
+      x_09_r    <= 0;
+      x_10_r    <= 0;
+      x_11_r    <= 0;
+      x_12_r    <= 0;
+      x_13_r    <= 0;
+      x_14_r    <= 0;
+      x_15_r    <= 0;
+      x_16_r    <= 0;
+      x_17_r    <= 0;
+      x_18_r    <= 0;
+      x_19_r    <= 0;
+      x_20_r    <= 0;
+      x_21_r    <= 0;
+      x_22_r    <= 0;
+      x_23_r    <= 0;
+      x_24_r    <= 0;
+      x_25_r    <= 0;
+      x_26_r    <= 0;
+      x_27_r    <= 0;
+      x_28_r    <= 0;
+      x_29_r    <= 0;
+      x_30_r    <= 0;
+      x_31_r    <= 0;
+      sum_r     <= 0;
+      fir_cnt_r <= 0;
     end else begin
       x_00_r    <= x_00_w;   
       x_01_r    <= x_01_w;   
@@ -385,8 +385,8 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
   always@ (posedge clk or posedge rst) begin
     if (rst) begin 
       for (i = 0; i < 16; i = i + 1)
-        x_r[i] <= 15'b0;
-      stp_cnt_r <= 6'b0;
+        x_r[i] <= 0;
+      stp_cnt_r <= 0;
     end else begin 
       for (i = 0; i < 16; i = i + 1)
         x_r[i] <= x_w[i];
@@ -503,7 +503,7 @@ module FFT (clk, rst, stp_valid,
       stage4_imag_w[i] = stage4_imag_r[i];
     end
 
-    if (stp_valid) begin
+    if (stp_valid || fft_cnt_r > 0) begin
       fft_cnt_w = (fft_cnt_r > 4 ? 0 : fft_cnt_r + 1);
 
       //////////////////////// 
