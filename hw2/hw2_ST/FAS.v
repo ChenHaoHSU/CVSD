@@ -54,17 +54,17 @@ module FAS (data_valid, data, clk, rst, fir_d, fir_valid, fft_valid, done, freq,
     .fft_d12(fft_d12), .fft_d13(fft_d13), .fft_d14(fft_d14), .fft_d15(fft_d15)
   );
 
-  always@ (*) begin
-
-  end
-
-  always@ (posedge clk or posedge rst) begin 
-    if (rst) begin
-
-    end else begin
-
-    end
-  end
+  ANALYST fsa_analyst(
+    .clk(clk), 
+    .rst(rst),
+    .fft_valid(fft_valid), 
+    .fft_d00(fft_d0), .fft_d01(fft_d1), .fft_d02(fft_d2), .fft_d03(fft_d3), 
+    .fft_d04(fft_d4), .fft_d05(fft_d5), .fft_d06(fft_d6), .fft_d07(fft_d7),
+    .fft_d08(fft_d8), .fft_d09(fft_d9), .fft_d10(fft_d10), .fft_d11(fft_d11),
+    .fft_d12(fft_d12), .fft_d13(fft_d13), .fft_d14(fft_d14), .fft_d15(fft_d15),
+    .done(done),
+    .freq(freq)
+  );
 
 endmodule
 
@@ -740,4 +740,201 @@ endmodule
 /****************************************************************
   ANALYST
 *****************************************************************/
+module ANALYST(clk, rst, fft_valid, 
+  fft_d00, fft_d01, fft_d02, fft_d03, fft_d04, fft_d05, fft_d06, fft_d07, 
+  fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15,
+  done, freq);
+  input clk, rst;
+  input fft_valid;
+  input [31:0] fft_d00, fft_d01, fft_d02, fft_d03, fft_d04, fft_d05, fft_d06, fft_d07, 
+               fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15);
+  output done;
+  output [3:0] freq;
+
+  /* ============================================ */
+  reg [3:0] analyst_cnt_r, analyst_cnt_w;
+
+  // reg signed [15:0] stage0_real_r[15:0], stage1_real_w[15:0];
+  // reg signed [15:0] stage0_imag_r[15:0], stage1_imag_w[15:0];
+  reg [32:0] stage1_r[15:0], stage1_w[15:0];
+  reg [32:0] stage2_r[ 7:0], stage2_w[ 7:0];
+  reg [32:0] stage3_r[ 3:0], stage3_w[ 3:0];
+  reg [32:0] stage4_r[ 1:0], stage4_w[ 1:0];
+  reg [32:0] stage5_r, stage5_w;
+  
+  reg [32:0] freq1_r[15:0], freq1_w[15:0];
+  reg [32:0] freq2_r[ 7:0], freq2_w[ 7:0];
+  reg [32:0] freq3_r[ 3:0], freq3_w[ 3:0];
+  reg [32:0] freq4_r[ 1:0], freq4_w[ 1:0];
+  reg [32:0] freq5_r, freq5_w;
+
+  /* ============================================ */
+  integer i;
+
+  /* ============================================ */
+  assign done = (analyst_cnt_w > 6);
+  assign freq = freq5_w;
+
+  /* ============================================ */
+  always@ (*) begin
+    if (fft_valid || analyst_cnt_r > 0) begin
+      analyst_cnt_w = analyst_cnt_r > 6 ? 0 : analyst_cnt_r + 1;
+      case (analyst_cnt_r)
+        //////////////////////// 
+        // STAGE 1:
+        //////////////////////// 
+        4'd0: begin
+          stage1_w[ 0] = $signed({fft_d00[31:16]}) * $signed({fft_d00[31:16]}) 
+                       + $signed({fft_d00[15: 0]}) * $signed({fft_d00[15: 0]});
+          stage1_w[ 1] = $signed({fft_d01[31:16]}) * $signed({fft_d01[31:16]}) 
+                       + $signed({fft_d01[15: 0]}) * $signed({fft_d01[15: 0]});
+          stage1_w[ 2] = $signed({fft_d02[31:16]}) * $signed({fft_d02[31:16]}) 
+                       + $signed({fft_d02[15: 0]}) * $signed({fft_d02[15: 0]});
+          stage1_w[ 3] = $signed({fft_d03[31:16]}) * $signed({fft_d03[31:16]}) 
+                       + $signed({fft_d03[15: 0]}) * $signed({fft_d03[15: 0]});
+          stage1_w[ 4] = $signed({fft_d04[31:16]}) * $signed({fft_d04[31:16]}) 
+                       + $signed({fft_d04[15: 0]}) * $signed({fft_d04[15: 0]});
+          stage1_w[ 5] = $signed({fft_d05[31:16]}) * $signed({fft_d05[31:16]}) 
+                       + $signed({fft_d05[15: 0]}) * $signed({fft_d05[15: 0]});
+          stage1_w[ 6] = $signed({fft_d06[31:16]}) * $signed({fft_d06[31:16]}) 
+                       + $signed({fft_d06[15: 0]}) * $signed({fft_d06[15: 0]});
+          stage1_w[ 7] = $signed({fft_d07[31:16]}) * $signed({fft_d07[31:16]}) 
+                       + $signed({fft_d07[15: 0]}) * $signed({fft_d07[15: 0]});
+          stage1_w[ 8] = $signed({fft_d08[31:16]}) * $signed({fft_d08[31:16]}) 
+                       + $signed({fft_d08[15: 0]}) * $signed({fft_d08[15: 0]});
+          stage1_w[ 9] = $signed({fft_d09[31:16]}) * $signed({fft_d09[31:16]}) 
+                       + $signed({fft_d09[15: 0]}) * $signed({fft_d09[15: 0]});
+          stage1_w[10] = $signed({fft_d10[31:16]}) * $signed({fft_d10[31:16]}) 
+                       + $signed({fft_d10[15: 0]}) * $signed({fft_d10[15: 0]});
+          stage1_w[11] = $signed({fft_d11[31:16]}) * $signed({fft_d11[31:16]}) 
+                       + $signed({fft_d11[15: 0]}) * $signed({fft_d11[15: 0]});
+          stage1_w[12] = $signed({fft_d12[31:16]}) * $signed({fft_d12[31:16]}) 
+                       + $signed({fft_d12[15: 0]}) * $signed({fft_d12[15: 0]});
+          stage1_w[13] = $signed({fft_d13[31:16]}) * $signed({fft_d13[31:16]}) 
+                       + $signed({fft_d13[15: 0]}) * $signed({fft_d13[15: 0]});
+          stage1_w[14] = $signed({fft_d14[31:16]}) * $signed({fft_d14[31:16]}) 
+                       + $signed({fft_d14[15: 0]}) * $signed({fft_d14[15: 0]});
+          stage1_w[15] = $signed({fft_d15[31:16]}) * $signed({fft_d15[31:16]}) 
+                       + $signed({fft_d15[15: 0]}) * $signed({fft_d15[15: 0]});
+          for (i = 0; i < 16; i = i + 1)
+            freq1_w = i;
+        end
+        //////////////////////// 
+        // STAGE 2:
+        //////////////////////// 
+        4'd1: begin
+          for (i = 0; i < 8; i = i + 1) begin
+            if (stage1_r[i * 2] > stage1_r[i * 2 + 1]) begin
+              stage2_w[i] = stage1_r[i * 2];
+              freq2_w [i] = freq1_r [i * 2];
+            end else begin
+              stage2_w[i] = stage1_r[i * 2 + 1];
+              freq2_w [i] = freq1_r [i * 2 + 1];
+            end
+          end
+        end
+        //////////////////////// 
+        // STAGE 3:
+        //////////////////////// 
+        4'd2: begin
+          for (i = 0; i < 4; i = i + 1) begin
+            if (stage2_r[i * 2] > stage2_r[i * 2 + 1]) begin
+              stage3_w[i] = stage2_r[i * 2];
+              freq3_w [i] = freq2_r [i * 2];
+            end else begin
+              stage3_w[i] = stage2_r[i * 2 + 1];
+              freq3_w [i] = freq2_r [i * 2 + 1];
+            end
+          end
+        end
+        //////////////////////// 
+        // STAGE 4:
+        //////////////////////// 
+        4'd3: begin
+          for (i = 0; i < 2; i = i + 1) begin
+            if (stage3_r[i * 2] > stage3_r[i * 2 + 1]) begin
+              stage4_w[i] = stage3_r[i * 2];
+              freq4_w [i] = freq3_r [i * 2];
+            end else begin
+              stage4_w[i] = stage3_r[i * 2 + 1];
+              freq4_w [i] = freq3_r [i * 2 + 1];
+            end
+          end
+        end
+        //////////////////////// 
+        // STAGE 5:
+        //////////////////////// 
+        4'd4: begin
+          if (stage4_r[0] > stage4_r[1]) begin
+            stage5_w = stage3_r[0];
+            freq5_w  = freq3_r [0];
+          end else begin
+            stage5_w = stage3_r[1];
+            freq5_w  = freq3_r [1];
+          end
+        end
+
+        default: begin 
+        end
+
+      endcase
+    end else begin
+      analyst_cnt_w = 0;
+    end
+  end
+
+  /* ============================================ */
+  always@ (posedge clk or posedge rst) begin
+    if (rst) begin 
+      for (i = 0; i < 16; i = i + 1)
+        stage1_r[i] <= 0;
+      for (i = 0; i < 8; i = i + 1)
+        stage2_r[i] <= 0;
+      for (i = 0; i < 4; i = i + 1)
+        stage3_r[i] <= 0;
+      for (i = 0; i < 2; i = i + 1)
+        stage4_r[i] <= 0;
+      stage5_r <= 0;
+
+      for (i = 0; i < 16; i = i + 1)
+        freq1_r[i] <= 0;
+      for (i = 0; i < 8; i = i + 1)
+        freq2_r[i] <= 0;
+      for (i = 0; i < 4; i = i + 1)
+        freq3_r[i] <= 0;
+      for (i = 0; i < 2; i = i + 1)
+        freq4_r[i] <= 0;
+      freq5_r <= 0;
+
+      analyst_cnt_r <= 0;
+    end else begin
+      for (i = 0; i < 16; i = i + 1)
+        stage1_r[i] <= stage1_w[i];
+      for (i = 0; i < 8; i = i + 1)
+        stage2_r[i] <= stage2_w[i];
+      for (i = 0; i < 4; i = i + 1)
+        stage3_r[i] <= stage3_w[i];
+      for (i = 0; i < 2; i = i + 1)
+        stage4_r[i] <= stage4_w[i];
+      stage5_r <= stage5_w;
+
+      for (i = 0; i < 16; i = i + 1)
+        freq1_r[i] <= freq1_r[i];
+      for (i = 0; i < 8; i = i + 1)
+        freq2_r[i] <= freq2_r[i];
+      for (i = 0; i < 4; i = i + 1)
+        freq3_r[i] <= freq3_r[i];
+      for (i = 0; i < 2; i = i + 1)
+        freq4_r[i] <= freq4_r[i];
+      freq5_r <= freq5_r[i];
+
+      analyst_cnt_r <= analyst_cnt_w;
+    end
+  end 
+
+endmodule
+
+
+
+
 
