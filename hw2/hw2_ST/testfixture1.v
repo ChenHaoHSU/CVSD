@@ -10,21 +10,6 @@
 
 module testfixture1;
 
-reg signed [3:0] aa, bb;
-reg signed [4:0] cc;
-reg signed [7:0] zz;
-initial begin
-  aa = 7;
-  bb = 7;
-  cc = aa + bb;
-  zz = aa * bb;
-  $display("aa = %d, bb = %d, aa + bb = %d", aa, bb, cc);
-  $display("aa = %d, bb = %d, aa * bb = %d", aa, bb, zz);
-  $display("aa = %b, bb = %b, aa + bb = %b", aa, bb, cc);
-  $display("aa = %b, bb = %b, aa * bb = %b", aa, bb, zz);
-end
-
-
 reg   clk ;
 reg   reset ;
 reg [15:0] data; // 4 integer + 4 fraction
@@ -71,11 +56,11 @@ initial $sdf_annotate(`SDFFILE, DUT);
 
 
 initial begin
-$dumpfile("FAS.vcd");
-$dumpvars;
-// $fsdbDumpfile("FAS.fsdb");
-// $fsdbDumpvars(0,testfixture1,"+mda"); //This command is for dumping 2D array
-// $fsdbDumpvars;   
+//$dumpfile("FAS.vcd");
+//$dumpvars;
+$fsdbDumpfile("FAS.fsdb");
+$fsdbDumpvars(0,testfixture1,"+mda"); //This command is for dumping 2D array
+$fsdbDumpvars;   
 end
 
 initial begin
@@ -119,7 +104,7 @@ end
 reg fir_verify;
 always@(posedge clk) begin
 	if (fir_valid) begin	
-		// fir_verify = ((fir_mem[j] == fir_d+1) || (fir_mem[j] == fir_d) || (fir_mem[j] == fir_d-1));
+		fir_verify = ((fir_mem[j] == fir_d+1) || (fir_mem[j] == fir_d) || (fir_mem[j] == fir_d-1));
 		if ( (!fir_verify) || (fir_d === 16'bx) || (fir_d === 16'bz)) begin
 			$display("ERROR at FIR cycle %3d: The real response output %4h != expectd %4h " ,j, fir_d, fir_mem[j]);
 			$display("-----------------------------------------------------");
