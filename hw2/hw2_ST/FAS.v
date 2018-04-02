@@ -706,7 +706,7 @@ module ANALYST(clk, rst, fft_valid,
   integer i;
 
   /* ============================================ */
-  assign done = (analyst_cnt_r > 5);
+  assign done = (analyst_cnt_r > 4);
   assign freq = freq5_r;
 
   /* ============================================ */
@@ -735,7 +735,7 @@ module ANALYST(clk, rst, fft_valid,
     analyst_cnt_w = analyst_cnt_r;
 
     if (fft_valid || analyst_cnt_r > 0) begin
-      analyst_cnt_w = analyst_cnt_r > 5 ? 0 : analyst_cnt_r + 1;
+      analyst_cnt_w = analyst_cnt_r > 4 ? 0 : analyst_cnt_r + 1;
       case (analyst_cnt_r)
         //////////////////////// 
         // STAGE 1:
