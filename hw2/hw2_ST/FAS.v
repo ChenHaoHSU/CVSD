@@ -450,7 +450,7 @@ module FFT (clk, rst, stp_valid,
   integer i, j;
 
   /* ============================================ */
-  assign fft_valid = (fft_cnt_w > 4);
+  assign fft_valid = (fft_cnt_w > 5);
   assign fft_d00 = { stage4_real_w[ 0][147], stage4_real_w[ 0][78:72], stage4_real_w[ 0][71:64], 
                      stage4_imag_w[ 0][147], stage4_imag_w[ 0][78:72], stage4_imag_w[ 0][71:64]};
   assign fft_d08 = { stage4_real_w[ 1][147], stage4_real_w[ 1][78:72], stage4_real_w[ 1][71:64], 
@@ -536,7 +536,7 @@ module FFT (clk, rst, stp_valid,
     end
 
     if (stp_valid || fft_cnt_r > 0) begin
-      fft_cnt_w = (fft_cnt_r > 4 ? 0 : fft_cnt_r + 1);
+      fft_cnt_w = (fft_cnt_r > 5 ? 0 : fft_cnt_r + 1);
 
       case (fft_cnt_r)
         //////////////////////// 
@@ -627,6 +627,23 @@ module FFT (clk, rst, stp_valid,
             end
           end
         end
+
+        //////////////////////// 
+        // Truncate
+        //////////////////////// 
+        5'd4: begin
+          for (i = 0; i < 16; i = i + 1) begin 
+            stage1_real_w[i] = stage1_real_r[i] >= 0 ? stage1_real_r[i] + CONST1 : stage1_real_r[i];
+            stage2_real_w[i] = stage2_real_r[i] >= 0 ? stage2_real_r[i] + CONST1 : stage2_real_r[i];
+            stage3_real_w[i] = stage3_real_r[i] >= 0 ? stage3_real_r[i] + CONST1 : stage3_real_r[i];
+            stage4_real_w[i] = stage4_real_r[i] >= 0 ? stage4_real_r[i] + CONST1 : stage4_real_r[i];
+            stage1_imag_w[i] = stage1_imag_r[i] >= 0 ? stage1_imag_r[i] + CONST1 : stage1_imag_r[i];
+            stage2_imag_w[i] = stage2_imag_r[i] >= 0 ? stage2_imag_r[i] + CONST1 : stage2_imag_r[i];
+            stage3_imag_w[i] = stage3_imag_r[i] >= 0 ? stage3_imag_r[i] + CONST1 : stage3_imag_r[i];
+            stage4_imag_w[i] = stage4_imag_r[i] >= 0 ? stage4_imag_r[i] + CONST1 : stage4_imag_r[i];
+          end
+        end
+
         default: begin
         end
       endcase
