@@ -839,6 +839,10 @@ module ANALYST(clk, rst, fft_valid,
                        + $signed({fft_d14[15: 0]}) * $signed({fft_d14[15: 0]});
           stage1_w[15] = $signed({fft_d15[31:16]}) * $signed({fft_d15[31:16]}) 
                        + $signed({fft_d15[15: 0]}) * $signed({fft_d15[15: 0]});
+          
+          for (i = 0; i < 16; i = i + 1)
+            $display("stage[%d] = %f", i, stage1_w[i]);
+            
           for (i = 0; i < 16; i = i + 1)
             freq1_w[i] = i;
         end
