@@ -774,8 +774,24 @@ module ANALYST(clk, rst, fft_valid,
           stage1_w[15] = $signed({fft_d15[31:16]}) * $signed({fft_d15[31:16]}) 
                        + $signed({fft_d15[15: 0]}) * $signed({fft_d15[15: 0]});
           
-          for (i = 0; i < 16; i = i + 1)
-            freq1_w[i] = i;
+          freq1_w[ 0] = 0;
+          freq1_w[ 1] = 1;
+          freq1_w[ 2] = 2;
+          freq1_w[ 3] = 3;
+          freq1_w[ 4] = 4;
+          freq1_w[ 5] = 5;
+          freq1_w[ 6] = 6;
+          freq1_w[ 7] = 7;
+          freq1_w[ 8] = 8;
+          freq1_w[ 9] = 9;
+          freq1_w[10] = 10;
+          freq1_w[11] = 11;
+          freq1_w[12] = 12;
+          freq1_w[13] = 13;
+          freq1_w[14] = 14;
+          freq1_w[15] = 15;
+          // for (i = 0; i < 16; i = i + 1)
+          //   freq1_w[i] = i;
 
           // for (i = 0; i < 16; i = i + 1)
           //   $display("stage[%d] = %f", i, stage1_w[i]);
