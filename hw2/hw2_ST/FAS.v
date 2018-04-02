@@ -688,19 +688,17 @@ module ANALYST(clk, rst, fft_valid,
   /* ============================================ */
   reg [3:0] analyst_cnt_r, analyst_cnt_w;
 
-  // reg signed [15:0] stage0_real_r[15:0], stage1_real_w[15:0];
-  // reg signed [15:0] stage0_imag_r[15:0], stage1_imag_w[15:0];
   reg [32:0] stage1_r[15:0], stage1_w[15:0];
   reg [32:0] stage2_r[ 7:0], stage2_w[ 7:0];
   reg [32:0] stage3_r[ 3:0], stage3_w[ 3:0];
   reg [32:0] stage4_r[ 1:0], stage4_w[ 1:0];
   reg [32:0] stage5_r, stage5_w;
   
-  reg [32:0] freq1_r[15:0], freq1_w[15:0];
-  reg [32:0] freq2_r[ 7:0], freq2_w[ 7:0];
-  reg [32:0] freq3_r[ 3:0], freq3_w[ 3:0];
-  reg [32:0] freq4_r[ 1:0], freq4_w[ 1:0];
-  reg [32:0] freq5_r, freq5_w;
+  reg [3:0] freq1_r[15:0], freq1_w[15:0];
+  reg [3:0] freq2_r[ 7:0], freq2_w[ 7:0];
+  reg [3:0] freq3_r[ 3:0], freq3_w[ 3:0];
+  reg [3:0] freq4_r[ 1:0], freq4_w[ 1:0];
+  reg [3:0] freq5_r, freq5_w;
 
   /* ============================================ */
   integer i;
@@ -793,10 +791,10 @@ module ANALYST(clk, rst, fft_valid,
           // for (i = 0; i < 16; i = i + 1)
           //   freq1_w[i] = i;
 
-          // for (i = 0; i < 16; i = i + 1)
-          //   $display("stage[%d] = %f", i, stage1_w[i]);
-          // for (i = 0; i < 16; i = i + 1)
-          //   $display("freq[%d] = %d", i, freq1_w[i]);
+          for (i = 0; i < 16; i = i + 1)
+            $display("stage[%d] = %f", i, stage1_w[i]);
+          for (i = 0; i < 16; i = i + 1)
+            $display("freq[%d] = %d", i, freq1_w[i]);
 
         end
         //////////////////////// 
