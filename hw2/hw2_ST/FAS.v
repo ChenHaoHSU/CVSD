@@ -414,7 +414,8 @@ module FFT (clk, rst, stp_valid,
                        fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15;
 
   /* ============================================ */
-  parameter signed [31:0] CONST1   = 32'h00010000;  // Constant 1
+  parameter signed [31:0]  CONST1     = 32'h00010000;   // Constant 1
+  parameter signed [147:0] CONST1_148 = {83'b0, 1'b1, 64'b0};  // Constant 1
   parameter signed [31:0] W_REAL_0 = 32'h00010000;  // The real part of the reference table about COS(x)+i*SIN(x) value , 0: 001
   parameter signed [31:0] W_REAL_1 = 32'h0000EC83;  // The real part of the reference table about COS(x)+i*SIN(x) value , 1: 9.238739e-001
   parameter signed [31:0] W_REAL_2 = 32'h0000B504;  // The real part of the reference table about COS(x)+i*SIN(x) value , 2: 7.070923e-001
@@ -633,8 +634,8 @@ module FFT (clk, rst, stp_valid,
         //////////////////////// 
         5'd4: begin
           for (i = 0; i < 16; i = i + 1) begin 
-            stage4_real_w[i] = stage4_real_r[i] < 0 ? stage4_real_r[i] + CONST1 : stage4_real_r[i];
-            stage4_imag_w[i] = stage4_imag_r[i] < 0 ? stage4_imag_r[i] + CONST1 : stage4_imag_r[i];
+            stage4_real_w[i] = stage4_real_r[i] < 0 ? stage4_real_r[i] + CONST1_148 : stage4_real_r[i];
+            stage4_imag_w[i] = stage4_imag_r[i] < 0 ? stage4_imag_r[i] + CONST1_148 : stage4_imag_r[i];
           end
         end
 
