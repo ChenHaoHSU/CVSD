@@ -451,38 +451,38 @@ module FFT (clk, rst, stp_valid,
 
   /* ============================================ */
   assign fft_valid = (fft_cnt_w > 4);
-  assign fft_d00 = { ({stage4_real_w[ 0][147], stage4_real_w[ 0][78:72], stage4_real_w[ 0][71:64]} + stage_real_w[ 0][147]), 
-                     ({stage4_imag_w[ 0][147], stage4_imag_w[ 0][78:72], stage4_imag_w[ 0][71:64]} + stage_imag_w[ 0][147])};
-  assign fft_d08 = { ({stage4_real_w[ 1][147], stage4_real_w[ 1][78:72], stage4_real_w[ 1][71:64]} + stage_real_w[ 1][147]), 
-                     ({stage4_imag_w[ 1][147], stage4_imag_w[ 1][78:72], stage4_imag_w[ 1][71:64]} + stage_imag_w[ 1][147])};
-  assign fft_d04 = { ({stage4_real_w[ 2][147], stage4_real_w[ 2][78:72], stage4_real_w[ 2][71:64]} + stage_real_w[ 2][147]), 
-                     ({stage4_imag_w[ 2][147], stage4_imag_w[ 2][78:72], stage4_imag_w[ 2][71:64]} + stage_imag_w[ 2][147])};
-  assign fft_d12 = { ({stage4_real_w[ 3][147], stage4_real_w[ 3][78:72], stage4_real_w[ 3][71:64]} + stage_real_w[ 3][147]), 
-                     ({stage4_imag_w[ 3][147], stage4_imag_w[ 3][78:72], stage4_imag_w[ 3][71:64]} + stage_imag_w[ 3][147])};
-  assign fft_d02 = { ({stage4_real_w[ 4][147], stage4_real_w[ 4][78:72], stage4_real_w[ 4][71:64]} + stage_real_w[ 4][147]), 
-                     ({stage4_imag_w[ 4][147], stage4_imag_w[ 4][78:72], stage4_imag_w[ 4][71:64]} + stage_imag_w[ 4][147])};
-  assign fft_d10 = { ({stage4_real_w[ 5][147], stage4_real_w[ 5][78:72], stage4_real_w[ 5][71:64]} + stage_real_w[ 5][147]), 
-                     ({stage4_imag_w[ 5][147], stage4_imag_w[ 5][78:72], stage4_imag_w[ 5][71:64]} + stage_imag_w[ 5][147])};
-  assign fft_d06 = { ({stage4_real_w[ 6][147], stage4_real_w[ 6][78:72], stage4_real_w[ 6][71:64]} + stage_real_w[ 6][147]), 
-                     ({stage4_imag_w[ 6][147], stage4_imag_w[ 6][78:72], stage4_imag_w[ 6][71:64]} + stage_imag_w[ 6][147])};
-  assign fft_d14 = { ({stage4_real_w[ 7][147], stage4_real_w[ 7][78:72], stage4_real_w[ 7][71:64]} + stage_real_w[ 7][147]), 
-                     ({stage4_imag_w[ 7][147], stage4_imag_w[ 7][78:72], stage4_imag_w[ 7][71:64]} + stage_imag_w[ 7][147])};
-  assign fft_d01 = { ({stage4_real_w[ 8][147], stage4_real_w[ 8][78:72], stage4_real_w[ 8][71:64]} + stage_real_w[ 8][147]), 
-                     ({stage4_imag_w[ 8][147], stage4_imag_w[ 8][78:72], stage4_imag_w[ 8][71:64]} + stage_imag_w[ 8][147])};
-  assign fft_d09 = { ({stage4_real_w[ 9][147], stage4_real_w[ 9][78:72], stage4_real_w[ 9][71:64]} + stage_real_w[ 9][147]), 
-                     ({stage4_imag_w[ 9][147], stage4_imag_w[ 9][78:72], stage4_imag_w[ 9][71:64]} + stage_imag_w[ 9][147])};
-  assign fft_d05 = { ({stage4_real_w[10][147], stage4_real_w[10][78:72], stage4_real_w[10][71:64]} + stage_real_w[10][147]), 
-                     ({stage4_imag_w[10][147], stage4_imag_w[10][78:72], stage4_imag_w[10][71:64]} + stage_imag_w[10][147])};
-  assign fft_d13 = { ({stage4_real_w[11][147], stage4_real_w[11][78:72], stage4_real_w[11][71:64]} + stage_real_w[11][147]), 
-                     ({stage4_imag_w[11][147], stage4_imag_w[11][78:72], stage4_imag_w[11][71:64]} + stage_imag_w[11][147])};
-  assign fft_d03 = { ({stage4_real_w[12][147], stage4_real_w[12][78:72], stage4_real_w[12][71:64]} + stage_real_w[12][147]), 
-                     ({stage4_imag_w[12][147], stage4_imag_w[12][78:72], stage4_imag_w[12][71:64]} + stage_imag_w[12][147])};
-  assign fft_d11 = { ({stage4_real_w[13][147], stage4_real_w[13][78:72], stage4_real_w[13][71:64]} + stage_real_w[13][147]), 
-                     ({stage4_imag_w[13][147], stage4_imag_w[13][78:72], stage4_imag_w[13][71:64]} + stage_imag_w[13][147])};
-  assign fft_d07 = { ({stage4_real_w[14][147], stage4_real_w[14][78:72], stage4_real_w[14][71:64]} + stage_real_w[14][147]), 
-                     ({stage4_imag_w[14][147], stage4_imag_w[14][78:72], stage4_imag_w[14][71:64]} + stage_imag_w[14][147])};
-  assign fft_d15 = { ({stage4_real_w[15][147], stage4_real_w[15][78:72], stage4_real_w[15][71:64]} + stage_real_w[15][147]), 
-                     ({stage4_imag_w[15][147], stage4_imag_w[15][78:72], stage4_imag_w[15][71:64]} + stage_imag_w[15][147])};
+  assign fft_d00 = { ({stage4_real_w[ 0][147], stage4_real_w[ 0][78:72], stage4_real_w[ 0][71:64]} + stage4_real_w[ 0][147]), 
+                     ({stage4_imag_w[ 0][147], stage4_imag_w[ 0][78:72], stage4_imag_w[ 0][71:64]} + stage4_imag_w[ 0][147])};
+  assign fft_d08 = { ({stage4_real_w[ 1][147], stage4_real_w[ 1][78:72], stage4_real_w[ 1][71:64]} + stage4_real_w[ 1][147]), 
+                     ({stage4_imag_w[ 1][147], stage4_imag_w[ 1][78:72], stage4_imag_w[ 1][71:64]} + stage4_imag_w[ 1][147])};
+  assign fft_d04 = { ({stage4_real_w[ 2][147], stage4_real_w[ 2][78:72], stage4_real_w[ 2][71:64]} + stage4_real_w[ 2][147]), 
+                     ({stage4_imag_w[ 2][147], stage4_imag_w[ 2][78:72], stage4_imag_w[ 2][71:64]} + stage4_imag_w[ 2][147])};
+  assign fft_d12 = { ({stage4_real_w[ 3][147], stage4_real_w[ 3][78:72], stage4_real_w[ 3][71:64]} + stage4_real_w[ 3][147]), 
+                     ({stage4_imag_w[ 3][147], stage4_imag_w[ 3][78:72], stage4_imag_w[ 3][71:64]} + stage4_imag_w[ 3][147])};
+  assign fft_d02 = { ({stage4_real_w[ 4][147], stage4_real_w[ 4][78:72], stage4_real_w[ 4][71:64]} + stage4_real_w[ 4][147]), 
+                     ({stage4_imag_w[ 4][147], stage4_imag_w[ 4][78:72], stage4_imag_w[ 4][71:64]} + stage4_imag_w[ 4][147])};
+  assign fft_d10 = { ({stage4_real_w[ 5][147], stage4_real_w[ 5][78:72], stage4_real_w[ 5][71:64]} + stage4_real_w[ 5][147]), 
+                     ({stage4_imag_w[ 5][147], stage4_imag_w[ 5][78:72], stage4_imag_w[ 5][71:64]} + stage4_imag_w[ 5][147])};
+  assign fft_d06 = { ({stage4_real_w[ 6][147], stage4_real_w[ 6][78:72], stage4_real_w[ 6][71:64]} + stage4_real_w[ 6][147]), 
+                     ({stage4_imag_w[ 6][147], stage4_imag_w[ 6][78:72], stage4_imag_w[ 6][71:64]} + stage4_imag_w[ 6][147])};
+  assign fft_d14 = { ({stage4_real_w[ 7][147], stage4_real_w[ 7][78:72], stage4_real_w[ 7][71:64]} + stage4_real_w[ 7][147]), 
+                     ({stage4_imag_w[ 7][147], stage4_imag_w[ 7][78:72], stage4_imag_w[ 7][71:64]} + stage4_imag_w[ 7][147])};
+  assign fft_d01 = { ({stage4_real_w[ 8][147], stage4_real_w[ 8][78:72], stage4_real_w[ 8][71:64]} + stage4_real_w[ 8][147]), 
+                     ({stage4_imag_w[ 8][147], stage4_imag_w[ 8][78:72], stage4_imag_w[ 8][71:64]} + stage4_imag_w[ 8][147])};
+  assign fft_d09 = { ({stage4_real_w[ 9][147], stage4_real_w[ 9][78:72], stage4_real_w[ 9][71:64]} + stage4_real_w[ 9][147]), 
+                     ({stage4_imag_w[ 9][147], stage4_imag_w[ 9][78:72], stage4_imag_w[ 9][71:64]} + stage4_imag_w[ 9][147])};
+  assign fft_d05 = { ({stage4_real_w[10][147], stage4_real_w[10][78:72], stage4_real_w[10][71:64]} + stage4_real_w[10][147]), 
+                     ({stage4_imag_w[10][147], stage4_imag_w[10][78:72], stage4_imag_w[10][71:64]} + stage4_imag_w[10][147])};
+  assign fft_d13 = { ({stage4_real_w[11][147], stage4_real_w[11][78:72], stage4_real_w[11][71:64]} + stage4_real_w[11][147]), 
+                     ({stage4_imag_w[11][147], stage4_imag_w[11][78:72], stage4_imag_w[11][71:64]} + stage4_imag_w[11][147])};
+  assign fft_d03 = { ({stage4_real_w[12][147], stage4_real_w[12][78:72], stage4_real_w[12][71:64]} + stage4_real_w[12][147]), 
+                     ({stage4_imag_w[12][147], stage4_imag_w[12][78:72], stage4_imag_w[12][71:64]} + stage4_imag_w[12][147])};
+  assign fft_d11 = { ({stage4_real_w[13][147], stage4_real_w[13][78:72], stage4_real_w[13][71:64]} + stage4_real_w[13][147]), 
+                     ({stage4_imag_w[13][147], stage4_imag_w[13][78:72], stage4_imag_w[13][71:64]} + stage4_imag_w[13][147])};
+  assign fft_d07 = { ({stage4_real_w[14][147], stage4_real_w[14][78:72], stage4_real_w[14][71:64]} + stage4_real_w[14][147]), 
+                     ({stage4_imag_w[14][147], stage4_imag_w[14][78:72], stage4_imag_w[14][71:64]} + stage4_imag_w[14][147])};
+  assign fft_d15 = { ({stage4_real_w[15][147], stage4_real_w[15][78:72], stage4_real_w[15][71:64]} + stage4_real_w[15][147]), 
+                     ({stage4_imag_w[15][147], stage4_imag_w[15][78:72], stage4_imag_w[15][71:64]} + stage4_imag_w[15][147])};
 
   /* ============================================ */
   always@ (*) begin
