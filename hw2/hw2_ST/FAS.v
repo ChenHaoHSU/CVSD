@@ -403,8 +403,7 @@ module FFT (clk, rst, stp_valid,
   x_08, x_09, x_10, x_11, x_12, x_13, x_14, x_15,
   fft_valid,
   fft_d00, fft_d01, fft_d02, fft_d03, fft_d04, fft_d05, fft_d06, fft_d07, 
-  fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15, 
-);
+  fft_d08, fft_d09, fft_d10, fft_d11, fft_d12, fft_d13, fft_d14, fft_d15);
   input clk, rst;
   input stp_valid;
   input signed [15:0] x_00, x_01, x_02, x_03, x_04, x_05, x_06, x_07, 
