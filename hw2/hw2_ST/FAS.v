@@ -126,8 +126,8 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
                     x_24_w, x_25_w, x_26_w, x_27_w, x_28_w, x_29_w, x_30_w, x_31_w;
 
   /* ============================================ */
-  assign fir_valid = (fir_cnt_w > 33);
-  assign fir_d = sum_w >= 0 ? {sum_w[66], sum_w[30:24], sum_w[23:16]} : {sum_w[66], sum_w[30:24], sum_w[23:16]} + 16'd1;
+  assign fir_valid = (fir_cnt_r > 33);
+  assign fir_d = sum_r >= 0 ? {sum_r[66], sum_r[30:24], sum_r[23:16]} : {sum_r[66], sum_r[30:24], sum_r[23:16]} + 16'd1;
 
   /* ============================================ */
   always@ (*) begin
@@ -341,23 +341,23 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
   integer i;
 
   /* ============================================ */
-  assign stp_valid = (stp_cnt_w >= 16);
-  assign x_00 = x_w[ 0];
-  assign x_01 = x_w[ 1];
-  assign x_02 = x_w[ 2];
-  assign x_03 = x_w[ 3];
-  assign x_04 = x_w[ 4];
-  assign x_05 = x_w[ 5];
-  assign x_06 = x_w[ 6];
-  assign x_07 = x_w[ 7];
-  assign x_08 = x_w[ 8];
-  assign x_09 = x_w[ 9];
-  assign x_10 = x_w[10];
-  assign x_11 = x_w[11];
-  assign x_12 = x_w[12];
-  assign x_13 = x_w[13];
-  assign x_14 = x_w[14];
-  assign x_15 = x_w[15];
+  assign stp_valid = (stp_cnt_r >= 16);
+  assign x_00 = x_r[ 0];
+  assign x_01 = x_r[ 1];
+  assign x_02 = x_r[ 2];
+  assign x_03 = x_r[ 3];
+  assign x_04 = x_r[ 4];
+  assign x_05 = x_r[ 5];
+  assign x_06 = x_r[ 6];
+  assign x_07 = x_r[ 7];
+  assign x_08 = x_r[ 8];
+  assign x_09 = x_r[ 9];
+  assign x_10 = x_r[10];
+  assign x_11 = x_r[11];
+  assign x_12 = x_r[12];
+  assign x_13 = x_r[13];
+  assign x_14 = x_r[14];
+  assign x_15 = x_r[15];
 
   /* ============================================ */
   always@ (*) begin
@@ -452,23 +452,24 @@ module FFT (clk, rst, stp_valid,
   integer i, j;
 
   /* ============================================ */
-  assign fft_valid = (fft_cnt_w > 4);
-  assign fft_d00 = { truncate_real_w[ 0], truncate_imag_w[ 0] };
-  assign fft_d08 = { truncate_real_w[ 1], truncate_imag_w[ 1] };
-  assign fft_d04 = { truncate_real_w[ 2], truncate_imag_w[ 2] };
-  assign fft_d12 = { truncate_real_w[ 3], truncate_imag_w[ 3] };
-  assign fft_d02 = { truncate_real_w[ 4], truncate_imag_w[ 4] };
-  assign fft_d10 = { truncate_real_w[ 5], truncate_imag_w[ 5] };
-  assign fft_d06 = { truncate_real_w[ 6], truncate_imag_w[ 6] };
-  assign fft_d14 = { truncate_real_w[ 7], truncate_imag_w[ 7] };
-  assign fft_d01 = { truncate_real_w[ 8], truncate_imag_w[ 8] };
-  assign fft_d09 = { truncate_real_w[ 9], truncate_imag_w[ 9] };
-  assign fft_d05 = { truncate_real_w[10], truncate_imag_w[10] };
-  assign fft_d13 = { truncate_real_w[11], truncate_imag_w[11] };
-  assign fft_d03 = { truncate_real_w[12], truncate_imag_w[12] };
-  assign fft_d11 = { truncate_real_w[13], truncate_imag_w[13] };
-  assign fft_d07 = { truncate_real_w[14], truncate_imag_w[14] };
-  assign fft_d15 = { truncate_real_w[15], truncate_imag_w[15] };
+  // assign fft_valid = (fft_cnt_r > 4);
+  assign fft_valid = (fft_cnt_r > 10);
+  assign fft_d00 = { truncate_real_r[ 0], truncate_imag_r[ 0] };
+  assign fft_d08 = { truncate_real_r[ 1], truncate_imag_r[ 1] };
+  assign fft_d04 = { truncate_real_r[ 2], truncate_imag_r[ 2] };
+  assign fft_d12 = { truncate_real_r[ 3], truncate_imag_r[ 3] };
+  assign fft_d02 = { truncate_real_r[ 4], truncate_imag_r[ 4] };
+  assign fft_d10 = { truncate_real_r[ 5], truncate_imag_r[ 5] };
+  assign fft_d06 = { truncate_real_r[ 6], truncate_imag_r[ 6] };
+  assign fft_d14 = { truncate_real_r[ 7], truncate_imag_r[ 7] };
+  assign fft_d01 = { truncate_real_r[ 8], truncate_imag_r[ 8] };
+  assign fft_d09 = { truncate_real_r[ 9], truncate_imag_r[ 9] };
+  assign fft_d05 = { truncate_real_r[10], truncate_imag_r[10] };
+  assign fft_d13 = { truncate_real_r[11], truncate_imag_r[11] };
+  assign fft_d03 = { truncate_real_r[12], truncate_imag_r[12] };
+  assign fft_d11 = { truncate_real_r[13], truncate_imag_r[13] };
+  assign fft_d07 = { truncate_real_r[14], truncate_imag_r[14] };
+  assign fft_d15 = { truncate_real_r[15], truncate_imag_r[15] };
                     
   // assign fft_d00 = { stage4_real_w[ 0][147], stage4_real_w[ 0][78:72], stage4_real_w[ 0][71:64], 
   //                    stage4_imag_w[ 0][147], stage4_imag_w[ 0][78:72], stage4_imag_w[ 0][71:64]};
@@ -772,8 +773,8 @@ module ANALYST(clk, rst, fft_valid,
   integer i;
 
   /* ============================================ */
-  assign done = (analyst_cnt_w > 6);
-  assign freq = freq5_w;
+  assign done = (analyst_cnt_r > 8);
+  assign freq = freq5_r;
 
   /* ============================================ */
   always@ (*) begin
