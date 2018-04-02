@@ -452,8 +452,7 @@ module FFT (clk, rst, stp_valid,
   integer i, j;
 
   /* ============================================ */
-  // assign fft_valid = (fft_cnt_r > 4);
-  assign fft_valid = (fft_cnt_r > 10);
+  assign fft_valid = (fft_cnt_r > 4);
   assign fft_d00 = { truncate_real_r[ 0], truncate_imag_r[ 0] };
   assign fft_d08 = { truncate_real_r[ 1], truncate_imag_r[ 1] };
   assign fft_d04 = { truncate_real_r[ 2], truncate_imag_r[ 2] };
