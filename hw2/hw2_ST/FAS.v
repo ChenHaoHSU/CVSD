@@ -684,47 +684,47 @@ module ANALYST(clk, rst, fft_valid,
   /* ============================================ */
   reg [3:0] analyst_cnt_r, analyst_cnt_w;
 
-  reg [32:0] stage1_r[15:0], stage1_w[15:0];
-  reg [32:0] stage2_r[ 7:0], stage2_w[ 7:0];
-  reg [32:0] stage3_r[ 3:0], stage3_w[ 3:0];
-  reg [32:0] stage4_r[ 1:0], stage4_w[ 1:0];
-  reg [32:0] stage5_r, stage5_w;
+  reg [32:0] value_d1_r[15:0], value_d1_w[15:0];
+  reg [32:0] value_d2_r[ 7:0], value_d2_w[ 7:0];
+  reg [32:0] value_d3_r[ 3:0], value_d3_w[ 3:0];
+  reg [32:0] value_d4_r[ 1:0], value_d4_w[ 1:0];
+  reg [32:0] value_d5_r, value_d5_w;
   
-  reg [3:0] freq1_r[15:0], freq1_w[15:0];
-  reg [3:0] freq2_r[ 7:0], freq2_w[ 7:0];
-  reg [3:0] freq3_r[ 3:0], freq3_w[ 3:0];
-  reg [3:0] freq4_r[ 1:0], freq4_w[ 1:0];
-  reg [3:0] freq5_r, freq5_w;
+  reg [3:0] freq_d1_r[15:0], freq_d1_w[15:0];
+  reg [3:0] freq_d2_r[ 7:0], freq_d2_w[ 7:0];
+  reg [3:0] freq_d3_r[ 3:0], freq_d3_w[ 3:0];
+  reg [3:0] freq_d4_r[ 1:0], freq_d4_w[ 1:0];
+  reg [3:0] freq_d5_r, freq_d5_w;
 
   /* ============================================ */
   integer i;
 
   /* ============================================ */
   assign done = (analyst_cnt_r > 4);
-  assign freq = freq5_r;
+  assign freq = freq_d5_r;
 
   /* ============================================ */
   always@ (*) begin
     
     for (i = 0; i < 16; i = i + 1)
-      stage1_w[i] = stage1_r[i];
+      value_d1_w[i] = value_d1_r[i];
     for (i = 0; i < 8; i = i + 1)
-      stage2_w[i] = stage2_r[i];
+      value_d2_w[i] = value_d2_r[i];
     for (i = 0; i < 4; i = i + 1)
-      stage3_w[i] = stage3_r[i];
+      value_d3_w[i] = value_d3_r[i];
     for (i = 0; i < 2; i = i + 1)
-      stage4_w[i] = stage4_r[i];
-    stage5_w = stage5_r;
+      value_d4_w[i] = value_d4_r[i];
+    value_d5_w = value_d5_r;
 
     for (i = 0; i < 16; i = i + 1)
-      freq1_w[i] = freq1_r[i];
+      freq_d1_w[i] = freq_d1_r[i];
     for (i = 0; i < 8; i = i + 1)
-      freq2_w[i] = freq2_r[i];
+      freq_d2_w[i] = freq_d2_r[i];
     for (i = 0; i < 4; i = i + 1)
-      freq3_w[i] = freq3_r[i];
+      freq_d3_w[i] = freq_d3_r[i];
     for (i = 0; i < 2; i = i + 1)
-      freq4_w[i] = freq4_r[i];
-    freq5_w = freq5_r;
+      freq_d4_w[i] = freq_d4_r[i];
+    freq_d5_w = freq_d5_r;
 
     analyst_cnt_w = analyst_cnt_r;
 
@@ -735,55 +735,55 @@ module ANALYST(clk, rst, fft_valid,
         // STAGE 1:
         //////////////////////// 
         4'd0: begin
-          stage1_w[ 0] = $signed({fft_d00[31:16]}) * $signed({fft_d00[31:16]}) 
-                       + $signed({fft_d00[15: 0]}) * $signed({fft_d00[15: 0]});
-          stage1_w[ 1] = $signed({fft_d01[31:16]}) * $signed({fft_d01[31:16]}) 
-                       + $signed({fft_d01[15: 0]}) * $signed({fft_d01[15: 0]});
-          stage1_w[ 2] = $signed({fft_d02[31:16]}) * $signed({fft_d02[31:16]}) 
-                       + $signed({fft_d02[15: 0]}) * $signed({fft_d02[15: 0]});
-          stage1_w[ 3] = $signed({fft_d03[31:16]}) * $signed({fft_d03[31:16]}) 
-                       + $signed({fft_d03[15: 0]}) * $signed({fft_d03[15: 0]});
-          stage1_w[ 4] = $signed({fft_d04[31:16]}) * $signed({fft_d04[31:16]}) 
-                       + $signed({fft_d04[15: 0]}) * $signed({fft_d04[15: 0]});
-          stage1_w[ 5] = $signed({fft_d05[31:16]}) * $signed({fft_d05[31:16]}) 
-                       + $signed({fft_d05[15: 0]}) * $signed({fft_d05[15: 0]});
-          stage1_w[ 6] = $signed({fft_d06[31:16]}) * $signed({fft_d06[31:16]}) 
-                       + $signed({fft_d06[15: 0]}) * $signed({fft_d06[15: 0]});
-          stage1_w[ 7] = $signed({fft_d07[31:16]}) * $signed({fft_d07[31:16]}) 
-                       + $signed({fft_d07[15: 0]}) * $signed({fft_d07[15: 0]});
-          stage1_w[ 8] = $signed({fft_d08[31:16]}) * $signed({fft_d08[31:16]}) 
-                       + $signed({fft_d08[15: 0]}) * $signed({fft_d08[15: 0]});
-          stage1_w[ 9] = $signed({fft_d09[31:16]}) * $signed({fft_d09[31:16]}) 
-                       + $signed({fft_d09[15: 0]}) * $signed({fft_d09[15: 0]});
-          stage1_w[10] = $signed({fft_d10[31:16]}) * $signed({fft_d10[31:16]}) 
-                       + $signed({fft_d10[15: 0]}) * $signed({fft_d10[15: 0]});
-          stage1_w[11] = $signed({fft_d11[31:16]}) * $signed({fft_d11[31:16]}) 
-                       + $signed({fft_d11[15: 0]}) * $signed({fft_d11[15: 0]});
-          stage1_w[12] = $signed({fft_d12[31:16]}) * $signed({fft_d12[31:16]}) 
-                       + $signed({fft_d12[15: 0]}) * $signed({fft_d12[15: 0]});
-          stage1_w[13] = $signed({fft_d13[31:16]}) * $signed({fft_d13[31:16]}) 
-                       + $signed({fft_d13[15: 0]}) * $signed({fft_d13[15: 0]});
-          stage1_w[14] = $signed({fft_d14[31:16]}) * $signed({fft_d14[31:16]}) 
-                       + $signed({fft_d14[15: 0]}) * $signed({fft_d14[15: 0]});
-          stage1_w[15] = $signed({fft_d15[31:16]}) * $signed({fft_d15[31:16]}) 
-                       + $signed({fft_d15[15: 0]}) * $signed({fft_d15[15: 0]});
+          value_d1_w[ 0] = $signed({fft_d00[31:16]}) * $signed({fft_d00[31:16]}) 
+                         + $signed({fft_d00[15: 0]}) * $signed({fft_d00[15: 0]});
+          value_d1_w[ 1] = $signed({fft_d01[31:16]}) * $signed({fft_d01[31:16]}) 
+                         + $signed({fft_d01[15: 0]}) * $signed({fft_d01[15: 0]});
+          value_d1_w[ 2] = $signed({fft_d02[31:16]}) * $signed({fft_d02[31:16]}) 
+                         + $signed({fft_d02[15: 0]}) * $signed({fft_d02[15: 0]});
+          value_d1_w[ 3] = $signed({fft_d03[31:16]}) * $signed({fft_d03[31:16]}) 
+                         + $signed({fft_d03[15: 0]}) * $signed({fft_d03[15: 0]});
+          value_d1_w[ 4] = $signed({fft_d04[31:16]}) * $signed({fft_d04[31:16]}) 
+                         + $signed({fft_d04[15: 0]}) * $signed({fft_d04[15: 0]});
+          value_d1_w[ 5] = $signed({fft_d05[31:16]}) * $signed({fft_d05[31:16]}) 
+                         + $signed({fft_d05[15: 0]}) * $signed({fft_d05[15: 0]});
+          value_d1_w[ 6] = $signed({fft_d06[31:16]}) * $signed({fft_d06[31:16]}) 
+                         + $signed({fft_d06[15: 0]}) * $signed({fft_d06[15: 0]});
+          value_d1_w[ 7] = $signed({fft_d07[31:16]}) * $signed({fft_d07[31:16]}) 
+                         + $signed({fft_d07[15: 0]}) * $signed({fft_d07[15: 0]});
+          value_d1_w[ 8] = $signed({fft_d08[31:16]}) * $signed({fft_d08[31:16]}) 
+                         + $signed({fft_d08[15: 0]}) * $signed({fft_d08[15: 0]});
+          value_d1_w[ 9] = $signed({fft_d09[31:16]}) * $signed({fft_d09[31:16]}) 
+                         + $signed({fft_d09[15: 0]}) * $signed({fft_d09[15: 0]});
+          value_d1_w[10] = $signed({fft_d10[31:16]}) * $signed({fft_d10[31:16]}) 
+                         + $signed({fft_d10[15: 0]}) * $signed({fft_d10[15: 0]});
+          value_d1_w[11] = $signed({fft_d11[31:16]}) * $signed({fft_d11[31:16]}) 
+                         + $signed({fft_d11[15: 0]}) * $signed({fft_d11[15: 0]});
+          value_d1_w[12] = $signed({fft_d12[31:16]}) * $signed({fft_d12[31:16]}) 
+                         + $signed({fft_d12[15: 0]}) * $signed({fft_d12[15: 0]});
+          value_d1_w[13] = $signed({fft_d13[31:16]}) * $signed({fft_d13[31:16]}) 
+                         + $signed({fft_d13[15: 0]}) * $signed({fft_d13[15: 0]});
+          value_d1_w[14] = $signed({fft_d14[31:16]}) * $signed({fft_d14[31:16]}) 
+                         + $signed({fft_d14[15: 0]}) * $signed({fft_d14[15: 0]});
+          value_d1_w[15] = $signed({fft_d15[31:16]}) * $signed({fft_d15[31:16]}) 
+                         + $signed({fft_d15[15: 0]}) * $signed({fft_d15[15: 0]});
           
-          freq1_w[ 0] =  0;
-          freq1_w[ 1] =  1;
-          freq1_w[ 2] =  2;
-          freq1_w[ 3] =  3;
-          freq1_w[ 4] =  4;
-          freq1_w[ 5] =  5;
-          freq1_w[ 6] =  6;
-          freq1_w[ 7] =  7;
-          freq1_w[ 8] =  8;
-          freq1_w[ 9] =  9;
-          freq1_w[10] = 10;
-          freq1_w[11] = 11;
-          freq1_w[12] = 12;
-          freq1_w[13] = 13;
-          freq1_w[14] = 14;
-          freq1_w[15] = 15;
+          freq_d1_w[ 0] =  0;
+          freq_d1_w[ 1] =  1;
+          freq_d1_w[ 2] =  2;
+          freq_d1_w[ 3] =  3;
+          freq_d1_w[ 4] =  4;
+          freq_d1_w[ 5] =  5;
+          freq_d1_w[ 6] =  6;
+          freq_d1_w[ 7] =  7;
+          freq_d1_w[ 8] =  8;
+          freq_d1_w[ 9] =  9;
+          freq_d1_w[10] = 10;
+          freq_d1_w[11] = 11;
+          freq_d1_w[12] = 12;
+          freq_d1_w[13] = 13;
+          freq_d1_w[14] = 14;
+          freq_d1_w[15] = 15;
 
         end
         //////////////////////// 
@@ -791,12 +791,12 @@ module ANALYST(clk, rst, fft_valid,
         //////////////////////// 
         4'd1: begin
           for (i = 0; i < 8; i = i + 1) begin
-            if (stage1_r[i * 2] > stage1_r[i * 2 + 1]) begin
-              stage2_w[i] = stage1_r[i * 2];
-              freq2_w [i] = freq1_r [i * 2];
+            if (value_d1_r[i * 2] > value_d1_r[i * 2 + 1]) begin
+              value_d2_w[i] = value_d1_r[i * 2];
+              freq_d2_w [i] = freq_d1_r [i * 2];
             end else begin
-              stage2_w[i] = stage1_r[i * 2 + 1];
-              freq2_w [i] = freq1_r [i * 2 + 1];
+              value_d2_w[i] = value_d1_r[i * 2 + 1];
+              freq_d2_w [i] = freq_d1_r [i * 2 + 1];
             end
           end
         end
@@ -805,12 +805,12 @@ module ANALYST(clk, rst, fft_valid,
         //////////////////////// 
         4'd2: begin
           for (i = 0; i < 4; i = i + 1) begin
-            if (stage2_r[i * 2] > stage2_r[i * 2 + 1]) begin
-              stage3_w[i] = stage2_r[i * 2];
-              freq3_w [i] = freq2_r [i * 2];
+            if (value_d2_r[i * 2] > value_d2_r[i * 2 + 1]) begin
+              value_d3_w[i] = value_d2_r[i * 2];
+              freq_d3_w [i] = freq_d2_r [i * 2];
             end else begin
-              stage3_w[i] = stage2_r[i * 2 + 1];
-              freq3_w [i] = freq2_r [i * 2 + 1];
+              value_d3_w[i] = value_d2_r[i * 2 + 1];
+              freq_d3_w [i] = fre_dq2_r [i * 2 + 1];
             end
           end
         end
@@ -819,12 +819,12 @@ module ANALYST(clk, rst, fft_valid,
         //////////////////////// 
         4'd3: begin
           for (i = 0; i < 2; i = i + 1) begin
-            if (stage3_r[i * 2] > stage3_r[i * 2 + 1]) begin
-              stage4_w[i] = stage3_r[i * 2];
-              freq4_w [i] = freq3_r [i * 2];
+            if (value_d3_r[i * 2] > value_d3_r[i * 2 + 1]) begin
+              value_d4_w[i] = value_d3_r[i * 2];
+              freq_d4_w [i] = freq_d3_r [i * 2];
             end else begin
-              stage4_w[i] = stage3_r[i * 2 + 1];
-              freq4_w [i] = freq3_r [i * 2 + 1];
+              value_d4_w[i] = value_d3_r[i * 2 + 1];
+              freq_d4_w [i] = freq_d3_r [i * 2 + 1];
             end
           end
         end
@@ -832,12 +832,12 @@ module ANALYST(clk, rst, fft_valid,
         // STAGE 5:
         //////////////////////// 
         4'd4: begin
-          if (stage4_r[0] > stage4_r[1]) begin
-            stage5_w = stage4_r[0];
-            freq5_w  = freq4_r [0];
+          if (value_d4_r[0] > value_d4_r[1]) begin
+            value_d5_w = value_d4_r[0];
+            freq_d5_w  = freq_d4_r [0];
           end else begin
-            stage5_w = stage4_r[1];
-            freq5_w  = freq4_r [1];
+            value_d5_w = value_d4_r[1];
+            freq_d5_w  = freq_d4_r [1];
           end
         end
       endcase
@@ -850,46 +850,46 @@ module ANALYST(clk, rst, fft_valid,
   always@ (posedge clk or posedge rst) begin
     if (rst) begin 
       for (i = 0; i < 16; i = i + 1)
-        stage1_r[i] <= 0;
+        value_d1_r[i] <= 0;
       for (i = 0; i < 8; i = i + 1)
-        stage2_r[i] <= 0;
+        value_d2_r[i] <= 0;
       for (i = 0; i < 4; i = i + 1)
-        stage3_r[i] <= 0;
+        value_d3_r[i] <= 0;
       for (i = 0; i < 2; i = i + 1)
-        stage4_r[i] <= 0;
-      stage5_r <= 0;
+        value_d4_r[i] <= 0;
+      value_d5_r <= 0;
 
       for (i = 0; i < 16; i = i + 1)
-        freq1_r[i] <= 0;
+        freq_d1_r[i] <= 0;
       for (i = 0; i < 8; i = i + 1)
-        freq2_r[i] <= 0;
+        freq_d2_r[i] <= 0;
       for (i = 0; i < 4; i = i + 1)
-        freq3_r[i] <= 0;
+        freq_d3_r[i] <= 0;
       for (i = 0; i < 2; i = i + 1)
-        freq4_r[i] <= 0;
-      freq5_r <= 0;
+        freq_d4_r[i] <= 0;
+      freq_d5_r <= 0;
 
       analyst_cnt_r <= 0;
     end else begin
       for (i = 0; i < 16; i = i + 1)
-        stage1_r[i] <= stage1_w[i];
+        value_d1_r[i] <= value_d1_w[i];
       for (i = 0; i < 8; i = i + 1)
-        stage2_r[i] <= stage2_w[i];
+        value_d2_r[i] <= value_d2_w[i];
       for (i = 0; i < 4; i = i + 1)
-        stage3_r[i] <= stage3_w[i];
+        stage3_r[i] <= value_d3_w[i];
       for (i = 0; i < 2; i = i + 1)
-        stage4_r[i] <= stage4_w[i];
-      stage5_r <= stage5_w;
+        value_d4_r[i] <= value_d4_w[i];
+      value_d5_r <= value_d5_w;
 
       for (i = 0; i < 16; i = i + 1)
-        freq1_r[i] <= freq1_w[i];
+        freq_d1_r[i] <= freq_d1_w[i];
       for (i = 0; i < 8; i = i + 1)
-        freq2_r[i] <= freq2_w[i];
+        freq_d2_r[i] <= freq_d2_w[i];
       for (i = 0; i < 4; i = i + 1)
-        freq3_r[i] <= freq3_w[i];
+        freq_d3_r[i] <= freq_d3_w[i];
       for (i = 0; i < 2; i = i + 1)
-        freq4_r[i] <= freq4_w[i];
-      freq5_r <= freq5_w;
+        freq_d4_r[i] <= freq_d4_w[i];
+      freq_d5_r <= freq_d5_w;
 
       analyst_cnt_r <= analyst_cnt_w;
     end
