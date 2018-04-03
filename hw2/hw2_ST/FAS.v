@@ -810,7 +810,7 @@ module ANALYST(clk, rst, fft_valid,
               freq_d3_w [i] = freq_d2_r [i * 2];
             end else begin
               value_d3_w[i] = value_d2_r[i * 2 + 1];
-              freq_d3_w [i] = fre_dq2_r [i * 2 + 1];
+              freq_d3_w [i] = freq_d2_r [i * 2 + 1];
             end
           end
         end
@@ -876,7 +876,7 @@ module ANALYST(clk, rst, fft_valid,
       for (i = 0; i < 8; i = i + 1)
         value_d2_r[i] <= value_d2_w[i];
       for (i = 0; i < 4; i = i + 1)
-        stage3_r[i] <= value_d3_w[i];
+        value_d3_r[i] <= value_d3_w[i];
       for (i = 0; i < 2; i = i + 1)
         value_d4_r[i] <= value_d4_w[i];
       value_d5_r <= value_d5_w;
