@@ -242,7 +242,7 @@ module FIR_FILTER (clk, rst, data_valid, data, fir_valid, fir_d);
   end
 
   /* ============================================ */
-  always@ (posedge clk or rst) begin 
+  always@ (posedge clk or posedge rst) begin 
     if (rst) begin
       x_00_r    <= 0;
       x_01_r    <= 0;
@@ -380,7 +380,7 @@ module STP (clk, rst, fir_valid, fir_d, stp_valid,
   end
 
   /* ============================================ */
-  always@ (posedge clk or rst) begin
+  always@ (posedge clk or posedge rst) begin
     if (rst) begin 
       for (i = 0; i < 16; i = i + 1)
         x_r[i] <= 0;
@@ -613,7 +613,7 @@ module FFT (clk, rst, stp_valid,
   end
 
   /* ============================================ */
-  always@ (posedge clk or rst) begin
+  always@ (posedge clk or posedge rst) begin
     if (rst) begin 
       W_REAL_r[0] <= W_REAL_0;
       W_REAL_r[1] <= W_REAL_1;
@@ -847,7 +847,7 @@ module ANALYST(clk, rst, fft_valid,
   end
 
   /* ============================================ */
-  always@ (posedge clk or rst) begin
+  always@ (posedge clk or posedge rst) begin
     if (rst) begin 
       for (i = 0; i < 16; i = i + 1)
         value_d1_r[i] <= 0;
