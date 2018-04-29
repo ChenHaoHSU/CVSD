@@ -52,10 +52,10 @@ end
 always begin #(`CYCLE/2) clk = ~clk; end
 
 initial begin
-//$dumpfile("LMFE1.vcd");
-//$dumpvars;
-$fsdbDumpfile("LMFE1.fsdb");
-$fsdbDumpvars(0, test, "+mda");
+$dumpfile("LMFE1.vcd");
+$dumpvars;
+//$fsdbDumpfile("LMFE1.fsdb");
+//$fsdbDumpvars(0, test, "+mda");
 
    out_f = $fopen("out.dat");
    if (out_f == 0) begin
