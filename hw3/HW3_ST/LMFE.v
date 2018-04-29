@@ -115,6 +115,7 @@ reg       ov_r, ov_w;
 reg       busy_r, busy_w;
 
 reg [9:0] rowcnt_r, rowcnt_w;
+reg [9:0] colcnt_r, colcnt_w;
 reg [9:0] loadcnt_r, loadcnt_w;
   
 
@@ -129,35 +130,42 @@ assign DEL  = del_r;
 assign OV   = ov_r;
 assign BUSY = busy_r;
 
-always @(*) begin    state_r      <= state_w;
-    addr_r       <= addr_w;
-		dout_r       <= dout_w;
-		d_r          <= d_w;
-		cen_r        <= cen_w;
-		wen_r        <= wen_w;
-		sen_r        <= sen_w;
-		ins_r        <= ins_w;
-		del_r        <= del_w;
-		ov_r         <= ov_w;
-		busy_r       <= busy_w;
-    rowcnt_r     <= rowcnt_w;
-    loadcnt_r    <= loadcnt_w;
+always @(*) begin    
+    state_w      = state_r;
+    addr_w       = addr_r;
+		dout_w       = dout_r;
+		d_w          = d_r;
+		cen_w        = cen_r;
+		wen_w        = wen_r;
+		sen_w        = sen_r;
+		ins_w        = ins_r;
+		del_w        = del_r;
+		ov_w         = ov_r;
+		busy_w       = busy_r;
+    rowcnt_w     = rowcnt_r;
+    colcnt_w     = colcnt_r;
+    loadcnt_w    = loadcnt_r;
   
   case (state_r)
     S_IDLE: begin
       if (IEN) begin
         state_w = S_INIT;
-        cen_w   = 0;
-        wen_w   = 0;
+        cen_w   = 1;
+        wen_w   = 1;
         addr_w  = 0;
         loadcnt_w = 0;
+        d_w     = DIN;
       end else begin
         state_w = S_IDLE;
       end
     end
     
     S_INIT: begin 
-
+      if (loadcnt_r < )
+      loadcnt_w = loadcnt_r + 1;
+      cen_w = 1;
+      wen_w = 1;
+      addr_w = addr_r + 1;
     end
 
 
@@ -184,6 +192,7 @@ always @(posedge CLK or posedge RST) begin
 		ov_r         <= 1'b0;
 		busy_r       <= 1'b0;
     rowcnt_r     <= 10'b0;
+    colcnt_r     <= 10'b0;
     loadcnt_r    <= 10'b0;
   end else begin    
     state_r      <= state_w;
@@ -198,13 +207,12 @@ always @(posedge CLK or posedge RST) begin
 		ov_r         <= ov_w;
 		busy_r       <= busy_w;
     rowcnt_r     <= rowcnt_w;
+    colcnt_r     <= colcnt_w;
     loadcnt_r    <= loadcnt_w;
   end 
 end 
 
 endmodule
-
-
 
 /****************************************************************
   Median
