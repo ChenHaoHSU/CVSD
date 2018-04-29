@@ -161,7 +161,7 @@ always @(*) begin
     end
     
     S_INIT: begin 
-      if (loadcnt_r < )
+      // if (loadcnt_r < )
       loadcnt_w = loadcnt_r + 1;
       cen_w = 1;
       wen_w = 1;
