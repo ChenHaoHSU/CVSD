@@ -254,8 +254,6 @@ always @(*) begin
   endcase
 end
 
-
-
 always @(posedge clk or posedge RST) begin
   if (RST) begin
     //-- state register
@@ -324,6 +322,7 @@ end
 
 
 //-- state register
+/*
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
     state <= ST_IDL;
@@ -331,6 +330,7 @@ always @ (posedge clk, posedge RST) begin
     state <= n_state;
   end
 end
+*/
 
 //-- next state logic
 always @ * begin
@@ -426,6 +426,7 @@ always @ * begin
 end
 
 //-- output register
+/*
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
     DOUT <= 1'b0;
@@ -451,6 +452,7 @@ always @ (posedge clk, posedge RST) begin
     DEL  <= n_DEL;
   end
 end
+*/
 
 //-- output logic
 always @ * begin
@@ -618,6 +620,7 @@ always @ * begin
 end
 
 //-- internal register
+/*
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
     wa <= 0;
@@ -637,7 +640,9 @@ always @ (posedge clk, posedge RST) begin
     py <= n_py;		
   end
 end
+*/
 
+/*
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
     for (i=0; i<49; i=i+1) begin
@@ -649,7 +654,9 @@ always @ (posedge clk, posedge RST) begin
     end
   end
 end
+*/
 
+/*
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
     for (i=0; i<127; i=i+1) begin
@@ -661,6 +668,7 @@ always @ (posedge clk, posedge RST) begin
     end
   end
 end
+*/
 
 //-- internal logic
 always @ * begin
@@ -888,22 +896,15 @@ always @ * begin
     mx[7*i+4] = px+1;
     mx[7*i+5] = px+2;
     mx[7*i+6] = px+3;
+    my[i+0]   = py-3;
+    my[i+7]   = py-2;
+    my[i+14]  = py-1;
+    my[i+21]  = py;
+    my[i+28]  = py+1;
+    my[i+35]  = py+2;
+    my[i+42]  = py+3;
   end
-end
-// my[i]
-always @ * begin
-  for (i=0; i<7; i=i+1) begin
-    my[i+0] = py-3;
-    my[i+7] = py-2;
-    my[i+14] = py-1;
-    my[i+21] = py;
-    my[i+28] = py+1;
-    my[i+35] = py+2;
-    my[i+42] = py+3;
-  end
-end
-// noob[i]
-always @ * begin
+  // noob[i]
   for (i=0; i<49; i=i+1) begin
     noob[i] = (mx[i]>2 && mx[i]<131 && my[i]>2 && my[i]<131)? 1'b1: 1'b0;
   end
