@@ -17,8 +17,8 @@ input			reset;
 input	[7:0]	Din;
 input			in_en;
 output			busy;
-output			out_valid;
-output	[7:0]	Dout;
+output  out_valid;
+output  [7:0]	Dout;
 
 //-- reg and wire
 wire	[9:0]	sram_address;
