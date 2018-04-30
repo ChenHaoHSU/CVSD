@@ -30,7 +30,7 @@ wire [7:0] sort_delete;
 wire [7:0] sort_median;
 wire       sort_enable;
 
-lmfe_filter_ctrl i_lmfe_filter_ctrl (
+controller lmfe_controller (
   .clk	(clk),
   .RST	(reset),
   .IEN	(in_en),
@@ -49,7 +49,7 @@ lmfe_filter_ctrl i_lmfe_filter_ctrl (
   .BZ   (busy)
 );
 
-lmfe_med49 i_lmfe_med49 (
+sorter lmfe_sorter (
   .clk (clk),
   .RST (reset),
   .SEN (sort_enable),
@@ -58,7 +58,7 @@ lmfe_med49 i_lmfe_med49 (
   .MED (sort_median)
 );
 
-sram_1024x8_t13 i_ram0 (
+sram_1024x8_t13 lmfe_sram (
   .CLK (clk),
   .CEN (sram_cen),
   .WEN (sram_wen),
@@ -72,7 +72,7 @@ endmodule
 /****************************************************************
   Controller
 *****************************************************************/
-module lmfe_filter_ctrl (
+module controller (
   clk,
   RST,
   IEN,
@@ -92,22 +92,22 @@ module lmfe_filter_ctrl (
 );
 
 //-- I/O declaration
-input			clk;
-input			RST;
-input			IEN;
-input	[7:0]	DIN;
-input	[7:0]	Q;
-input	[7:0]	MED;
-output	[9:0]	A;
-output	[7:0]	D;
-output			CE;
-output			WE;
-output			SE;
-output	[7:0]	INS;
-output	[7:0]	DEL;
-output	[7:0]	DOUT;
-output			OV;
-output			BZ;
+input        clk;
+input        RST;
+input        IEN;
+input  [7:0] DIN;
+input  [7:0] Q;
+input  [7:0] MED;
+output [9:0] A;
+output [7:0] D;
+output       CE;
+output       WE;
+output       SE;
+output [7:0] INS;
+output [7:0] DEL;
+output [7:0] DOUT;
+output       OV;
+output       BZ;
 
 //-- parameters
 parameter ST_IDL = 4'h0;
@@ -123,44 +123,205 @@ parameter ST_R7DU = 4'h9;
 parameter ST_END = 4'ha;
 
 //-- reg and wire
-reg		[9:0]	A;
-reg		[7:0]	D;
-reg				CE;
-reg				WE;
-reg				SE;
-reg		[7:0]	INS;
-reg		[7:0]	DEL;
-reg		[7:0]	DOUT;
-reg				OV;
-reg				BZ;
-reg		[7:0]	i;
-reg		[7:0]	n_DOUT;
-reg				n_BZ;
-reg				n_OV;
-reg		[9:0]	n_A;
-reg		[7:0]	n_D;
-reg				n_CE;
-reg				n_WE;
-reg				n_SE;
-reg		[7:0]	n_INS;
-reg		[7:0]	n_DEL;
-reg		[3:0]	state, n_state;
-reg		[9:0]	wa, n_wa;
-reg		[9:0]	wc, n_wc;
-reg		[5:0]	rc, n_rc;
-reg		[7:0]	lc, n_lc;
-reg		[13:0]	pc, n_pc;
-reg		[7:0]	px, n_px;
-reg		[7:0]	py, n_py;
-reg		[7:0]	mv[0:48];
-reg		[7:0]	n_mv[0:48];
-reg		[7:0]	mx[0:48];
-reg		[7:0]	my[0:48];
-reg		[7:0]	ix[0:48];
-reg		[7:0]	iy[0:48];
-reg				noob[0:48];
-reg		[7:0]	med_buf[0:126];
-reg		[7:0]	n_med_buf[0:126];
+reg [9:0] A;
+reg [7:0] D;
+reg       CE;
+reg       WE;
+reg       SE;
+reg [7:0] INS;
+reg [7:0] DEL;
+reg [7:0] DOUT;
+reg       OV;
+reg       BZ;
+reg [7:0] i;
+reg [7:0] n_DOUT;
+reg       n_BZ;
+reg       n_OV;
+reg [9:0] n_A;
+reg [7:0] n_D;
+reg       n_CE;
+reg       n_WE;
+reg       n_SE;
+reg [7:0] n_INS;
+reg [7:0] n_DEL;
+reg [3:0] state, n_state;
+reg [9:0] wa, n_wa;
+reg [9:0] wc, n_wc;
+reg [5:0] rc, n_rc;
+reg [7:0] lc, n_lc;
+reg [13:0] pc, n_pc;
+reg [7:0] px, n_px;
+reg [7:0] py, n_py;
+reg [7:0] mv [0:48];
+reg [7:0] n_mv [0:48];
+reg [7:0] mx [0:48];
+reg [7:0] my [0:48];
+reg [7:0] ix [0:48];
+reg [7:0] iy [0:48];
+reg       noob [0:48];
+reg [7:0]	med_buf [0:126];
+reg [7:0]	n_med_buf [0:126];
+
+always @(*) begin
+  n_state = state;
+  case (state)
+    ST_IDL: begin
+      if (IEN) begin
+        n_state = ST_W7L;
+      end else begin
+        n_state = ST_IDL;
+      end
+    end
+    ST_W7L: begin
+      if (wc<895) begin
+        n_state = ST_W7L;
+      end else begin
+        n_state = ST_R49;
+      end
+    end
+    ST_R49: begin
+      if (rc<51) begin
+        n_state = ST_R49;
+      end else begin
+        n_state = ST_R7R;
+      end
+    end
+    ST_R7R: begin
+      if (rc<9) begin
+        n_state = ST_R7R;
+      end else if (lc==127 && (pc<639 || pc>16000)) begin
+        n_state = ST_R7D;
+      end else if (lc==127) begin
+        n_state = ST_W1L;
+      end else begin
+        n_state = ST_R7R;
+      end
+    end
+    ST_W1L: begin
+      if (wc<128) begin
+        n_state = ST_W1L;
+      end else begin
+        n_state = ST_R7D;
+      end
+    end
+    ST_R7D: begin
+      if (rc<9) begin
+        n_state = ST_R7D;
+      end else begin
+        n_state = ST_R7L;
+      end
+    end
+    ST_R7L: begin
+      if (rc<9) begin
+        n_state = ST_R7L;
+      end else if (lc==127 && (pc<511 || pc>16000)) begin
+        n_state = ST_O1LU;
+      end else if (lc==127) begin
+        n_state = ST_W1LU;
+      end else begin
+        n_state = ST_R7L;
+      end
+    end
+    ST_O1LU: begin
+      if (lc<128) begin
+        n_state = ST_O1LU;
+      end else if (pc<16256) begin
+        n_state = ST_R7DU;
+      end else begin
+        n_state = ST_END;
+      end
+    end
+    ST_W1LU: begin
+      if (wc<128) begin
+        n_state = ST_W1LU;
+      end else begin
+        n_state = ST_R7DU;
+      end
+    end
+    ST_R7DU: begin
+      if (rc<9) begin
+        n_state = ST_R7DU;
+      end else begin
+        n_state = ST_R7R;
+      end
+    end
+    ST_END: begin
+      n_state = ST_END;
+    end
+    default: begin
+      n_state = ST_IDL;
+    end
+  endcase
+end
+
+
+
+always @(posedge clk or posedge RST) begin
+  if (RST) begin
+    //-- state register
+    state <= ST_IDL;
+    //-- output register
+    DOUT <= 1'b0;
+    BZ   <= 1'b0;
+    OV   <= 1'b0;
+    A    <= 1'b0;
+    D    <= 1'b0;
+    CE   <= 1'b1;
+    WE   <= 1'b1;
+    SE   <= 1'b1;
+    INS  <= 8'hff;
+    DEL  <= 8'hff;
+    //-- internal register
+    wa <= 0;
+    wc <= 0;
+    rc <= 0;
+    lc <= 0;
+    pc <= 0;
+    px <= 3;
+    py <= 3;
+    // -- mv
+    for (i=0; i<49; i=i+1) begin
+      mv[i] <= 0;
+    end
+    // -- med_buf
+    for (i=0; i<127; i=i+1) begin
+      med_buf[i] <= 0;
+    end
+
+  end else begin
+    //-- state register
+    state <= n_state;
+    //-- output register
+    DOUT <= n_DOUT;
+    BZ   <= n_BZ;
+    OV   <= n_OV;
+    A    <= n_A;
+    D    <= n_D;
+    CE   <= n_CE;
+    WE   <= n_WE;
+    SE   <= n_SE;
+    INS  <= n_INS;
+    DEL  <= n_DEL;
+    //-- internal register
+    wa <= n_wa;
+    wc <= n_wc;
+    rc <= n_rc;
+    lc <= n_lc;
+    pc <= n_pc;
+    px <= n_px;
+    py <= n_py;
+    // -- mv
+    for (i=0; i<49; i=i+1) begin
+      mv[i] <= n_mv[i];
+    end
+    // -- med_buf
+    for (i=0; i<127; i=i+1) begin
+      med_buf[i] <= n_med_buf[i];
+    end
+
+  end
+end
+
 
 //-- state register
 always @ (posedge clk, posedge RST) begin
@@ -476,6 +637,7 @@ always @ (posedge clk, posedge RST) begin
     py <= n_py;		
   end
 end
+
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
     for (i=0; i<49; i=i+1) begin
@@ -487,6 +649,7 @@ always @ (posedge clk, posedge RST) begin
     end
   end
 end
+
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
     for (i=0; i<127; i=i+1) begin
@@ -751,7 +914,7 @@ endmodule
 /****************************************************************
   Median
 *****************************************************************/
-module lmfe_med49 (
+module sorter (
   clk,
   RST,
   SEN,
