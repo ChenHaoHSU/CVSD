@@ -1,7 +1,7 @@
 `timescale 1ns/10ps
 `define CYCLE      10           	  // Modify your clock period here
 `define SDFFILE    "./LMFE_syn.sdf"	          // Modify your sdf file name
-`define End_CYCLE  10000000               // Modify cycle times once your design need more cycle times!
+`define End_CYCLE  10000000              // Modify cycle times once your design need more cycle times!
 `define PAT        "./pattern1.dat"    
 `define EXP        "./golden1.dat"     
 
