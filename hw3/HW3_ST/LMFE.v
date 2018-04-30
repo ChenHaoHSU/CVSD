@@ -335,24 +335,24 @@ end
 
 //-- output logic
 always @ * begin
-    dout_r  <= dout_w;
-    bz_r    <= bz_w;
-    ov_r    <= ov_w;
-    a_r     <= a_w;
-    d_r     <= d_w;
-    ce_r    <= ce_w;
-    we_r    <= we_w;
-    se_r    <= se_w;
-    ins_r   <= ins_w;
-    del_r   <= del_w;
+  dout_w = dout_r;
+  bz_w   = bz_r;
+  ov_w   = ov_r;
+  a_w    = a_r;
+  d_w    = d_r;
+  ce_w   = ce_r;
+  we_w   = we_r;
+  se_w   = se_r;
+  ins_w  = ins_r;
+  del_w  = del_r;
   case (state_r)
     ST_IDL: begin
       if (IEN) begin
         // state_w = ST_W7L;
-        n_A    = wa_r;
-        n_D    = DIN;
-        n_CE   = 1'b0;
-        n_WE   = 1'b0;
+        a_w    = wa_r;
+        d_w    = DIN;
+        ce_w   = 1'b0;
+        we_w   = 1'b0;
       end else begin
         // state_w = ST_IDL;
       end
@@ -360,136 +360,136 @@ always @ * begin
     ST_W7L: begin
       if (wc_r<895) begin
         // state_w = ST_W7L;
-        n_BZ = (wc_r==894)? 1'b1: 1'b0;
-        n_A  = wa_r;
-        n_D  = DIN;
+        bz_w = (wc_r==894)? 1'b1: 1'b0;
+        a_w  = wa_r;
+        d_w  = DIN;
       end else begin
         // state_w = ST_R49;
-        n_CE  = 1'b0;
-        n_WE  = 1'b1;
+        ce_w  = 1'b0;
+        we_w  = 1'b1;
       end
     end
     ST_R49: begin
       if (rc_r<51) begin
         // state_w = ST_R49;
-        n_A   = (rc_r<49)? ((my[rc_r]-3)<<7) + (mx[rc_r]-3): 0;				
-        n_SE  = (rc_r>1)? 1'b0: 1'b1;
-        n_INS = (rc_r>1)? (noob[rc_r-2]>0)? Q: 0: 8'hff;
+        a_w   = (rc_r<49)? ((my[rc_r]-3)<<7) + (mx[rc_r]-3): 0;				
+        se_w  = (rc_r>1)? 1'b0: 1'b1;
+        ins_w = (rc_r>1)? (noob[rc_r-2]>0)? Q: 0: 8'hff;
       end else begin
         // state_w = ST_R7R;
-        n_SE = 1'b1;
+        se_w = 1'b1;
       end
     end		
     ST_R7R: begin
       if (rc_r<9) begin
         // state_w = ST_R7R;
-        n_OV   = (rc_r<1)? 1'b1: 0;
-        n_DOUT = (rc_r<1)? MED: 0;
-        n_A    = (rc_r<7)? ((my[6+rc_r*7]-3)<<7) + (mx[6+rc_r*7]-3): 0;
-        n_SE   = (rc_r>1)? 1'b0: 1'b1;
-        n_INS  = (rc_r>1)? (noob[6+(rc_r-2)*7]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc_r>1)? mv_r[0+(rc_r-2)*7]: 8'hff;
+        ov_w   = (rc_r<1)? 1: 0;
+        dout_w = (rc_r<1)? MED: 0;
+        a_w    = (rc_r<7)? ((my[6+rc_r*7]-3)<<7) + (mx[6+rc_r*7]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[6+(rc_r-2)*7]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)*7]: 8'hff;
       end else if (lc_r==127 && (pc_r<639 || pc_r>16000)) begin
         // state_w = ST_R7D;
-        n_SE = 1'b1;
+        se_w = 1'b1;
       end else if (lc_r==127) begin
         // state_w = ST_W1L;
-        n_BZ = 1'b0;
-        n_SE = 1'b1;
+        bz_w = 1'b0;
+        se_w = 1'b1;
       end else begin
         // state_w = ST_R7R;
-        n_SE = 1'b1;
+        se_w = 1'b1;
       end
     end
     ST_W1L: begin
       if (wc_r<128) begin
         // state_w = ST_W1L;
-        n_BZ   = (wc_r==127)? 1'b1: 1'b0;
-        n_OV   = (rc_r<1)? 1'b1: 0;
-        n_DOUT = (rc_r<1)? MED: 0;
-        n_A    = wa_r;
-        n_D    = DIN;
-        n_CE = 0;
-        n_WE = 0;
+        bz_w   = (wc_r==127)? 1'b1: 1'b0;
+        ov_w   = (rc_r<1)? 1'b1: 0;
+        dout_w = (rc_r<1)? MED: 0;
+        a_w    = wa_r;
+        d_w    = DIN;
+        ce_w = 0;
+        we_w = 0;
       end else begin
         // state_w = ST_R7D;
-        n_CE = 1'b0;
-        n_WE = 1'b1;
+        ce_w = 1'b0;
+        we_w = 1'b1;
       end
     end
     ST_R7D: begin
       if (rc_r<9) begin
         // state_w = ST_R7D;
-        n_OV   = (rc_r<1)? 1'b1: 0;
-        n_DOUT = (rc_r<1)? MED: 0;
-        n_A    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
-        n_SE   = (rc_r>1)? 1'b0: 1'b1;
-        n_INS  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
+        ov_w   = (rc_r<1)? 1'b1: 0;
+        dout_w = (rc_r<1)? MED: 0;
+        a_w    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
       end else begin
         // state_w = ST_R7L;
-        n_SE = 1'b1;
+        se_w = 1'b1;
       end
     end
     ST_R7L: begin
       if (rc_r<9) begin
         // state_w = ST_R7L;
-        n_A    = (rc_r<7)? ((my[rc_r*7]-3)<<7) + (mx[rc_r*7]-3): 0;
-        n_SE   = (rc_r>1)? 1'b0: 1'b1;
-        n_INS  = (rc_r>1)? (noob[(rc_r-2)*7]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc_r>1)? mv_r[6+(rc_r-2)*7]: 8'hff;				
+        a_w    = (rc_r<7)? ((my[rc_r*7]-3)<<7) + (mx[rc_r*7]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[(rc_r-2)*7]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[6+(rc_r-2)*7]: 8'hff;				
       end else if (lc_r==127 && (pc_r<511 || pc_r>16000)) begin
         // state_w = ST_O1LU;
-        n_SE = 1'b1;
+        se_w = 1'b1;
       end else if (lc_r==127) begin
         // state_w = ST_W1LU;
-        n_BZ = 1'b0;
-        n_SE = 1'b1;
+        bz_w = 1'b0;
+        se_w = 1'b1;
       end else begin
         // state_w = ST_R7L;
-        n_SE = 1'b1;
+        se_w = 1'b1;
       end
     end
     ST_O1LU: begin
       if (lc_r<128) begin
         // state_w = ST_O1LU;
-        n_OV   = 1'b1;
-        n_DOUT = (lc_r<1)? MED: med_buf_r[127-lc_r];
+        ov_w   = 1'b1;
+        dout_w = (lc_r<1)? MED: med_buf_r[127-lc_r];
       end else if (pc_r<16256) begin
         // state_w = ST_R7DU;
-        n_OV = 1'b0;
+        ov_w = 1'b0;
       end else begin
         // state_w = ST_END;
-        n_OV = 1'b0;
+        ov_w = 1'b0;
       end
     end
     ST_W1LU: begin
       if (wc_r<128) begin
         // state_w = ST_W1LU;
-        n_BZ = (wc_r==127)? 1'b1: 1'b0;
-        n_OV   = 1'b1;
-        n_DOUT = (lc_r<1)? MED: med_buf_r[127-lc_r];
-        n_A  = wa_r;
-        n_D  = DIN;
-        n_CE = 1'b0;
-        n_WE = 1'b0;
+        bz_w = (wc_r==127)? 1'b1: 1'b0;
+        ov_w   = 1'b1;
+        dout_w = (lc_r<1)? MED: med_buf_r[127-lc_r];
+        a_w  = wa_r;
+        d_w  = DIN;
+        ce_w = 1'b0;
+        we_w = 1'b0;
       end else begin
         // state_w = ST_R7DU;
-        n_OV = 1'b0;
-        n_CE = 1'b0;
-        n_WE = 1'b1;
+        ov_w = 1'b0;
+        ce_w = 1'b0;
+        we_w = 1'b1;
       end
     end
     ST_R7DU: begin
       if (rc_r<9) begin
         // state_w = ST_R7DU;		
-        n_A    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
-        n_SE   = (rc_r>1)? 1'b0: 1'b1;
-        n_INS  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
+        a_w    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
       end else begin
         // state_w = ST_R7R;
-        n_SE = 1'b1;
+        se_w = 1'b1;
       end
     end
     ST_END: begin
