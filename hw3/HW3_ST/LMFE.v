@@ -123,27 +123,29 @@ parameter ST_R7DU = 4'h9;
 parameter ST_END = 4'ha;
 
 //-- reg and wire
-reg [9:0] A;
-reg [7:0] D;
-reg       CE;
-reg       WE;
-reg       SE;
-reg [7:0] INS;
-reg [7:0] DEL;
-reg [7:0] DOUT;
-reg       OV;
-reg       BZ;
+reg [9:0] a_r;
+reg [7:0] d_r;
+reg       ce_r;
+reg       we_r;
+reg       se_r;
+reg [7:0] ins_r;
+reg [7:0] del_r;
+reg [7:0] dout_r;
+reg       ov_r;
+reg       bz_r;
 reg [7:0] i;
-reg [7:0] n_DOUT;
-reg       n_BZ;
-reg       n_OV;
-reg [9:0] n_A;
-reg [7:0] n_D;
-reg       n_CE;
-reg       n_WE;
-reg       n_SE;
-reg [7:0] n_INS;
-reg [7:0] n_DEL;
+
+reg [7:0] dout_w;
+reg       bz_w;
+reg       ov_w;
+reg [9:0] a_w;
+reg [7:0] d_w;
+reg       ce_w;
+reg       we_w;
+reg       se_w;
+reg [7:0] ins_w;
+reg [7:0] del_w;
+
 reg [3:0] state_r, state_w;
 reg [9:0] wa_r, wa_w;
 reg [9:0] wc_r, wc_w;
@@ -161,6 +163,18 @@ reg [7:0] iy [0:48];
 reg       noob [0:48];
 reg [7:0]	med_buf_r [0:126];
 reg [7:0]	med_buf_w [0:126];
+
+assign DOUT = dout_r;
+assign BZ   = bz_r;
+assign OV   = ov_r;
+assign A    = a_r;
+assign D    = d_r;
+assign CE   = ce_r;
+assign WE   = we_r;
+assign SE   = se_r;
+assign INS  = ins_r;
+assign DEL  = del_r;
+
 
 always @(*) begin
   state_w = state_r;
@@ -259,16 +273,16 @@ always @(posedge CLK or posedge RST) begin
     //-- state_r register
     state_r <= ST_IDL;
     //-- output register
-    DOUT  <= 1'b0;
-    BZ    <= 1'b0;
-    OV    <= 1'b0;
-    A     <= 1'b0;
-    D     <= 1'b0;
-    CE    <= 1'b1;
-    WE    <= 1'b1;
-    SE    <= 1'b1;
-    INS   <= 8'hff;
-    DEL   <= 8'hff;
+    dout_r  <= 1'b0;
+    bz_r    <= 1'b0;
+    ov_r    <= 1'b0;
+    a_r     <= 1'b0;
+    d_r     <= 1'b0;
+    ce_r    <= 1'b1;
+    we_r    <= 1'b1;
+    se_r    <= 1'b1;
+    ins_r   <= 8'hff;
+    del_r   <= 8'hff;
     //-- internal register
     wa_r    <= 0;
     wc_r    <= 0;
@@ -285,21 +299,20 @@ always @(posedge CLK or posedge RST) begin
     for (i=0; i<127; i=i+1) begin
       med_buf_r[i] <= 0;
     end
-
   end else begin
     //-- state_r register
     state_r <= state_w;
     //-- output register
-    DOUT <= n_DOUT;
-    BZ   <= n_BZ;
-    OV   <= n_OV;
-    A    <= n_A;
-    D    <= n_D;
-    CE   <= n_CE;
-    WE   <= n_WE;
-    SE   <= n_SE;
-    INS  <= n_INS;
-    DEL  <= n_DEL;
+    dout_r  <= dout_w;
+    bz_r    <= bz_w;
+    ov_r    <= ov_w;
+    a_r     <= a_w;
+    d_r     <= d_w;
+    ce_r    <= ce_w;
+    we_r    <= we_w;
+    se_r    <= se_w;
+    ins_r   <= ins_w;
+    del_r   <= del_w;
     //-- internal register
     wa_r <= wa_w;
     wc_r <= wc_w;
@@ -322,16 +335,16 @@ end
 
 //-- output logic
 always @ * begin
-  n_DOUT = DOUT;
-  n_BZ   = BZ;
-  n_OV   = OV;
-  n_A    = A;
-  n_D    = D;
-  n_CE   = CE;
-  n_WE   = WE;
-  n_SE   = SE;
-  n_INS  = INS;
-  n_DEL  = DEL;
+    dout_r  <= dout_w;
+    bz_r    <= bz_w;
+    ov_r    <= ov_w;
+    a_r     <= a_w;
+    d_r     <= d_w;
+    ce_r    <= ce_w;
+    we_r    <= we_w;
+    se_r    <= se_w;
+    ins_r   <= ins_w;
+    del_r   <= del_w;
   case (state_r)
     ST_IDL: begin
       if (IEN) begin
@@ -735,14 +748,13 @@ module sorter (
 );
 
 //-- I/O declaration
-input  CLK;
-input  RST;
-input  SEN;
+input        CLK;
+input        RST;
+input        SEN;
 input  [7:0] INS;
 input  [7:0] DEL;
 output [7:0] MED;
 
-//--- reg and wire
 wire [7:0] out00, out01, out02, out03, out04, out05, out06, out07, out08, out09,
            out10, out11, out12, out13, out14, out15, out16, out17, out18, out19,
            out20, out21, out22, out23, out24, out25, out26, out27, out28, out29,
@@ -753,7 +765,7 @@ wire [7:0] w_INS, w_DEL, w_min, w_max;
 parameter MIN_VALUE = 8'h00;
 parameter MAX_VALUE = 8'hff;
 
-assign MED = out24;
+assign MED   = out24;
 assign w_INS = SEN ? 255 : INS;
 assign w_DEL = SEN ? 255 : DEL;
 assign w_min = MIN_VALUE;
@@ -833,7 +845,7 @@ reg [7:0] out_r, out_w;
 
 assign OUT = out_r;
 
-always @ (posedge CLK, posedge RST) begin
+always @(posedge CLK or posedge RST) begin
   if (RST) begin
     out_r <= 8'hff;
   end else begin
@@ -841,7 +853,7 @@ always @ (posedge CLK, posedge RST) begin
   end
 end
 
-always @ * begin
+always @(*)begin
   out_w = out_r;
   if (INS<DEL) begin
     if (out_r>INS && out_r<=DEL) begin 
