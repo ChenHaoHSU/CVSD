@@ -541,19 +541,19 @@ always @ * begin
     ST_R7D: begin
       if (rc_r<9) begin
         // state_w = ST_R7D;
-        n_OV   = (rc<1)? 1'b1: 0;
-        n_DOUT = (rc<1)? MED: 0;
-        n_A    = (rc<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
-        n_SE   = (rc>1)? 1'b0: 1'b1;
-        n_INS  = (rc>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc>1)? mv_r[0+(rc-2)]: 8'hff;
+        n_OV   = (rc_r<1)? 1'b1: 0;
+        n_DOUT = (rc_r<1)? MED: 0;
+        n_A    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
+        n_SE   = (rc_r>1)? 1'b0: 1'b1;
+        n_INS  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
+        n_DEL  = (rc_r>1)? mv_r[0+(rc-2)]: 8'hff;
       end else begin
         // state_w = ST_R7L;
         n_SE = 1'b1;
       end
     end
     ST_R7L: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         // state_w = ST_R7L;
         n_A    = (rc_r<7)? ((my[rc_r*7]-3)<<7) + (mx[rc_r*7]-3): 0;
         n_SE   = (rc_r>1)? 1'b0: 1'b1;
