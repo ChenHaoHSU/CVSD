@@ -546,7 +546,7 @@ always @ * begin
         n_A    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
         n_SE   = (rc_r>1)? 1'b0: 1'b1;
         n_INS  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc_r>1)? mv_r[0+(rc-2)]: 8'hff;
+        n_DEL  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
       end else begin
         // state_w = ST_R7L;
         n_SE = 1'b1;
