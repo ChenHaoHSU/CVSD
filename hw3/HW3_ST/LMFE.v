@@ -175,7 +175,6 @@ assign SE   = se_r;
 assign INS  = ins_r;
 assign DEL  = del_r;
 
-
 always @(*) begin
   state_w = state_r;
   case (state_r)
