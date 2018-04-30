@@ -182,6 +182,12 @@ always @(*) begin
     ST_IDL: begin
       if (IEN) begin
         state_w = ST_W7L;
+        a_w    = wa_r;
+        d_w    = DIN;
+        ce_w   = 1'b0;
+        we_w   = 1'b0;
+        wa_w = wa_r + 1;
+        wc_w = 0;
       end else begin
         state_w = ST_IDL;
       end
@@ -347,15 +353,6 @@ always @ * begin
   del_w  = del_r;
   case (state_r)
     ST_IDL: begin
-      if (IEN) begin
-        // state_w = ST_W7L;
-        a_w    = wa_r;
-        d_w    = DIN;
-        ce_w   = 1'b0;
-        we_w   = 1'b0;
-      end else begin
-        // state_w = ST_IDL;
-      end
     end
     ST_W7L: begin
       if (wc_r<895) begin
@@ -509,13 +506,6 @@ always @ * begin
   py_w = py_r;
   case (state_r)
     ST_IDL: begin
-      if (IEN) begin
-        // state_w = ST_W7L;
-        wa_w = wa_r + 1;
-        wc_w = 0;
-      end else begin
-        // state_w = ST_IDL;
-      end
     end
     ST_W7L: begin
       if (wc_r<895) begin
