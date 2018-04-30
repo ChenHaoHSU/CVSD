@@ -245,6 +245,7 @@ always @(*) begin
         pc_w    = pc_r + 1;
         px_w    = px_r + 1;
       end
+    end
     ST_R7R: begin
       if (rc_r<9) begin
         state_w = ST_R7R;
