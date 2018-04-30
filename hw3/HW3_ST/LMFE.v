@@ -173,23 +173,23 @@ always @(*) begin
       end
     end
     ST_W7L: begin
-      if (wc<895) begin
+      if (wc_r<895) begin
         state_w = ST_W7L;
       end else begin
         state_w = ST_R49;
       end
     end
     ST_R49: begin
-      if (rc<51) begin
+      if (rc_r<51) begin
         state_w = ST_R49;
       end else begin
         state_w = ST_R7R;
       end
     end
     ST_R7R: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7R;
-      end else if (lc==127 && (pc<639 || pc>16000)) begin
+      end else if (lc_r==127 && (pc_r<639 || pc_r>16000)) begin
         state_w = ST_R7D;
       end else if (lc==127) begin
         state_w = ST_W1L;
@@ -198,32 +198,32 @@ always @(*) begin
       end
     end
     ST_W1L: begin
-      if (wc<128) begin
+      if (wc_r<128) begin
         state_w = ST_W1L;
       end else begin
         state_w = ST_R7D;
       end
     end
     ST_R7D: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7D;
       end else begin
         state_w = ST_R7L;
       end
     end
     ST_R7L: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7L;
-      end else if (lc==127 && (pc<511 || pc>16000)) begin
+      end else if (lc_r==127 && (pc_r<511 || pc_r>16000)) begin
         state_w = ST_O1LU;
-      end else if (lc==127) begin
+      end else if (lc_r==127) begin
         state_w = ST_W1LU;
       end else begin
         state_w = ST_R7L;
       end
     end
     ST_O1LU: begin
-      if (lc<128) begin
+      if (lc_r<128) begin
         state_w = ST_O1LU;
       end else if (pc<16256) begin
         state_w = ST_R7DU;
@@ -232,14 +232,14 @@ always @(*) begin
       end
     end
     ST_W1LU: begin
-      if (wc<128) begin
+      if (wc_r<128) begin
         state_w = ST_W1LU;
       end else begin
         state_w = ST_R7DU;
       end
     end
     ST_R7DU: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7DU;
       end else begin
         state_w = ST_R7R;
@@ -270,13 +270,13 @@ always @(posedge clk or posedge RST) begin
     INS   <= 8'hff;
     DEL   <= 8'hff;
     //-- internal register
-    wa    <= 0;
-    wc    <= 0;
-    rc    <= 0;
-    lc    <= 0;
-    pc    <= 0;
-    px    <= 3;
-    py    <= 3;
+    wa_r    <= 0;
+    wc_r    <= 0;
+    rc_r    <= 0;
+    lc_r    <= 0;
+    pc_r    <= 0;
+    px_r    <= 3;
+    py_r    <= 3;
     // -- mv
     for (i=0; i<49; i=i+1) begin
       mv_r[i] <= 0;
@@ -344,73 +344,73 @@ always @ * begin
       end
     end
     ST_W7L: begin
-      if (wc<895) begin
+      if (wc_r<895) begin
         state_w = ST_W7L;
       end else begin
         state_w = ST_R49;
       end
     end
     ST_R49: begin
-      if (rc<51) begin
+      if (rc_r<51) begin
         state_w = ST_R49;
       end else begin
         state_w = ST_R7R;
       end
     end
     ST_R7R: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7R;
-      end else if (lc==127 && (pc<639 || pc>16000)) begin
+      end else if (lc_r==127 && (pc_r<639 || pc_r>16000)) begin
         state_w = ST_R7D;
-      end else if (lc==127) begin
+      end else if (lc_r==127) begin
         state_w = ST_W1L;
       end else begin
         state_w = ST_R7R;
       end
     end
     ST_W1L: begin
-      if (wc<128) begin
+      if (wc_r<128) begin
         state_w = ST_W1L;
       end else begin
         state_w = ST_R7D;
       end
     end
     ST_R7D: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7D;
       end else begin
         state_w = ST_R7L;
       end
     end
     ST_R7L: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7L;
-      end else if (lc==127 && (pc<511 || pc>16000)) begin
+      end else if (lc_r==127 && (pc_r<511 || pc_r>16000)) begin
         state_w = ST_O1LU;
-      end else if (lc==127) begin
+      end else if (lc_r==127) begin
         state_w = ST_W1LU;
       end else begin
         state_w = ST_R7L;
       end
     end
     ST_O1LU: begin
-      if (lc<128) begin
+      if (lc_r<128) begin
         state_w = ST_O1LU;
-      end else if (pc<16256) begin
+      end else if (pc_r<16256) begin
         state_w = ST_R7DU;
       end else begin
         state_w = ST_END;
       end
     end
     ST_W1LU: begin
-      if (wc<128) begin
+      if (wc_r<128) begin
         state_w = ST_W1LU;
       end else begin
         state_w = ST_R7DU;
       end
     end
     ST_R7DU: begin
-      if (rc<9) begin
+      if (rc_r<9) begin
         state_w = ST_R7DU;
       end else begin
         state_w = ST_R7R;
@@ -479,9 +479,9 @@ always @ * begin
       end
     end
     ST_W7L: begin
-      if (wc<895) begin
+      if (wc_r<895) begin
         // state_w = ST_W7L;
-        n_BZ = (wc==894)? 1'b1: 1'b0;
+        n_BZ = (wc_r==894)? 1'b1: 1'b0;
         n_A  = wa_r;
         n_D  = DIN;
       end else begin
@@ -849,8 +849,8 @@ always @ * begin
   for (i=0; i<127; i=i+1) begin
     med_buf_w[i] = med_buf_r[i];
   end
-  if (state_r==ST_R7L && rc<1) begin
-    med_buf_w[lc-1] = MED;
+  if (state_r==ST_R7L && rc_r<1) begin
+    med_buf_w[lc_r-1] = MED;
   end
 end
 
