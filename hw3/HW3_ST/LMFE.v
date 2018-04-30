@@ -144,7 +144,7 @@ reg       n_WE;
 reg       n_SE;
 reg [7:0] n_INS;
 reg [7:0] n_DEL;
-reg [3:0] state, n_state;
+reg [3:0] state_r, state_w;
 reg [9:0] wa, n_wa;
 reg [9:0] wc, n_wc;
 reg [5:0] rc, n_rc;
@@ -163,101 +163,101 @@ reg [7:0]	med_buf [0:126];
 reg [7:0]	n_med_buf [0:126];
 
 always @(*) begin
-  n_state = state;
-  case (state)
+  state_w = state_r;
+  case (state_r)
     ST_IDL: begin
       if (IEN) begin
-        n_state = ST_W7L;
+        state_w = ST_W7L;
       end else begin
-        n_state = ST_IDL;
+        state_w = ST_IDL;
       end
     end
     ST_W7L: begin
       if (wc<895) begin
-        n_state = ST_W7L;
+        state_w = ST_W7L;
       end else begin
-        n_state = ST_R49;
+        state_w = ST_R49;
       end
     end
     ST_R49: begin
       if (rc<51) begin
-        n_state = ST_R49;
+        state_w = ST_R49;
       end else begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end
     end
     ST_R7R: begin
       if (rc<9) begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end else if (lc==127 && (pc<639 || pc>16000)) begin
-        n_state = ST_R7D;
+        state_w = ST_R7D;
       end else if (lc==127) begin
-        n_state = ST_W1L;
+        state_w = ST_W1L;
       end else begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end
     end
     ST_W1L: begin
       if (wc<128) begin
-        n_state = ST_W1L;
+        state_w = ST_W1L;
       end else begin
-        n_state = ST_R7D;
+        state_w = ST_R7D;
       end
     end
     ST_R7D: begin
       if (rc<9) begin
-        n_state = ST_R7D;
+        state_w = ST_R7D;
       end else begin
-        n_state = ST_R7L;
+        state_w = ST_R7L;
       end
     end
     ST_R7L: begin
       if (rc<9) begin
-        n_state = ST_R7L;
+        state_w = ST_R7L;
       end else if (lc==127 && (pc<511 || pc>16000)) begin
-        n_state = ST_O1LU;
+        state_w = ST_O1LU;
       end else if (lc==127) begin
-        n_state = ST_W1LU;
+        state_w = ST_W1LU;
       end else begin
-        n_state = ST_R7L;
+        state_w = ST_R7L;
       end
     end
     ST_O1LU: begin
       if (lc<128) begin
-        n_state = ST_O1LU;
+        state_w = ST_O1LU;
       end else if (pc<16256) begin
-        n_state = ST_R7DU;
+        state_w = ST_R7DU;
       end else begin
-        n_state = ST_END;
+        state_w = ST_END;
       end
     end
     ST_W1LU: begin
       if (wc<128) begin
-        n_state = ST_W1LU;
+        state_w = ST_W1LU;
       end else begin
-        n_state = ST_R7DU;
+        state_w = ST_R7DU;
       end
     end
     ST_R7DU: begin
       if (rc<9) begin
-        n_state = ST_R7DU;
+        state_w = ST_R7DU;
       end else begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end
     end
     ST_END: begin
-      n_state = ST_END;
+      state_w = ST_END;
     end
     default: begin
-      n_state = ST_IDL;
+      state_w = ST_IDL;
     end
   endcase
 end
 
 always @(posedge clk or posedge RST) begin
   if (RST) begin
-    //-- state register
-    state <= ST_IDL;
+    //-- state_r register
+    state_r <= ST_IDL;
     //-- output register
     DOUT  <= 1'b0;
     BZ    <= 1'b0;
@@ -287,8 +287,8 @@ always @(posedge clk or posedge RST) begin
     end
 
   end else begin
-    //-- state register
-    state <= n_state;
+    //-- state_r register
+    state_r <= state_w;
     //-- output register
     DOUT <= n_DOUT;
     BZ   <= n_BZ;
@@ -321,106 +321,106 @@ always @(posedge clk or posedge RST) begin
 end
 
 
-//-- state register
+//-- state_r register
 /*
 always @ (posedge clk, posedge RST) begin
   if (RST) begin
-    state <= ST_IDL;
+    state_r <= ST_IDL;
   end else begin
-    state <= n_state;
+    state_r <= state_w;
   end
 end
 */
 
-//-- next state logic
+//-- next state_r logic
 always @ * begin
-  n_state = state;
-  case (state)
+  state_w = state_r;
+  case (state_r)
     ST_IDL: begin
       if (IEN) begin
-        n_state = ST_W7L;
+        state_w = ST_W7L;
       end else begin
-        n_state = ST_IDL;
+        state_w = ST_IDL;
       end
     end
     ST_W7L: begin
       if (wc<895) begin
-        n_state = ST_W7L;
+        state_w = ST_W7L;
       end else begin
-        n_state = ST_R49;
+        state_w = ST_R49;
       end
     end
     ST_R49: begin
       if (rc<51) begin
-        n_state = ST_R49;
+        state_w = ST_R49;
       end else begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end
     end
     ST_R7R: begin
       if (rc<9) begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end else if (lc==127 && (pc<639 || pc>16000)) begin
-        n_state = ST_R7D;
+        state_w = ST_R7D;
       end else if (lc==127) begin
-        n_state = ST_W1L;
+        state_w = ST_W1L;
       end else begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end
     end
     ST_W1L: begin
       if (wc<128) begin
-        n_state = ST_W1L;
+        state_w = ST_W1L;
       end else begin
-        n_state = ST_R7D;
+        state_w = ST_R7D;
       end
     end
     ST_R7D: begin
       if (rc<9) begin
-        n_state = ST_R7D;
+        state_w = ST_R7D;
       end else begin
-        n_state = ST_R7L;
+        state_w = ST_R7L;
       end
     end
     ST_R7L: begin
       if (rc<9) begin
-        n_state = ST_R7L;
+        state_w = ST_R7L;
       end else if (lc==127 && (pc<511 || pc>16000)) begin
-        n_state = ST_O1LU;
+        state_w = ST_O1LU;
       end else if (lc==127) begin
-        n_state = ST_W1LU;
+        state_w = ST_W1LU;
       end else begin
-        n_state = ST_R7L;
+        state_w = ST_R7L;
       end
     end
     ST_O1LU: begin
       if (lc<128) begin
-        n_state = ST_O1LU;
+        state_w = ST_O1LU;
       end else if (pc<16256) begin
-        n_state = ST_R7DU;
+        state_w = ST_R7DU;
       end else begin
-        n_state = ST_END;
+        state_w = ST_END;
       end
     end
     ST_W1LU: begin
       if (wc<128) begin
-        n_state = ST_W1LU;
+        state_w = ST_W1LU;
       end else begin
-        n_state = ST_R7DU;
+        state_w = ST_R7DU;
       end
     end
     ST_R7DU: begin
       if (rc<9) begin
-        n_state = ST_R7DU;
+        state_w = ST_R7DU;
       end else begin
-        n_state = ST_R7R;
+        state_w = ST_R7R;
       end
     end
     ST_END: begin
-      n_state = ST_END;
+      state_w = ST_END;
     end
     default: begin
-      n_state = ST_IDL;
+      state_w = ST_IDL;
     end
   endcase
 end
@@ -466,44 +466,44 @@ always @ * begin
   n_SE   = SE;
   n_INS  = INS;
   n_DEL  = DEL;
-  case (state)
+  case (state_r)
     ST_IDL: begin
       if (IEN) begin
-        // n_state = ST_W7L;
+        // state_w = ST_W7L;
         n_A    = wa;
         n_D    = DIN;
         n_CE   = 1'b0;
         n_WE   = 1'b0;
       end else begin
-        // n_state = ST_IDL;
+        // state_w = ST_IDL;
       end
     end
     ST_W7L: begin
       if (wc<895) begin
-        // n_state = ST_W7L;
+        // state_w = ST_W7L;
         n_BZ = (wc==894)? 1'b1: 1'b0;
         n_A  = wa;
         n_D  = DIN;
       end else begin
-        // n_state = ST_R49;
+        // state_w = ST_R49;
         n_CE  = 1'b0;
         n_WE  = 1'b1;
       end
     end
     ST_R49: begin
       if (rc<51) begin
-        // n_state = ST_R49;
+        // state_w = ST_R49;
         n_A   = (rc<49)? ((my[rc]-3)<<7) + (mx[rc]-3): 0;				
         n_SE  = (rc>1)? 1'b0: 1'b1;
         n_INS = (rc>1)? (noob[rc-2]>0)? Q: 0: 8'hff;
       end else begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_SE = 1'b1;
       end
     end		
     ST_R7R: begin
       if (rc<9) begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_OV   = (rc<1)? 1'b1: 0;
         n_DOUT = (rc<1)? MED: 0;
         n_A    = (rc<7)? ((my[6+rc*7]-3)<<7) + (mx[6+rc*7]-3): 0;
@@ -511,20 +511,20 @@ always @ * begin
         n_INS  = (rc>1)? (noob[6+(rc-2)*7]>0)? Q: 0: 8'hff;
         n_DEL  = (rc>1)? mv[0+(rc-2)*7]: 8'hff;
       end else if (lc==127 && (pc<639 || pc>16000)) begin
-        // n_state = ST_R7D;
+        // state_w = ST_R7D;
         n_SE = 1'b1;
       end else if (lc==127) begin
-        // n_state = ST_W1L;
+        // state_w = ST_W1L;
         n_BZ = 1'b0;
         n_SE = 1'b1;
       end else begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_SE = 1'b1;
       end
     end
     ST_W1L: begin
       if (wc<128) begin
-        // n_state = ST_W1L;
+        // state_w = ST_W1L;
         n_BZ   = (wc==127)? 1'b1: 1'b0;
         n_OV   = (rc<1)? 1'b1: 0;
         n_DOUT = (rc<1)? MED: 0;
@@ -533,14 +533,14 @@ always @ * begin
         n_CE = 0;
         n_WE = 0;
       end else begin
-        // n_state = ST_R7D;
+        // state_w = ST_R7D;
         n_CE = 1'b0;
         n_WE = 1'b1;
       end
     end
     ST_R7D: begin
       if (rc<9) begin
-        // n_state = ST_R7D;
+        // state_w = ST_R7D;
         n_OV   = (rc<1)? 1'b1: 0;
         n_DOUT = (rc<1)? MED: 0;
         n_A    = (rc<7)? ((my[42+rc]-3)<<7) + (mx[42+rc]-3): 0;
@@ -548,45 +548,45 @@ always @ * begin
         n_INS  = (rc>1)? (noob[42+(rc-2)]>0)? Q: 0: 8'hff;
         n_DEL  = (rc>1)? mv[0+(rc-2)]: 8'hff;
       end else begin
-        // n_state = ST_R7L;
+        // state_w = ST_R7L;
         n_SE = 1'b1;
       end
     end
     ST_R7L: begin
       if (rc<9) begin
-        // n_state = ST_R7L;
+        // state_w = ST_R7L;
         n_A    = (rc<7)? ((my[rc*7]-3)<<7) + (mx[rc*7]-3): 0;
         n_SE   = (rc>1)? 1'b0: 1'b1;
         n_INS  = (rc>1)? (noob[(rc-2)*7]>0)? Q: 0: 8'hff;
         n_DEL  = (rc>1)? mv[6+(rc-2)*7]: 8'hff;				
       end else if (lc==127 && (pc<511 || pc>16000)) begin
-        // n_state = ST_O1LU;
+        // state_w = ST_O1LU;
         n_SE = 1'b1;
       end else if (lc==127) begin
-        // n_state = ST_W1LU;
+        // state_w = ST_W1LU;
         n_BZ = 1'b0;
         n_SE = 1'b1;
       end else begin
-        // n_state = ST_R7L;
+        // state_w = ST_R7L;
         n_SE = 1'b1;
       end
     end
     ST_O1LU: begin
       if (lc<128) begin
-        // n_state = ST_O1LU;
+        // state_w = ST_O1LU;
         n_OV   = 1'b1;
         n_DOUT = (lc<1)? MED: med_buf[127-lc];
       end else if (pc<16256) begin
-        // n_state = ST_R7DU;
+        // state_w = ST_R7DU;
         n_OV = 1'b0;
       end else begin
-        // n_state = ST_END;
+        // state_w = ST_END;
         n_OV = 1'b0;
       end
     end
     ST_W1LU: begin
       if (wc<128) begin
-        // n_state = ST_W1LU;
+        // state_w = ST_W1LU;
         n_BZ = (wc==127)? 1'b1: 1'b0;
         n_OV   = 1'b1;
         n_DOUT = (lc<1)? MED: med_buf[127-lc];
@@ -595,7 +595,7 @@ always @ * begin
         n_CE = 1'b0;
         n_WE = 1'b0;
       end else begin
-        // n_state = ST_R7DU;
+        // state_w = ST_R7DU;
         n_OV = 1'b0;
         n_CE = 1'b0;
         n_WE = 1'b1;
@@ -603,18 +603,18 @@ always @ * begin
     end
     ST_R7DU: begin
       if (rc<9) begin
-        // n_state = ST_R7DU;		
+        // state_w = ST_R7DU;		
         n_A    = (rc<7)? ((my[42+rc]-3)<<7) + (mx[42+rc]-3): 0;
         n_SE   = (rc>1)? 1'b0: 1'b1;
         n_INS  = (rc>1)? (noob[42+(rc-2)]>0)? Q: 0: 8'hff;
         n_DEL  = (rc>1)? mv[0+(rc-2)]: 8'hff;
       end else begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_SE = 1'b1;
       end
     end
     ST_END: begin
-      // n_state = ST_END;
+      // state_w = ST_END;
     end
   endcase
 end
@@ -679,33 +679,33 @@ always @ * begin
   n_pc = pc;
   n_px = px;
   n_py = py;
-  case (state)
+  case (state_r)
     ST_IDL: begin
       if (IEN) begin
-        // n_state = ST_W7L;
+        // state_w = ST_W7L;
         n_wa = wa + 1;
         n_wc = 0;
       end else begin
-        // n_state = ST_IDL;
+        // state_w = ST_IDL;
       end
     end
     ST_W7L: begin
       if (wc<895) begin
-        // n_state = ST_W7L;
+        // state_w = ST_W7L;
         n_wa = wa + 1;
         n_wc = wc + 1;
       end else begin
-        // n_state = ST_R49;
+        // state_w = ST_R49;
         n_rc = 0;
       end
     end
     ST_R49: begin
       if (rc<51) begin
-        // n_state = ST_R49;
+        // state_w = ST_R49;
         n_rc = rc + 1;
         // if (rc>1) n_mv[rc-2] = (noob[rc-2]>0)? Q: 0;
       end else begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_rc = 0;
         n_lc = lc + 1;
         n_pc = pc + 1;
@@ -714,7 +714,7 @@ always @ * begin
     end
     ST_R7R: begin	
       if (rc<9) begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_rc = rc + 1;
         // if (rc>1) begin
           // n_mv[6+(rc-2)*7] = (noob[6+(rc-2)*7]>0)? Q: 0;
@@ -723,20 +723,20 @@ always @ * begin
           // end
         // end
       end else if (lc==127 && (pc<639 || pc>16000)) begin
-        // n_state = ST_R7D;
+        // state_w = ST_R7D;
         n_rc = 0;
         n_lc = 0;
         n_pc = pc + 1;
         n_py = py + 1;
       end else if (lc==127) begin
-        // n_state = ST_W1L;
+        // state_w = ST_W1L;
         // n_wa = wa + 1;
         n_wc = 0;
         n_lc = 0;
         n_pc = pc + 1;
         n_py = py + 1;
       end else begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_rc = 0;
         n_lc = lc + 1;
         n_pc = pc + 1;
@@ -745,19 +745,19 @@ always @ * begin
     end
     ST_W1L: begin
       if (wc<128) begin
-        // n_state = ST_W1L;
+        // state_w = ST_W1L;
         n_lc = lc + 1;
         n_wa = wa + 1;
         n_wc = wc + 1;
       end else begin
-        // n_state = ST_R7D;
+        // state_w = ST_R7D;
         n_lc = 0;
         n_rc = 0;
       end
     end
     ST_R7D: begin
       if (rc<9) begin
-        // n_state = ST_R7D;
+        // state_w = ST_R7D;
         n_rc = rc + 1;
         // if (rc>1) begin
           // n_mv[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
@@ -766,7 +766,7 @@ always @ * begin
           // end
         // end
       end else begin
-        // n_state = ST_R7L;
+        // state_w = ST_R7L;
         n_rc = 0;
         n_lc = lc + 1;
         n_pc = pc + 1;
@@ -775,7 +775,7 @@ always @ * begin
     end
     ST_R7L: begin
       if (rc<9) begin
-        // n_state = ST_R7L;
+        // state_w = ST_R7L;
         n_rc = rc + 1;
         // if (rc>1) begin
           // n_mv[(rc-2)*7] = (noob[(rc-2)*7]>0)? Q: 0;
@@ -785,19 +785,19 @@ always @ * begin
         // end
         // n_med_buf[lc-1] = (rc<1)? MED: med_buf[lc-1];
       end else if (lc==127 && (pc<511 || pc>16000)) begin
-        // n_state = ST_O1LU;
+        // state_w = ST_O1LU;
         n_rc = 0;
         n_lc = 0;
         n_pc = pc + 1;
         n_py = py + 1;
       end else if (lc==127) begin
-        // n_state = ST_W1LU;
+        // state_w = ST_W1LU;
         n_wc = 0;
         n_lc = 0;
         n_pc = pc + 1;
         n_py = py + 1;
       end else begin
-        // n_state = ST_R7L;
+        // state_w = ST_R7L;
         n_rc = 0;
         n_lc = lc + 1;
         n_pc = pc + 1;
@@ -806,33 +806,33 @@ always @ * begin
     end
     ST_O1LU: begin
       if (lc<128) begin
-        // n_state = ST_O1LU;
+        // state_w = ST_O1LU;
         n_lc = lc + 1;
       end else if (pc<16256) begin
-        // n_state = ST_R7DU;
+        // state_w = ST_R7DU;
         n_lc = 0;
       end else begin
-        // n_state = ST_END;
+        // state_w = ST_END;
       end
     end
     ST_W1LU: begin
       if (wc<128) begin
-        // n_state = ST_W1LU;
+        // state_w = ST_W1LU;
         n_lc = lc + 1;
         n_wa = wa + 1;
         n_wc = wc + 1;
       end else begin
-        // n_state = ST_R7DU;
+        // state_w = ST_R7DU;
         n_lc = 0;
         n_rc = 0;
       end
     end
     ST_R7DU: begin
       if (rc<9) begin
-        // n_state = ST_R7DU;
+        // state_w = ST_R7DU;
         n_rc = rc + 1;
       end else begin
-        // n_state = ST_R7R;
+        // state_w = ST_R7R;
         n_rc = 0;
         n_lc = lc + 1;
         n_pc = pc + 1;
@@ -840,7 +840,7 @@ always @ * begin
       end
     end
     ST_END: begin
-      // n_state = ST_END;
+      // state_w = ST_END;
     end
   endcase
 end
@@ -849,24 +849,24 @@ always @ * begin
   for (i=0; i<49; i=i+1) begin
     n_mv[i] = mv[i];
   end
-  if (state==ST_R49 && rc<51 && rc>1) begin
+  if (state_r==ST_R49 && rc<51 && rc>1) begin
     n_mv[rc-2] = (noob[rc-2]>0)? Q: 0;
-  end else if (state==ST_R7R && rc<9 && rc >1) begin
+  end else if (state_r==ST_R7R && rc<9 && rc >1) begin
     n_mv[6+(rc-2)*7] = (noob[6+(rc-2)*7]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
       n_mv[i+(rc-2)*7] = mv[(i+1)+(rc-2)*7];
     end
-  end else if (state==ST_R7D && rc<9 && rc >1) begin
+  end else if (state_r==ST_R7D && rc<9 && rc >1) begin
     n_mv[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
       n_mv[i*7+(rc-2)] = mv[(i+1)*7+(rc-2)];
     end
-  end else if (state==ST_R7L && rc<9 && rc >1) begin
+  end else if (state_r==ST_R7L && rc<9 && rc >1) begin
     n_mv[(rc-2)*7] = (noob[(rc-2)*7]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
       n_mv[(i+1)+(rc-2)*7] = mv[i+(rc-2)*7];
     end
-  end else if (state==ST_R7DU && rc<9 && rc >1) begin
+  end else if (state_r==ST_R7DU && rc<9 && rc >1) begin
     n_mv[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
       n_mv[i*7+(rc-2)] = mv[(i+1)*7+(rc-2)];
@@ -900,7 +900,7 @@ always @ * begin
   for (i=0; i<127; i=i+1) begin
     n_med_buf[i] = med_buf[i];
   end
-  if (state==ST_R7L && rc<1) begin
+  if (state_r==ST_R7L && rc<1) begin
     n_med_buf[lc-1] = MED;
   end
 end
