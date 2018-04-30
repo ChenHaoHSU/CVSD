@@ -177,8 +177,7 @@ assign DEL  = del_r;
 
 
 always @(*) begin
-  state_w = state_r;
-
+  state_w = state_r;//
   dout_w  = dout_r;
   bz_w    = bz_r;
   ov_w    = ov_r;
@@ -188,8 +187,7 @@ always @(*) begin
   we_w    = we_r;
   se_w    = se_r;
   ins_w   = ins_r;
-  del_w   = del_r;
-
+  del_w   = del_r;//
   wa_w    = wa_r;
   wc_w    = wc_r;
   rc_w    = rc_r;
@@ -201,12 +199,12 @@ always @(*) begin
     ST_IDL: begin
       if (IEN) begin
         state_w = ST_W7L;
-        a_w    = wa_r;
-        d_w    = DIN;
-        ce_w   = 1'b0;
-        we_w   = 1'b0;
-        wa_w = wa_r + 1;
-        wc_w = 0;
+        a_w     = wa_r;
+        d_w     = DIN;
+        ce_w    = 0;
+        we_w    = 0;
+        wa_w    = wa_r + 1;
+        wc_w    = 0;
       end else begin
         state_w = ST_IDL;
       end
@@ -214,32 +212,32 @@ always @(*) begin
     ST_W7L: begin
       if (wc_r<895) begin
         state_w = ST_W7L;
-        bz_w = (wc_r==894)? 1'b1: 1'b0;
-        a_w  = wa_r;
-        d_w  = DIN;
-        wa_w = wa_r + 1;
-        wc_w = wc_r + 1;
+        bz_w    = (wc_r == 894) ? 1 : 0;
+        a_w     = wa_r;
+        d_w     = DIN;
+        wa_w    = wa_r + 1;
+        wc_w    = wc_r + 1;
       end else begin
         state_w = ST_R49;
-        ce_w  = 1'b0;
-        we_w  = 1'b1;
-        rc_w = 0;
+        ce_w    = 0;
+        we_w    = 1;
+        rc_w    = 0;
       end
     end
     ST_R49: begin
-      if (rc_r<51) begin
+      if (rc_r < 51) begin
         state_w = ST_R49;
-        a_w   = (rc_r<49)? ((my[rc_r]-3)<<7) + (mx[rc_r]-3): 0;				
-        se_w  = (rc_r>1)? 1'b0: 1'b1;
-        ins_w = (rc_r>1)? (noob[rc_r-2]>0)? Q: 0: 8'hff;
-        rc_w = rc_r + 1;
+        a_w     = (rc_r < 49) ? ((my[rc_r] - 3) << 7) + (mx[rc_r] - 3) : 0;				
+        se_w    = (rc_r > 1) ? 0 : 1;
+        ins_w   = (rc_r > 1) ? (noob[rc_r - 2] >0 )? Q : 0 : 8'hff;
+        rc_w    = rc_r + 1;
       end else begin
         state_w = ST_R7R;
-        se_w = 1'b1;
-        rc_w = 0;
-        lc_w = lc_r + 1;
-        pc_w = pc_r + 1;
-        px_w = px_r + 1;
+        se_w    = 1;
+        rc_w    = 0;
+        lc_w    = lc_r + 1;
+        pc_w    = pc_r + 1;
+        px_w    = px_r + 1;
       end
     end
     ST_R7R: begin
