@@ -1,7 +1,7 @@
 `timescale 1ns/10ps
 `define CYCLE      10           	  // Modify your clock period here
 `define SDFFILE    "./LMFE_syn.sdf"	          // Modify your sdf file name
-`define End_CYCLE  10000000              // Modify cycle times once your design need more cycle times!
+`define End_CYCLE  10000000               // Modify cycle times once your design need more cycle times!
 `define PAT        "./pattern1.dat"    
 `define EXP        "./golden1.dat"     
 
@@ -52,10 +52,10 @@ end
 always begin #(`CYCLE/2) clk = ~clk; end
 
 initial begin
-$dumpfile("LMFE1.vcd");
-$dumpvars;
-//$fsdbDumpfile("LMFE1.fsdb");
-//$fsdbDumpvars(0, test, "+mda");
+//$dumpfile("LMFE1.vcd");
+//$dumpvars;
+$fsdbDumpfile("LMFE1.fsdb");
+$fsdbDumpvars(0, test, "+mda");
 
    out_f = $fopen("out.dat");
    if (out_f == 0) begin
@@ -136,7 +136,6 @@ initial begin
 end
    
 endmodule
-
 
 
 
