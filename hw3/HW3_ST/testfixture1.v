@@ -24,11 +24,11 @@ reg           stop;
 integer       i, out_f, err, pass, exp_num, times;
 reg           over;
 
-   LMFE LMFE1( .clk(clk), .reset(reset), .Din(Din), .in_en(in_en), .busy(busy), .out_valid(out_valid), .Dout(Dout));         
+   LMFE LMFE( .clk(clk), .reset(reset), .Din(Din), .in_en(in_en), .busy(busy), .out_valid(out_valid), .Dout(Dout));         
    
 
 `ifdef SDF
-initial $sdf_annotate(`SDFFILE, LMFE1);
+initial $sdf_annotate(`SDFFILE, LMFE);
 `endif
 
 initial	$readmemh (`PAT, pat_mem);
