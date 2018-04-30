@@ -152,8 +152,8 @@ reg [7:0] lc, n_lc;
 reg [13:0] pc, n_pc;
 reg [7:0] px, n_px;
 reg [7:0] py, n_py;
-reg [7:0] mv [0:48];
-reg [7:0] n_mv [0:48];
+reg [7:0] mv_r [0:48];
+reg [7:0] mv_w [0:48];
 reg [7:0] mx [0:48];
 reg [7:0] my [0:48];
 reg [7:0] ix [0:48];
@@ -279,7 +279,7 @@ always @(posedge clk or posedge RST) begin
     py    <= 3;
     // -- mv
     for (i=0; i<49; i=i+1) begin
-      mv[i] <= 0;
+      mv_r[i] <= 0;
     end
     // -- med_buf
     for (i=0; i<127; i=i+1) begin
@@ -310,7 +310,7 @@ always @(posedge clk or posedge RST) begin
     py <= n_py;
     // -- mv
     for (i=0; i<49; i=i+1) begin
-      mv[i] <= n_mv[i];
+      mv_r[i] <= mv_w[i];
     end
     // -- med_buf
     for (i=0; i<127; i=i+1) begin
@@ -509,7 +509,7 @@ always @ * begin
         n_A    = (rc<7)? ((my[6+rc*7]-3)<<7) + (mx[6+rc*7]-3): 0;
         n_SE   = (rc>1)? 1'b0: 1'b1;
         n_INS  = (rc>1)? (noob[6+(rc-2)*7]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc>1)? mv[0+(rc-2)*7]: 8'hff;
+        n_DEL  = (rc>1)? mv_r[0+(rc-2)*7]: 8'hff;
       end else if (lc==127 && (pc<639 || pc>16000)) begin
         // state_w = ST_R7D;
         n_SE = 1'b1;
@@ -546,7 +546,7 @@ always @ * begin
         n_A    = (rc<7)? ((my[42+rc]-3)<<7) + (mx[42+rc]-3): 0;
         n_SE   = (rc>1)? 1'b0: 1'b1;
         n_INS  = (rc>1)? (noob[42+(rc-2)]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc>1)? mv[0+(rc-2)]: 8'hff;
+        n_DEL  = (rc>1)? mv_r[0+(rc-2)]: 8'hff;
       end else begin
         // state_w = ST_R7L;
         n_SE = 1'b1;
@@ -558,7 +558,7 @@ always @ * begin
         n_A    = (rc<7)? ((my[rc*7]-3)<<7) + (mx[rc*7]-3): 0;
         n_SE   = (rc>1)? 1'b0: 1'b1;
         n_INS  = (rc>1)? (noob[(rc-2)*7]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc>1)? mv[6+(rc-2)*7]: 8'hff;				
+        n_DEL  = (rc>1)? mv_r[6+(rc-2)*7]: 8'hff;				
       end else if (lc==127 && (pc<511 || pc>16000)) begin
         // state_w = ST_O1LU;
         n_SE = 1'b1;
@@ -607,7 +607,7 @@ always @ * begin
         n_A    = (rc<7)? ((my[42+rc]-3)<<7) + (mx[42+rc]-3): 0;
         n_SE   = (rc>1)? 1'b0: 1'b1;
         n_INS  = (rc>1)? (noob[42+(rc-2)]>0)? Q: 0: 8'hff;
-        n_DEL  = (rc>1)? mv[0+(rc-2)]: 8'hff;
+        n_DEL  = (rc>1)? mv_r[0+(rc-2)]: 8'hff;
       end else begin
         // state_w = ST_R7R;
         n_SE = 1'b1;
@@ -618,57 +618,6 @@ always @ * begin
     end
   endcase
 end
-
-//-- internal register
-/*
-always @ (posedge clk, posedge RST) begin
-  if (RST) begin
-    wa <= 0;
-    wc <= 0;
-    rc <= 0;
-    lc <= 0;
-    pc <= 0;
-    px <= 3;
-    py <= 3;
-  end else begin
-    wa <= n_wa;
-    wc <= n_wc;
-    rc <= n_rc;
-    lc <= n_lc;
-    pc <= n_pc;
-    px <= n_px;
-    py <= n_py;		
-  end
-end
-*/
-
-/*
-always @ (posedge clk, posedge RST) begin
-  if (RST) begin
-    for (i=0; i<49; i=i+1) begin
-      mv[i] <= 0;
-    end
-  end else begin
-    for (i=0; i<49; i=i+1) begin
-      mv[i] <= n_mv[i];
-    end
-  end
-end
-*/
-
-/*
-always @ (posedge clk, posedge RST) begin
-  if (RST) begin
-    for (i=0; i<127; i=i+1) begin
-      med_buf[i] <= 0;
-    end
-  end else begin
-    for (i=0; i<127; i=i+1) begin
-      med_buf[i] <= n_med_buf[i];
-    end
-  end
-end
-*/
 
 //-- internal logic
 always @ * begin
@@ -847,29 +796,29 @@ end
 // mv[i]
 always @ * begin
   for (i=0; i<49; i=i+1) begin
-    n_mv[i] = mv[i];
+    mv_w[i] = mv_r[i];
   end
   if (state_r==ST_R49 && rc<51 && rc>1) begin
-    n_mv[rc-2] = (noob[rc-2]>0)? Q: 0;
+    mv_w[rc-2] = (noob[rc-2]>0)? Q: 0;
   end else if (state_r==ST_R7R && rc<9 && rc >1) begin
-    n_mv[6+(rc-2)*7] = (noob[6+(rc-2)*7]>0)? Q: 0;
+    mv_w[6+(rc-2)*7] = (noob[6+(rc-2)*7]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
-      n_mv[i+(rc-2)*7] = mv[(i+1)+(rc-2)*7];
+      mv_w[i+(rc-2)*7] = mv_r[(i+1)+(rc-2)*7];
     end
   end else if (state_r==ST_R7D && rc<9 && rc >1) begin
-    n_mv[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
+    mv_w[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
-      n_mv[i*7+(rc-2)] = mv[(i+1)*7+(rc-2)];
+      mv_w[i*7+(rc-2)] = mv_r[(i+1)*7+(rc-2)];
     end
   end else if (state_r==ST_R7L && rc<9 && rc >1) begin
-    n_mv[(rc-2)*7] = (noob[(rc-2)*7]>0)? Q: 0;
+    mv_w[(rc-2)*7] = (noob[(rc-2)*7]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
-      n_mv[(i+1)+(rc-2)*7] = mv[i+(rc-2)*7];
+      mv_w[(i+1)+(rc-2)*7] = mv_r[i+(rc-2)*7];
     end
   end else if (state_r==ST_R7DU && rc<9 && rc >1) begin
-    n_mv[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
+    mv_w[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
     for (i=0; i<6; i=i+1) begin
-      n_mv[i*7+(rc-2)] = mv[(i+1)*7+(rc-2)];
+      mv_w[i*7+(rc-2)] = mv_r[(i+1)*7+(rc-2)];
     end
   end
 end
