@@ -811,14 +811,23 @@ COMPARE C48 (.CLK(CLK), .RST(RST), .INS(w_INS), .DEL(w_DEL), .PRE(out47), .NXT(w
 
 endmodule
 
-module COMPARE (CLK, RST, INS, DEL, PRE, NXT, OUT);
-input CLK;
-input RST;
-input [7:0] INS;
-input [7:0] DEL;
-input [7:0] PRE;
-input [7:0] NXT;
-output reg [7:0] OUT;
+module COMPARE (
+  CLK, 
+  RST, 
+  INS, 
+  DEL, 
+  PRE, 
+  NXT, 
+  OUT
+);
+
+input        CLK;
+input        RST;
+input  [7:0] INS;
+input  [7:0] DEL;
+input  [7:0] PRE;
+input  [7:0] NXT;
+output [7:0] OUT;
 
 reg [7:0] out_r, out_w;
 
