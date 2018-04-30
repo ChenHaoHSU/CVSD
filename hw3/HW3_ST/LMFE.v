@@ -259,24 +259,24 @@ always @(posedge clk or posedge RST) begin
     //-- state register
     state <= ST_IDL;
     //-- output register
-    DOUT <= 1'b0;
-    BZ   <= 1'b0;
-    OV   <= 1'b0;
-    A    <= 1'b0;
-    D    <= 1'b0;
-    CE   <= 1'b1;
-    WE   <= 1'b1;
-    SE   <= 1'b1;
-    INS  <= 8'hff;
-    DEL  <= 8'hff;
+    DOUT  <= 1'b0;
+    BZ    <= 1'b0;
+    OV    <= 1'b0;
+    A     <= 1'b0;
+    D     <= 1'b0;
+    CE    <= 1'b1;
+    WE    <= 1'b1;
+    SE    <= 1'b1;
+    INS   <= 8'hff;
+    DEL   <= 8'hff;
     //-- internal register
-    wa <= 0;
-    wc <= 0;
-    rc <= 0;
-    lc <= 0;
-    pc <= 0;
-    px <= 3;
-    py <= 3;
+    wa    <= 0;
+    wc    <= 0;
+    rc    <= 0;
+    lc    <= 0;
+    pc    <= 0;
+    px    <= 3;
+    py    <= 3;
     // -- mv
     for (i=0; i<49; i=i+1) begin
       mv[i] <= 0;
@@ -871,21 +871,9 @@ always @ * begin
     for (i=0; i<6; i=i+1) begin
       n_mv[i*7+(rc-2)] = mv[(i+1)*7+(rc-2)];
     end
-  end else begin
-  
   end
 end
-// med_buf[i]
-always @ * begin
-  for (i=0; i<127; i=i+1) begin
-    n_med_buf[i] = med_buf[i];
-  end
-  if (state==ST_R7L && rc<1) begin
-    n_med_buf[lc-1] = MED;
-  end else begin
-  
-  end
-end
+
 // mx[i]
 always @ * begin
   for (i=0; i<7; i=i+1) begin
@@ -907,6 +895,13 @@ always @ * begin
   // noob[i]
   for (i=0; i<49; i=i+1) begin
     noob[i] = (mx[i]>2 && mx[i]<131 && my[i]>2 && my[i]<131)? 1'b1: 1'b0;
+  end
+  // med_buf[i]
+  for (i=0; i<127; i=i+1) begin
+    n_med_buf[i] = med_buf[i];
+  end
+  if (state==ST_R7L && rc<1) begin
+    n_med_buf[lc-1] = MED;
   end
 end
 
