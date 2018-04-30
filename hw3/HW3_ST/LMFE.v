@@ -31,7 +31,7 @@ wire 			chip_enable;
 wire			write_enable;
 wire			sort_enable;
 
-lmfe_filter_ctrl i_lmfe_filter_ctrl (
+controller lmfe_controller (
 	//-- input port
 	.clk	(clk),
 	.RST	(reset),
@@ -52,7 +52,7 @@ lmfe_filter_ctrl i_lmfe_filter_ctrl (
 	.BZ		(busy)
 );
 
-lmfe_med49 i_lmfe_med49 (
+med49 lmfe_med49 (
 	//-- input port
 	.clk	(clk),
 	.RST	(reset),
@@ -63,7 +63,7 @@ lmfe_med49 i_lmfe_med49 (
 	.MED	(sort_median)
 );
 
-sram_1024x8_t13 i_ram0 (
+sram_1024x8_t13 lmfe_sram (
 	//-- input port
 	.CLK	(clk),
 	.CEN	(chip_enable),
