@@ -175,8 +175,26 @@ assign SE   = se_r;
 assign INS  = ins_r;
 assign DEL  = del_r;
 
+
 always @(*) begin
   state_w = state_r;
+  dout_w = dout_r;
+  bz_w   = bz_r;
+  ov_w   = ov_r;
+  a_w    = a_r;
+  d_w    = d_r;
+  ce_w   = ce_r;
+  we_w   = we_r;
+  se_w   = se_r;
+  ins_w  = ins_r;
+  del_w  = del_r;
+  wa_w = wa_r;
+  wc_w = wc_r;
+  rc_w = rc_r;
+  lc_w = lc_r;
+  pc_w = pc_r;
+  px_w = px_r;
+  py_w = py_r;
   case (state_r)
     ST_IDL: begin
       if (IEN) begin
