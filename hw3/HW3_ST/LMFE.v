@@ -835,7 +835,7 @@ assign OUT = out_r;
 
 always @ (posedge CLK, posedge RST) begin
   if (RST) begin
-    out_r <= 8'hff;
+    out_r <= 8'h0;
   end else begin
     out_r <= out_w;
   end
@@ -847,23 +847,10 @@ always @ * begin
     if (out_r>INS && out_r<=DEL) begin 
       out_w = (PRE > INS) ? PRE : INS; 
     end 
-
-    // if (out_r>INS && out_r<=DEL && PRE>INS) begin
-    //   out_w = PRE;
-    // end else if (out_r>INS && out_r<=DEL && PRE<=INS) begin
-    //   out_w = INS;
-    // end
   end else if (INS>DEL) begin
     if (out_r<INS && out_r>=DEL) begin 
       out_w = (NXT < INS) ? NXT : INS; 
     end 
-
-
-    // if (out_r<INS && out_r>=DEL && NXT<INS) begin
-    //   out_w = NXT;
-    // end else if (out_r<INS && out_r>=DEL && NXT>=INS) begin
-    //   out_w = INS;
-    // end
   end
 end
 
