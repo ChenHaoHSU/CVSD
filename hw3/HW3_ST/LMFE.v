@@ -835,7 +835,7 @@ assign OUT = out_r;
 
 always @ (posedge CLK, posedge RST) begin
   if (RST) begin
-    out_r <= 8'h0;
+    out_r <= 8'hff;
   end else begin
     out_r <= out_w;
   end
