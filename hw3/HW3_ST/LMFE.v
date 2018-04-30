@@ -178,23 +178,25 @@ assign DEL  = del_r;
 
 always @(*) begin
   state_w = state_r;
-  dout_w = dout_r;
-  bz_w   = bz_r;
-  ov_w   = ov_r;
-  a_w    = a_r;
-  d_w    = d_r;
-  ce_w   = ce_r;
-  we_w   = we_r;
-  se_w   = se_r;
-  ins_w  = ins_r;
-  del_w  = del_r;
-  wa_w = wa_r;
-  wc_w = wc_r;
-  rc_w = rc_r;
-  lc_w = lc_r;
-  pc_w = pc_r;
-  px_w = px_r;
-  py_w = py_r;
+
+  dout_w  = dout_r;
+  bz_w    = bz_r;
+  ov_w    = ov_r;
+  a_w     = a_r;
+  d_w     = d_r;
+  ce_w    = ce_r;
+  we_w    = we_r;
+  se_w    = se_r;
+  ins_w   = ins_r;
+  del_w   = del_r;
+
+  wa_w    = wa_r;
+  wc_w    = wc_r;
+  rc_w    = rc_r;
+  lc_w    = lc_r;
+  pc_w    = pc_r;
+  px_w    = px_r;
+  py_w    = py_r;
   case (state_r)
     ST_IDL: begin
       if (IEN) begin
@@ -212,74 +214,192 @@ always @(*) begin
     ST_W7L: begin
       if (wc_r<895) begin
         state_w = ST_W7L;
+        bz_w = (wc_r==894)? 1'b1: 1'b0;
+        a_w  = wa_r;
+        d_w  = DIN;
+        wa_w = wa_r + 1;
+        wc_w = wc_r + 1;
       end else begin
         state_w = ST_R49;
+        ce_w  = 1'b0;
+        we_w  = 1'b1;
+        rc_w = 0;
       end
     end
     ST_R49: begin
       if (rc_r<51) begin
         state_w = ST_R49;
+        a_w   = (rc_r<49)? ((my[rc_r]-3)<<7) + (mx[rc_r]-3): 0;				
+        se_w  = (rc_r>1)? 1'b0: 1'b1;
+        ins_w = (rc_r>1)? (noob[rc_r-2]>0)? Q: 0: 8'hff;
+        rc_w = rc_r + 1;
       end else begin
         state_w = ST_R7R;
+        se_w = 1'b1;
+        rc_w = 0;
+        lc_w = lc_r + 1;
+        pc_w = pc_r + 1;
+        px_w = px_r + 1;
       end
     end
     ST_R7R: begin
       if (rc_r<9) begin
         state_w = ST_R7R;
+        ov_w   = (rc_r<1)? 1: 0;
+        dout_w = (rc_r<1)? MED: 0;
+        a_w    = (rc_r<7)? ((my[6+rc_r*7]-3)<<7) + (mx[6+rc_r*7]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[6+(rc_r-2)*7]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)*7]: 8'hff;
+        rc_w = rc_r + 1;
       end else if (lc_r==127 && (pc_r<639 || pc_r>16000)) begin
         state_w = ST_R7D;
+        se_w = 1'b1;
+        rc_w = 0;
+        lc_w = 0;
+        pc_w = pc_r + 1;
+        py_w = py_r + 1;
       end else if (lc_r==127) begin
         state_w = ST_W1L;
+        bz_w = 1'b0;
+        se_w = 1'b1;
+        wc_w = 0;
+        lc_w = 0;
+        pc_w = pc_r + 1;
+        py_w = py_r + 1;
       end else begin
         state_w = ST_R7R;
+        se_w = 1'b1;
+        rc_w = 0;
+        lc_w = lc_r + 1;
+        pc_w = pc_r + 1;
+        px_w = px_r + 1;
       end
     end
     ST_W1L: begin
       if (wc_r<128) begin
         state_w = ST_W1L;
+        bz_w   = (wc_r==127)? 1'b1: 1'b0;
+        ov_w   = (rc_r<1)? 1'b1: 0;
+        dout_w = (rc_r<1)? MED: 0;
+        a_w    = wa_r;
+        d_w    = DIN;
+        ce_w = 0;
+        we_w = 0;
+        lc_w = lc_r + 1;
+        wa_w = wa_r + 1;
+        wc_w = wc_r + 1;
       end else begin
         state_w = ST_R7D;
+        ce_w = 1'b0;
+        we_w = 1'b1;
+        lc_w = 0;
+        rc_w = 0;
       end
     end
     ST_R7D: begin
       if (rc_r<9) begin
         state_w = ST_R7D;
+        ov_w   = (rc_r<1)? 1'b1: 0;
+        dout_w = (rc_r<1)? MED: 0;
+        a_w    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
+        rc_w = rc_r + 1;
       end else begin
         state_w = ST_R7L;
+        se_w = 1'b1;
+        rc_w = 0;
+        lc_w = lc_r + 1;
+        pc_w = pc_r + 1;
+        px_w = px_r - 1;
       end
     end
     ST_R7L: begin
       if (rc_r<9) begin
         state_w = ST_R7L;
+        a_w    = (rc_r<7)? ((my[rc_r*7]-3)<<7) + (mx[rc_r*7]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[(rc_r-2)*7]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[6+(rc_r-2)*7]: 8'hff;				
+        rc_w = rc_r + 1;
       end else if (lc_r==127 && (pc_r<511 || pc_r>16000)) begin
         state_w = ST_O1LU;
+        se_w = 1'b1;
+        rc_w = 0;
+        lc_w = 0;
+        pc_w = pc_r + 1;
+        py_w = py_r + 1;
       end else if (lc_r==127) begin
         state_w = ST_W1LU;
+        bz_w = 1'b0;
+        se_w = 1'b1;
+        wc_w = 0;
+        lc_w = 0;
+        pc_w = pc_r + 1;
+        py_w = py_r + 1;
       end else begin
         state_w = ST_R7L;
+        se_w = 1'b1;
+        rc_w = 0;
+        lc_w = lc_r + 1;
+        pc_w = pc_r + 1;
+        px_w = px_r - 1;
       end
     end
     ST_O1LU: begin
       if (lc_r<128) begin
         state_w = ST_O1LU;
+        ov_w   = 1'b1;
+        dout_w = (lc_r<1)? MED: med_buf_r[127-lc_r];
+        lc_w = lc_r + 1;
       end else if (pc_r<16256) begin
         state_w = ST_R7DU;
+        ov_w = 1'b0;
+        lc_w = 0;
       end else begin
         state_w = ST_END;
+        ov_w = 1'b0;
       end
     end
     ST_W1LU: begin
       if (wc_r<128) begin
         state_w = ST_W1LU;
+        bz_w = (wc_r==127)? 1'b1: 1'b0;
+        ov_w   = 1'b1;
+        dout_w = (lc_r<1)? MED: med_buf_r[127-lc_r];
+        a_w  = wa_r;
+        d_w  = DIN;
+        ce_w = 1'b0;
+        we_w = 1'b0;
+        lc_w = lc_r + 1;
+        wa_w = wa_r + 1;
+        wc_w = wc_r + 1;
       end else begin
         state_w = ST_R7DU;
+        ov_w = 1'b0;
+        ce_w = 1'b0;
+        we_w = 1'b1;
+        lc_w = 0;
+        rc_w = 0;
       end
     end
     ST_R7DU: begin
       if (rc_r<9) begin
-        state_w = ST_R7DU;
+        state_w = ST_R7DU;	
+        a_w    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
+        se_w   = (rc_r>1)? 1'b0: 1'b1;
+        ins_w  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
+        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
+        rc_w = rc_r + 1;
       end else begin
         state_w = ST_R7R;
+        se_w = 1'b1;
+        rc_w = 0;
+        lc_w = lc_r + 1;
+        pc_w = pc_r + 1;
+        px_w = px_r + 1;
       end
     end
     ST_END: begin
@@ -356,329 +476,6 @@ always @(posedge CLK or posedge RST) begin
   end
 end
 
-//-- output logic
-always @ * begin
-  dout_w = dout_r;
-  bz_w   = bz_r;
-  ov_w   = ov_r;
-  a_w    = a_r;
-  d_w    = d_r;
-  ce_w   = ce_r;
-  we_w   = we_r;
-  se_w   = se_r;
-  ins_w  = ins_r;
-  del_w  = del_r;
-  case (state_r)
-    ST_IDL: begin
-    end
-    ST_W7L: begin
-      if (wc_r<895) begin
-        // state_w = ST_W7L;
-        bz_w = (wc_r==894)? 1'b1: 1'b0;
-        a_w  = wa_r;
-        d_w  = DIN;
-      end else begin
-        // state_w = ST_R49;
-        ce_w  = 1'b0;
-        we_w  = 1'b1;
-      end
-    end
-    ST_R49: begin
-      if (rc_r<51) begin
-        // state_w = ST_R49;
-        a_w   = (rc_r<49)? ((my[rc_r]-3)<<7) + (mx[rc_r]-3): 0;				
-        se_w  = (rc_r>1)? 1'b0: 1'b1;
-        ins_w = (rc_r>1)? (noob[rc_r-2]>0)? Q: 0: 8'hff;
-      end else begin
-        // state_w = ST_R7R;
-        se_w = 1'b1;
-      end
-    end		
-    ST_R7R: begin
-      if (rc_r<9) begin
-        // state_w = ST_R7R;
-        ov_w   = (rc_r<1)? 1: 0;
-        dout_w = (rc_r<1)? MED: 0;
-        a_w    = (rc_r<7)? ((my[6+rc_r*7]-3)<<7) + (mx[6+rc_r*7]-3): 0;
-        se_w   = (rc_r>1)? 1'b0: 1'b1;
-        ins_w  = (rc_r>1)? (noob[6+(rc_r-2)*7]>0)? Q: 0: 8'hff;
-        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)*7]: 8'hff;
-      end else if (lc_r==127 && (pc_r<639 || pc_r>16000)) begin
-        // state_w = ST_R7D;
-        se_w = 1'b1;
-      end else if (lc_r==127) begin
-        // state_w = ST_W1L;
-        bz_w = 1'b0;
-        se_w = 1'b1;
-      end else begin
-        // state_w = ST_R7R;
-        se_w = 1'b1;
-      end
-    end
-    ST_W1L: begin
-      if (wc_r<128) begin
-        // state_w = ST_W1L;
-        bz_w   = (wc_r==127)? 1'b1: 1'b0;
-        ov_w   = (rc_r<1)? 1'b1: 0;
-        dout_w = (rc_r<1)? MED: 0;
-        a_w    = wa_r;
-        d_w    = DIN;
-        ce_w = 0;
-        we_w = 0;
-      end else begin
-        // state_w = ST_R7D;
-        ce_w = 1'b0;
-        we_w = 1'b1;
-      end
-    end
-    ST_R7D: begin
-      if (rc_r<9) begin
-        // state_w = ST_R7D;
-        ov_w   = (rc_r<1)? 1'b1: 0;
-        dout_w = (rc_r<1)? MED: 0;
-        a_w    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
-        se_w   = (rc_r>1)? 1'b0: 1'b1;
-        ins_w  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
-        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
-      end else begin
-        // state_w = ST_R7L;
-        se_w = 1'b1;
-      end
-    end
-    ST_R7L: begin
-      if (rc_r<9) begin
-        // state_w = ST_R7L;
-        a_w    = (rc_r<7)? ((my[rc_r*7]-3)<<7) + (mx[rc_r*7]-3): 0;
-        se_w   = (rc_r>1)? 1'b0: 1'b1;
-        ins_w  = (rc_r>1)? (noob[(rc_r-2)*7]>0)? Q: 0: 8'hff;
-        del_w  = (rc_r>1)? mv_r[6+(rc_r-2)*7]: 8'hff;				
-      end else if (lc_r==127 && (pc_r<511 || pc_r>16000)) begin
-        // state_w = ST_O1LU;
-        se_w = 1'b1;
-      end else if (lc_r==127) begin
-        // state_w = ST_W1LU;
-        bz_w = 1'b0;
-        se_w = 1'b1;
-      end else begin
-        // state_w = ST_R7L;
-        se_w = 1'b1;
-      end
-    end
-    ST_O1LU: begin
-      if (lc_r<128) begin
-        // state_w = ST_O1LU;
-        ov_w   = 1'b1;
-        dout_w = (lc_r<1)? MED: med_buf_r[127-lc_r];
-      end else if (pc_r<16256) begin
-        // state_w = ST_R7DU;
-        ov_w = 1'b0;
-      end else begin
-        // state_w = ST_END;
-        ov_w = 1'b0;
-      end
-    end
-    ST_W1LU: begin
-      if (wc_r<128) begin
-        // state_w = ST_W1LU;
-        bz_w = (wc_r==127)? 1'b1: 1'b0;
-        ov_w   = 1'b1;
-        dout_w = (lc_r<1)? MED: med_buf_r[127-lc_r];
-        a_w  = wa_r;
-        d_w  = DIN;
-        ce_w = 1'b0;
-        we_w = 1'b0;
-      end else begin
-        // state_w = ST_R7DU;
-        ov_w = 1'b0;
-        ce_w = 1'b0;
-        we_w = 1'b1;
-      end
-    end
-    ST_R7DU: begin
-      if (rc_r<9) begin
-        // state_w = ST_R7DU;		
-        a_w    = (rc_r<7)? ((my[42+rc_r]-3)<<7) + (mx[42+rc_r]-3): 0;
-        se_w   = (rc_r>1)? 1'b0: 1'b1;
-        ins_w  = (rc_r>1)? (noob[42+(rc_r-2)]>0)? Q: 0: 8'hff;
-        del_w  = (rc_r>1)? mv_r[0+(rc_r-2)]: 8'hff;
-      end else begin
-        // state_w = ST_R7R;
-        se_w = 1'b1;
-      end
-    end
-    ST_END: begin
-      // state_w = ST_END;
-    end
-  endcase
-end
-
-//-- internal logic
-always @ * begin
-  wa_w = wa_r;
-  wc_w = wc_r;
-  rc_w = rc_r;
-  lc_w = lc_r;
-  pc_w = pc_r;
-  px_w = px_r;
-  py_w = py_r;
-  case (state_r)
-    ST_IDL: begin
-    end
-    ST_W7L: begin
-      if (wc_r<895) begin
-        // state_w = ST_W7L;
-        wa_w = wa_r + 1;
-        wc_w = wc_r + 1;
-      end else begin
-        // state_w = ST_R49;
-        rc_w = 0;
-      end
-    end
-    ST_R49: begin
-      if (rc_r<51) begin
-        // state_w = ST_R49;
-        rc_w = rc_r + 1;
-        // if (rc>1) n_mv[rc-2] = (noob[rc-2]>0)? Q: 0;
-      end else begin
-        // state_w = ST_R7R;
-        rc_w = 0;
-        lc_w = lc_r + 1;
-        pc_w = pc_r + 1;
-        px_w = px_r + 1;
-      end
-    end
-    ST_R7R: begin	
-      if (rc_r<9) begin
-        // state_w = ST_R7R;
-        rc_w = rc_r + 1;
-        // if (rc>1) begin
-          // n_mv[6+(rc-2)*7] = (noob[6+(rc-2)*7]>0)? Q: 0;
-          // for (i=0; i<6; i=i+1) begin
-            // n_mv[i+(rc-2)*7] = mv[(i+1)+(rc-2)*7];
-          // end
-        // end
-      end else if (lc_r==127 && (pc_r<639 || pc_r>16000)) begin
-        // state_w = ST_R7D;
-        rc_w = 0;
-        lc_w = 0;
-        pc_w = pc_r + 1;
-        py_w = py_r + 1;
-      end else if (lc_r==127) begin
-        // state_w = ST_W1L;
-        // n_wa = wa + 1;
-        wc_w = 0;
-        lc_w = 0;
-        pc_w = pc_r + 1;
-        py_w = py_r + 1;
-      end else begin
-        // state_w = ST_R7R;
-        rc_w = 0;
-        lc_w = lc_r + 1;
-        pc_w = pc_r + 1;
-        px_w = px_r + 1;
-      end
-    end
-    ST_W1L: begin
-      if (wc_r<128) begin
-        // state_w = ST_W1L;
-        lc_w = lc_r + 1;
-        wa_w = wa_r + 1;
-        wc_w = wc_r + 1;
-      end else begin
-        // state_w = ST_R7D;
-        lc_w = 0;
-        rc_w = 0;
-      end
-    end
-    ST_R7D: begin
-      if (rc_r<9) begin
-        // state_w = ST_R7D;
-        rc_w = rc_r + 1;
-        // if (rc>1) begin
-          // n_mv[42+(rc-2)] = (noob[42+(rc-2)]>0)? Q: 0;
-          // for (i=0; i<6; i=i+1) begin
-            // n_mv[i*7+(rc-2)] = mv[(i+1)*7+(rc-2)];
-          // end
-        // end
-      end else begin
-        // state_w = ST_R7L;
-        rc_w = 0;
-        lc_w = lc_r + 1;
-        pc_w = pc_r + 1;
-        px_w = px_r - 1;
-      end
-    end
-    ST_R7L: begin
-      if (rc_r<9) begin
-        // state_w = ST_R7L;
-        rc_w = rc_r + 1;
-        // if (rc>1) begin
-          // n_mv[(rc-2)*7] = (noob[(rc-2)*7]>0)? Q: 0;
-          // for (i=0; i<6; i=i+1) begin
-            // n_mv[(i+1)+(rc-2)*7] = mv[i+(rc-2)*7];
-          // end
-        // end
-        // n_med_buf[lc-1] = (rc<1)? MED: med_buf[lc-1];
-      end else if (lc_r==127 && (pc_r<511 || pc_r>16000)) begin
-        // state_w = ST_O1LU;
-        rc_w = 0;
-        lc_w = 0;
-        pc_w = pc_r + 1;
-        py_w = py_r + 1;
-      end else if (lc_r==127) begin
-        // state_w = ST_W1LU;
-        wc_w = 0;
-        lc_w = 0;
-        pc_w = pc_r + 1;
-        py_w = py_r + 1;
-      end else begin
-        // state_w = ST_R7L;
-        rc_w = 0;
-        lc_w = lc_r + 1;
-        pc_w = pc_r + 1;
-        px_w = px_r - 1;
-      end
-    end
-    ST_O1LU: begin
-      if (lc_r<128) begin
-        // state_w = ST_O1LU;
-        lc_w = lc_r + 1;
-      end else if (pc_r<16256) begin
-        // state_w = ST_R7DU;
-        lc_w = 0;
-      end else begin
-        // state_w = ST_END;
-      end
-    end
-    ST_W1LU: begin
-      if (wc_r<128) begin
-        // state_w = ST_W1LU;
-        lc_w = lc_r + 1;
-        wa_w = wa_r + 1;
-        wc_w = wc_r + 1;
-      end else begin
-        // state_w = ST_R7DU;
-        lc_w = 0;
-        rc_w = 0;
-      end
-    end
-    ST_R7DU: begin
-      if (rc_r<9) begin
-        // state_w = ST_R7DU;
-        rc_w = rc_r + 1;
-      end else begin
-        // state_w = ST_R7R;
-        rc_w = 0;
-        lc_w = lc_r + 1;
-        pc_w = pc_r + 1;
-        px_w = px_r + 1;
-      end
-    end
-    ST_END: begin
-      // state_w = ST_END;
-    end
-  endcase
-end
 // mv[i]
 always @ * begin
   for (i=0; i<49; i=i+1) begin
