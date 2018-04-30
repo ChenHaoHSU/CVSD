@@ -744,17 +744,20 @@ output [7:0] MED;
 
 //--- reg and wire
 wire [7:0] out00, out01, out02, out03, out04, out05, out06, out07, out08, out09,
-  out10, out11, out12, out13, out14, out15, out16, out17, out18, out19,
-  out20, out21, out22, out23, out24, out25, out26, out27, out28, out29,
-  out30, out31, out32, out33, out34, out35, out36, out37, out38, out39,
-  out40, out41, out42, out43, out44, out45, out46, out47, out48;
+           out10, out11, out12, out13, out14, out15, out16, out17, out18, out19,
+           out20, out21, out22, out23, out24, out25, out26, out27, out28, out29,
+           out30, out31, out32, out33, out34, out35, out36, out37, out38, out39,
+           out40, out41, out42, out43, out44, out45, out46, out47, out48;
 wire [7:0] w_INS, w_DEL, w_min, w_max;
 
+parameter MIN_VALUE = 8'h00;
+parameter MAX_VALUE = 8'hff;
+
 assign MED = out24;
-assign w_INS = (SEN)? 255: INS;
-assign w_DEL = (SEN)? 255: DEL;
-assign w_min = 8'h00;
-assign w_max = 8'hff;
+assign w_INS = SEN ? 255 : INS;
+assign w_DEL = SEN ? 255 : DEL;
+assign w_min = MIN_VALUE;
+assign w_max = MAX_VALUE;
 
 COMPARE C00 (.CLK(CLK), .RST(RST), .INS(w_INS), .DEL(w_DEL), .PRE(w_min), .NXT(out01), .OUT(out00));
 COMPARE C01 (.CLK(CLK), .RST(RST), .INS(w_INS), .DEL(w_DEL), .PRE(out00), .NXT(out02), .OUT(out01));
@@ -817,30 +820,41 @@ input [7:0] PRE;
 input [7:0] NXT;
 output reg [7:0] OUT;
 
-reg [7:0] n_OUT;
+reg [7:0] out_r, out_w;
+
+assign OUT = out_r;
 
 always @ (posedge CLK, posedge RST) begin
   if (RST) begin
-    OUT <= 8'hff;
+    out_r <= 8'hff;
   end else begin
-    OUT <= n_OUT;
+    out_r <= out_w;
   end
 end
 
 always @ * begin
-  n_OUT = OUT;
+  out_w = out_r;
   if (INS<DEL) begin
-    if (OUT>INS && OUT<=DEL && PRE>INS) begin
-      n_OUT = PRE;
-    end else if (OUT>INS && OUT<=DEL && PRE<=INS) begin
-      n_OUT = INS;
-    end
+    if (out_r>INS && out_r<=DEL) begin 
+      out_w = (PRE > INS) ? PRE : INS; 
+    end 
+
+    // if (out_r>INS && out_r<=DEL && PRE>INS) begin
+    //   out_w = PRE;
+    // end else if (out_r>INS && out_r<=DEL && PRE<=INS) begin
+    //   out_w = INS;
+    // end
   end else if (INS>DEL) begin
-    if (OUT<INS && OUT>=DEL && NXT<INS) begin
-      n_OUT = NXT;
-    end else if (OUT<INS && OUT>=DEL && NXT>=INS) begin
-      n_OUT = INS;
-    end
+    if (out_r<INS && out_r>=DEL) begin 
+      out_w = (NXT < INS) ? NXT : INS; 
+    end 
+
+
+    // if (out_r<INS && out_r>=DEL && NXT<INS) begin
+    //   out_w = NXT;
+    // end else if (out_r<INS && out_r>=DEL && NXT>=INS) begin
+    //   out_w = INS;
+    // end
   end
 end
 
