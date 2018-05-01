@@ -40,6 +40,11 @@ create_clock -period 2 -waveform {0 1.0} [get_ports clk]
 report_timing
 report_timing >> Lab1_pt.report 
 
+
+report_constraint 
+report_constraint -all_violators
+report_analysis_coverage
+
 create_clock -period 3.1 -waveform {0 1.55} [get_ports clk] 
 report_timing
 report_timing >> Lab1_pt.report 
@@ -48,6 +53,10 @@ create_clock -period 10 -waveform {0 5.0} [get_ports clk]
 set_output_delay 8 [get_ports alu_out] -clock $design_clock
 report_timing
 report_timing >> Lab1_pt.report 
+
+report_constraint 
+report_constraint -all_violators
+report_analysis_coverage
 
 report_constraint 
 report_constraint -all_violators
