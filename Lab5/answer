@@ -12,27 +12,35 @@ Find the critical path:
 
 ===========================================
 
-Now, does the design meet the timing requirement? ________.
-Is it the setup time violation or the hold time violation? ________.
+Now, does the design meet the timing requirement? No.
+Is it the setup time violation or the hold time violation? Both.
 If all other setting is the same, what is the maximum clock period for the
-design to meet the timing requirement? ________ ns.
+design to meet the timing requirement? ns.
 Try to modify the setting and verify the number you get with STA tool. Do
-you succeed? ________.
+you succeed? Yes.
 
 ===========================================
 
-Now, does the design meet the timing requirement? ___________.
-Where is the new critical path: Start-point = _____________
-End-point = _______________
+Now, does the design meet the timing requirement? Yes.
+Where is the new critical path:   
+  Startpoint: reg_B_reg[0]
+               (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: alu_out_reg[7]
+               (rising edge-triggered flip-flop clocked by clk)
+
 
 ===========================================
 
-How many timing violations are there in the design? __________
+How many timing violations are there in the design? 8 (hold time)
 
 ===========================================
 
 Why are the hold-time violations fixed? Think about the clock setting in the
 previous synthesis Lab and try to explain. Note that the synthesis script can be
 referred in “ALU_syn.script.”
+
+
+
+
 
 
