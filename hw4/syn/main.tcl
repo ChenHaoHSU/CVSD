@@ -2,7 +2,6 @@
 read_file -format verilog  "./FAS.v"
 
 current_design [get_designs FAS]
-link
 
 source -echo -verbose ./FAS_DC.sdc
 

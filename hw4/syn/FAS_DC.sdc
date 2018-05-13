@@ -4,6 +4,7 @@ set cycle   10.0
 #don't modify the following part
 create_clock -period $cycle [get_ports  clk]
 set_dont_touch_network      [get_clocks clk]
+set_fix_hold clk
 set_clock_uncertainty  0.1  [get_clocks clk]
 set_clock_latency      0.5  [get_clocks clk]
 set t_in [expr $cycle/2]
