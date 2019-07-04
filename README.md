@@ -1,2 +1,4 @@
 # CVSD
-NTU 2018 Computer-Aided VLSI System Design
+Computer-Aided VLSI System Design (Spring, 2018)
+
+Instructor: Prof. Chia-Hsiang Yang, National Taiwan 
